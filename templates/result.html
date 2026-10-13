@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+
+{% block title %}Product Registration Result{% endblock %}
+
+{% block content %}
+
+<h1>상품 등록 결과</h1>
+
+<p>Product Name: {{ data.get('name') }}</p>
+<p>Seller ID: {{ data.get('seller_id') }}</p>
+<p>Address: {{ data.get('address') }}</p>
+<p>Price: {{ data.get('price') }}</p>
+<p>Status: {{ data.get('status') }}</p>
+<p>Email: {{ data.get('email') }}</p>
+
+<h2>Representative Image</h2>
+<img src="{{ img_path }}" alt="상품 이미지" width="300">
+
+{% endblock %}
