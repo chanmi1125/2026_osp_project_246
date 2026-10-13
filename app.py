@@ -82,6 +82,9 @@ def reg_item_submit_post():
         img_path=img_path
     )
 
+@app.route("/reg_items")
+def reg_items():
+    return render_template("reg_items.html") //상품등록
 
 if __name__ == "__main__":
     app.run(debug=True)
