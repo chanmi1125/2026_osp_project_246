@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 import os
 import uuid
@@ -27,13 +27,6 @@ def view_list():
 @app.route("/review")
 def view_review():
     return render_template("review.html")
-
-
-# 상품 등록
-@app.route("/reg_items")
-def reg_item():
-    return render_template("reg_items.html")
-
 
 # 리뷰 등록
 @app.route("/reg_reviews")
@@ -82,15 +75,17 @@ def reg_item_submit_post():
         img_path=img_path
     )
 
+# 상품 등록
 @app.route("/reg_items")
 def reg_items():
-    return render_template("reg_items.html") //상품등록
+    return render_template("reg_items.html")
+
+# 네비게이션 바
+@app.route("/index.css")
+def index_css():
+    return send_from_directory("presentation", "index.css")
 
 if __name__ == "__main__":
     app.run(debug=True)
 
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
