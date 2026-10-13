@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block content %}
+<div style="padding: 20px;">
+    <h2>상품 등록</h2>
+    <form action="/submit_item_post" method="POST" enctype="multipart/form-data">
+        <p>상품명: <input type="text" name="name" required></p>
+        <p>판매자 ID: <input type="text" name="seller" required></p>
+        <p>가격: <input type="number" name="price" required></p>
+        <p>주소: <input type="text" name="addr" required></p>
+        <p>상태:
+            <select name="status">
+                <option value="새 상품">새 상품</option>
+                <option value="거의 새것">거의 새것</option>
+                <option value="사용감 있음">사용감 있음</option>
+            </select>
+        </p>
+        <p>이메일: <input type="email" name="email" required></p>
+        <p>대표 이미지: <input type="file" name="file_input" accept="image/*" required></p>
+        <button type="submit">Submit!</button>
+    </form>
+</div>
+{% endblock %}

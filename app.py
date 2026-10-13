@@ -20,18 +20,18 @@ def hello():
 # 상품 목록
 @app.route("/list")
 def view_list():
-    return render_template("list.html")
+    return render_template("list/list.html")
 
 
 # 리뷰 목록
 @app.route("/review")
 def view_review():
-    return render_template("review.html")
+    return render_template("review/review.html")
 
 # 리뷰 등록
 @app.route("/reg_reviews")
 def reg_review():
-    return render_template("reg_reviews.html")
+    return render_template("reg_reviews/reg_reviews.html")
 
 
 # 상품 등록 결과
@@ -78,7 +78,7 @@ def reg_item_submit_post():
 # 상품 등록
 @app.route("/reg_items")
 def reg_items():
-    return render_template("reg_items.html")
+    return render_template("reg_items/reg_items.html")
 
 # 네비게이션 바
 @app.route("/index.css")

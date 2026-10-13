@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{% block content %}
+<div style="padding: 20px;">
+    <h2>등록 결과</h2>
+    <p>상품명: {{ data.get('name') }}</p>
+    <p>판매자 ID: {{ data.get('seller') }}</p>
+    <p>가격: {{ data.get('price') }}</p>
+    <p>주소: {{ data.get('addr') }}</p>
+    <p>상태: {{ data.get('status') }}</p>
+    <p>이메일: {{ data.get('email') }}</p>
+    <p>대표 이미지:</p>
+    <img src="{{ img_path }}" alt="상품 이미지" style="max-width: 300px;">
+</div>
+{% endblock %}
