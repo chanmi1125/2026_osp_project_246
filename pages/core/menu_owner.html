@@ -1,0 +1,15 @@
+{# 사장님 메뉴 (Figma: 메뉴 열림-사장님 (웹)) #}
+{# TODO: 배지 숫자는 지금은 예시값, DB 연결 후 실제 값으로 #}
+{% set drawer_label = "사장님 메뉴" %}
+{% set home_endpoint = "owner_reservations" %}
+{% set profile_endpoint = "owner_mypage" %}
+{% set profile_name = "카페 이화" %}
+{% set profile_sub = "cafe_ewha" %}
+{% set profile_chip = "사장님 인증 완료" %}
+{% set menu = [
+  ("owner_reservations", "예약 관리", "3", "count"),
+  ("product_register", "상품 등록", None, None),
+  ("owner_reviews", "받은 리뷰", "답글 대기 2", "soft"),
+  ("owner_mypage", "마이페이지", None, None),
+] %}
+{% include "core/drawer.html" %}

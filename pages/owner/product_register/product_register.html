@@ -1,0 +1,24 @@
+{# 상품 등록 · 담당: 박찬미 #}
+{% extends "core/base.html" %}
+
+{% block title %}상품 등록{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='owner/product_register/product_register.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 상품 등록</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: '상품 등록하기' 버튼 → 저장 후 url_for('owner_reservations')  (내가 등록한 상품 페이지 생기면 그쪽으로)
+   - TODO: '임시저장'은 이동 없음
+#}
+<p class="todo">상품 등록 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='owner/product_register/product_register.js') }}"></script>
+{% endblock %}

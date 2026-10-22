@@ -1,0 +1,102 @@
+/* 공통 스타일 · 담당: 박찬미
+   색상/폰트/헤더/메뉴/버튼/카드는 여기서만 정의하고, 각 페이지 css에서는 가져다 쓰기만 해요. */
+
+:root {
+  --bg: #F7F9F3;
+  --primary: #00664F;
+  --chip: #DCEFE2;
+  --text: #263B33;
+  --label: #3C5048;
+  --sub: #6B7A72;
+  --placeholder: #A3AFA9;
+  --border: #E4EAE5;
+  --divider: #EEF2EF;
+  --coral: #FF6B57;
+  --white: #FFFFFF;
+  --radius: 12px;
+  --gutter: 20px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; border: none; background: none; }
+
+/* 헤더 (Figma: 웹 헤더) */
+.site-header {
+  position: sticky; top: 0; z-index: 10;
+  height: 56px; padding: 0 var(--gutter);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--primary); color: var(--white);
+}
+.logo { font-size: 24px; font-weight: 700; }
+.header-actions { display: flex; gap: 14px; }
+.icon-btn { display: flex; color: var(--white); }
+
+/* 페이지 제목 바 */
+.page-title {
+  display: flex; align-items: center; gap: 8px;
+  height: 48px; padding: 0 var(--gutter);
+  background: var(--white); border-bottom: 1px solid var(--divider);
+  font-size: 17px; font-weight: 700;
+}
+.page-title a { font-size: 24px; }
+
+.page { padding: 20px var(--gutter) 40px; max-width: 720px; margin: 0 auto; }
+
+/* 메뉴 서랍 (Figma: 메뉴 열림-학생/사장님 (웹)) */
+.drawer-dim { position: fixed; inset: 0; z-index: 20; background: rgba(0, 0, 0, .45); }
+.drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 30;
+  width: min(320px, 82vw);
+  display: flex; flex-direction: column;
+  background: var(--white); overflow-y: auto;
+}
+.drawer[hidden], .drawer-dim[hidden] { display: none; }
+
+.drawer-head { padding: 20px var(--gutter); background: var(--primary); color: var(--white); }
+.drawer-top { display: flex; align-items: center; justify-content: space-between; height: 24px; }
+.drawer-logo { font-size: 18px; font-weight: 700; }
+.drawer-close { display: flex; color: var(--white); }
+.drawer-profile { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.avatar { flex: none; width: 52px; height: 52px; border-radius: 50%; background: var(--chip); border: 1px solid var(--white); }
+.profile-text { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; min-width: 0; }
+.profile-text strong { font-size: 17px; }
+.profile-text small { font-size: 12px; color: var(--chip); }
+.profile-chip { padding: 3px 8px; border-radius: 999px; background: var(--chip); color: var(--primary); font-size: 11px; font-weight: 700; }
+
+.drawer-menu { list-style: none; padding: 12px 0; }
+.drawer-menu a { display: flex; align-items: center; gap: 8px; height: 46px; padding: 0 var(--gutter); font-size: 15px; color: var(--text); }
+.drawer-menu .menu-label { flex: 1; }
+.drawer-menu a.active { background: var(--chip); color: var(--primary); font-weight: 700; }
+.drawer-menu a.active .menu-label::before {
+  content: ""; display: inline-block; width: 3px; height: 20px; margin-right: 8px;
+  border-radius: 2px; background: var(--primary); vertical-align: middle;
+}
+.drawer-menu a:hover:not(.active) { background: var(--bg); }
+.badge { padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.badge-count { background: var(--coral); color: var(--white); }
+.badge-soft { background: #FFF1EE; color: var(--coral); }
+.chevron { color: var(--placeholder); font-size: 18px; }
+
+.drawer-foot { margin-top: auto; padding: 16px var(--gutter) 28px; border-top: 1px solid var(--divider); }
+.drawer-logout { font-size: 14px; color: var(--sub); }
+
+/* 버튼 */
+.btn { display: flex; align-items: center; justify-content: center; width: 100%; height: 52px; border-radius: var(--radius); font-size: 16px; font-weight: 700; }
+.btn-primary { background: var(--primary); color: var(--white); }
+.btn-outline { border: 1px solid var(--primary); color: var(--primary); background: var(--white); }
+
+/* 카드 · 칩 · 입력창 */
+.card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 18px; }
+.chip { display: inline-block; padding: 4px 10px; border-radius: 999px; background: var(--chip); color: var(--primary); font-size: 12px; font-weight: 700; }
+.input { width: 100%; height: 46px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; }
+.input::placeholder { color: var(--placeholder); }
+
+.todo { color: var(--sub); }

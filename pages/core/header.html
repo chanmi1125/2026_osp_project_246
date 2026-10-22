@@ -1,0 +1,15 @@
+<header class="site-header">
+  <a class="logo" href="{{ url_for('product_list') if role == 'student' else url_for('owner_reservations') if role == 'owner' else url_for('login') }}">이화픽</a>
+  {% if role %}
+  <div class="header-actions">
+    {% if role == "student" %}
+    <a class="icon-btn" href="{{ url_for('product_list') }}" aria-label="검색">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11.5" cy="11.5" r="8.5"/><line x1="18" y1="18" x2="25" y2="25"/></svg>
+    </a>
+    {% endif %}
+    <button class="icon-btn" type="button" data-menu-open aria-label="메뉴 열기">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="currentColor"><rect x="3" y="6" width="22" height="2" rx="1.2"/><rect x="3" y="13" width="22" height="2" rx="1.2"/><rect x="3" y="20" width="22" height="2" rx="1.2"/></svg>
+    </button>
+  </div>
+  {% endif %}
+</header>

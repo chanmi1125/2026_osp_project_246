@@ -1,0 +1,23 @@
+{# 리뷰 상세 · 담당: 김지우 #}
+{% extends "core/base.html" %}
+
+{% block title %}리뷰 상세{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='student/review_detail/review_detail.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 리뷰 상세</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: 상품 정보 클릭 → url_for('product_detail', product_id=상품ID)
+#}
+<p class="todo">리뷰 상세 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='student/review_detail/review_detail.js') }}"></script>
+{% endblock %}

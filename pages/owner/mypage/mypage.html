@@ -1,0 +1,25 @@
+{# 마이페이지 · 담당: 박찬미 #}
+{% extends "core/base.html" %}
+
+{% block title %}마이페이지{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='owner/mypage/mypage.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title">마이페이지</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: '내가 등록한 상품' 메뉴 → 아직 페이지 없음 (만들면 라우트 추가)
+   - TODO: '고객센터' → 아직 페이지 없음
+   - TODO: '로그아웃' → url_for('login')
+#}
+<p class="todo">마이페이지 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='owner/mypage/mypage.js') }}"></script>
+{% endblock %}

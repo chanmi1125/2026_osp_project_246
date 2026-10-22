@@ -1,0 +1,14 @@
+{# 학생 메뉴 (Figma: 메뉴 열림-학생 (웹)) #}
+{% set drawer_label = "학생 메뉴" %}
+{% set home_endpoint = "product_list" %}
+{% set profile_endpoint = "student_mypage" %}
+{% set profile_name = "이화인" %}
+{% set profile_sub = "ewha@ewha.ac.kr" %}
+{% set profile_chip = "이화인 인증 완료" %}
+{% set menu = [
+  ("product_list", "상품 목록", None, None),
+  ("review_list", "리뷰 목록", None, None),
+  ("review_write", "리뷰 작성", None, None),
+  ("student_mypage", "마이페이지", None, None),
+] %}
+{% include "core/drawer.html" %}

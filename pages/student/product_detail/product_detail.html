@@ -1,0 +1,24 @@
+{# 상품 상세 · 담당: 윤한솔 #}
+{% extends "core/base.html" %}
+
+{% block title %}상품 상세{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='student/product_detail/product_detail.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 상품 상세</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: '예약하기' 버튼 → 예약 저장 후 url_for('reserve_done')
+   - TODO: 가게 별점(4.5 (120)) 클릭 → url_for('review_list') (해당 가게 리뷰)
+#}
+<p class="todo">상품 상세 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='student/product_detail/product_detail.js') }}"></script>
+{% endblock %}
