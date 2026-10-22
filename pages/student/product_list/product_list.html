@@ -1,0 +1,24 @@
+{# 상품 목록 · 담당: 윤한솔 #}
+{% extends "core/base.html" %}
+
+{% block title %}상품 목록{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='student/product_list/product_list.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title">상품 목록</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: 상품 카드 클릭 → url_for('product_detail', product_id=상품ID)
+   - TODO: 검색/필터 칩(전체·마감 할인·이화인 할인, 카테고리)은 같은 페이지에서 필터만 (이동 없음)
+#}
+<p class="todo">상품 목록 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='student/product_list/product_list.js') }}"></script>
+{% endblock %}

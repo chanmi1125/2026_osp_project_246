@@ -1,0 +1,24 @@
+{# 예약 완료 · 담당: 유지우 #}
+{% extends "core/base.html" %}
+
+{% block title %}예약 완료{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='student/reserve_done/reserve_done.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title">예약 완료</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: '예약 내역 보기' 버튼 → url_for('student_mypage')
+   - TODO: '다른 상품 둘러보기' 버튼 → url_for('product_list')
+#}
+<p class="todo">예약 완료 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='student/reserve_done/reserve_done.js') }}"></script>
+{% endblock %}

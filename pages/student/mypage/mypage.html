@@ -1,0 +1,25 @@
+{# 마이페이지 · 담당: 박찬미 #}
+{% extends "core/base.html" %}
+
+{% block title %}마이페이지{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='student/mypage/mypage.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title">마이페이지</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: 예약 카드 클릭 → url_for('product_detail', product_id=상품ID)
+   - TODO: 예약 내역 '리뷰 쓰기' 버튼 → url_for('review_write')
+   - TODO: '내가 쓴 후기' 탭은 같은 페이지에서 탭 전환 (이동 없음), 후기 클릭 → url_for('review_detail', review_id=리뷰ID)
+#}
+<p class="todo">마이페이지 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='student/mypage/mypage.js') }}"></script>
+{% endblock %}

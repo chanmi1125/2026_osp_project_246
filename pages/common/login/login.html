@@ -1,0 +1,20 @@
+{# 로그인 · 담당: 강지호 #}
+{% extends "core/base.html" %}
+
+{% block title %}로그인{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='common/login/login.css') }}">
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: 로그인 버튼 → 학생이면 url_for('product_list'), 사장님이면 url_for('owner_reservations')
+   - TODO: '회원가입하기' 링크 → url_for('signup')
+#}
+<p class="todo">로그인 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='common/login/login.js') }}"></script>
+{% endblock %}

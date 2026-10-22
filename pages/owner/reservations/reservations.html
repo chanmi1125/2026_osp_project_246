@@ -1,0 +1,23 @@
+{# 예약 관리 · 담당: 김지우 #}
+{% extends "core/base.html" %}
+
+{% block title %}예약 관리{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='owner/reservations/reservations.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title">예약 관리</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: 필터 탭(전체·픽업 대기·픽업 완료·취소)·픽업 코드 확인·'픽업 완료' 버튼은 같은 페이지에서 처리 (이동 없음)
+#}
+<p class="todo">예약 관리 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='owner/reservations/reservations.js') }}"></script>
+{% endblock %}

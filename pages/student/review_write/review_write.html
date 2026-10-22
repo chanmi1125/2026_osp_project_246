@@ -1,0 +1,23 @@
+{# 리뷰 작성 · 담당: 유지우 #}
+{% extends "core/base.html" %}
+
+{% block title %}리뷰 작성{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='student/review_write/review_write.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 리뷰 작성</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: '리뷰 등록' 버튼 → 저장 후 url_for('review_list')
+#}
+<p class="todo">리뷰 작성 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='student/review_write/review_write.js') }}"></script>
+{% endblock %}

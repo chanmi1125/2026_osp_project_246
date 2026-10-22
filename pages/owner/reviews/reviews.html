@@ -1,0 +1,24 @@
+{# 받은 리뷰 · 담당: 정난희 #}
+{% extends "core/base.html" %}
+
+{% block title %}받은 리뷰{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='owner/reviews/reviews.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title">받은 리뷰</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: '답글 달기'는 같은 페이지에서 처리 (이동 없음)
+   - TODO: 리뷰 카드 클릭 → url_for('review_detail', review_id=리뷰ID) (필요하면)
+#}
+<p class="todo">받은 리뷰 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='owner/reviews/reviews.js') }}"></script>
+{% endblock %}

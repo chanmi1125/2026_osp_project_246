@@ -1,0 +1,25 @@
+{# 회원가입 · 담당: 강지호 #}
+{% extends "core/base.html" %}
+
+{% block title %}회원가입{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='common/signup/signup.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 회원가입</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: 학생 '회원가입하기' 버튼 → 가입 후 url_for('login')
+   - TODO: 사장님 '사장님으로 가입하기' 버튼 → 가입 후 url_for('login')
+   - TODO: '이미 계정이 있으신가요? 로그인' 링크 → url_for('login')
+#}
+<p class="todo">회원가입 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='common/signup/signup.js') }}"></script>
+{% endblock %}

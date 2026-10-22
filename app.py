@@ -1,91 +1,83 @@
-from flask import Flask, render_template, request, url_for, send_from_directory
-from werkzeug.utils import secure_filename
-import os
-import uuid
+from flask import Flask, render_template, redirect, url_for
 
-# 246팀 기존 폴더 구조 유지
-app = Flask(__name__, template_folder="presentation")
-
-# 이미지 저장 경로
-UPLOAD_FOLDER = os.path.join(app.static_folder, "images")
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+# html·css·js를 페이지 폴더(pages/)에 같이 두고, css·js·이미지는 /pages/... 주소로 보내요
+app = Flask(__name__, template_folder="pages", static_folder="pages", static_url_path="/pages")
 
 
-# 메인 페이지
+# role: 헤더/메뉴 종류를 정함 (None = 로그인 전, "student" = 학생, "owner" = 사장님)
+
+# ---------- 공통 ----------
 @app.route("/")
-def hello():
-    return render_template("index.html")
+def index():
+    return redirect(url_for("login"))
 
 
-# 상품 목록
-@app.route("/list")
-def view_list():
-    return render_template("list/list.html")
+@app.route("/login")
+def login():
+    return render_template("common/login/login.html", role=None)
 
 
-# 리뷰 목록
-@app.route("/review")
-def view_review():
-    return render_template("review/review.html")
-
-# 리뷰 등록
-@app.route("/reg_reviews")
-def reg_review():
-    return render_template("reg_reviews/reg_reviews.html")
+@app.route("/signup")
+def signup():
+    return render_template("common/signup/signup.html", role=None)
 
 
-# 상품 등록 결과
-@app.route("/submit_item_post", methods=["POST"])
-def reg_item_submit_post():
+# ---------- 학생 ----------
+@app.route("/products")
+def product_list():
+    return render_template("student/product_list/product_list.html", role="student")
 
-    # POST 방식으로 입력 데이터 받기
-    data = request.form
 
-    # 이미지 파일 받기
-    image_file = request.files.get("file_input")
+@app.route("/products/<int:product_id>")
+def product_detail(product_id):
+    return render_template("student/product_detail/product_detail.html", role="student", product_id=product_id)
 
-    if not image_file or not image_file.filename:
-        return "이미지를 선택해주세요.", 400
 
-    filename = secure_filename(image_file.filename)
-    extension = os.path.splitext(filename)[1].lower()
+@app.route("/reserve/done")
+def reserve_done():
+    return render_template("student/reserve_done/reserve_done.html", role="student")
 
-    allowed_extensions = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 
-    if extension not in allowed_extensions:
-        return "지원하지 않는 이미지 형식입니다.", 400
+@app.route("/reviews")
+def review_list():
+    return render_template("student/review_list/review_list.html", role="student")
 
-    # 중복되지 않는 파일명 생성
-    saved_filename = str(uuid.uuid4()) + extension
 
-    # static/images 폴더에 이미지 저장
-    image_file.save(
-        os.path.join(UPLOAD_FOLDER, saved_filename)
-    )
+@app.route("/reviews/<int:review_id>")
+def review_detail(review_id):
+    return render_template("student/review_detail/review_detail.html", role="student", review_id=review_id)
 
-    # 결과 페이지에 전달할 이미지 주소
-    img_path = url_for(
-        "static",
-        filename="images/" + saved_filename
-    )
 
-    return render_template(
-        "result.html",
-        data=data,
-        img_path=img_path
-    )
+@app.route("/reviews/write")
+def review_write():
+    return render_template("student/review_write/review_write.html", role="student")
 
-# 상품 등록
-@app.route("/reg_items")
-def reg_items():
-    return render_template("reg_items/reg_items.html")
 
-# 네비게이션 바
-@app.route("/index.css")
-def index_css():
-    return send_from_directory("presentation", "index.css")
+@app.route("/mypage")
+def student_mypage():
+    return render_template("student/mypage/mypage.html", role="student")
+
+
+# ---------- 사장님 ----------
+@app.route("/owner/products/new")
+def product_register():
+    return render_template("owner/product_register/product_register.html", role="owner")
+
+
+@app.route("/owner/reservations")
+def owner_reservations():
+    return render_template("owner/reservations/reservations.html", role="owner")
+
+
+@app.route("/owner/reviews")
+def owner_reviews():
+    return render_template("owner/reviews/reviews.html", role="owner")
+
+
+@app.route("/owner/mypage")
+def owner_mypage():
+    return render_template("owner/mypage/mypage.html", role="owner")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-

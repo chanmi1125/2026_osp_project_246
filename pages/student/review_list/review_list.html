@@ -1,0 +1,23 @@
+{# 리뷰 목록 · 담당: 정난희 #}
+{% extends "core/base.html" %}
+
+{% block title %}리뷰 목록{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='student/review_list/review_list.css') }}">
+{% endblock %}
+
+{% block page_title %}
+<div class="page-title">리뷰 목록</div>
+{% endblock %}
+
+{% block content %}
+{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
+   - TODO: 리뷰 카드 클릭 → url_for('review_detail', review_id=리뷰ID)
+#}
+<p class="todo">리뷰 목록 화면 (작업 중)</p>
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='student/review_list/review_list.js') }}"></script>
+{% endblock %}
