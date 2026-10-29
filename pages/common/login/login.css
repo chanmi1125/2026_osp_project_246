@@ -1,1 +1,171 @@
-/* 로그인 · 담당: 강지호 */
+/* 로그인 페이지 · common/login */
+
+.login {
+  max-width: 430px;
+  margin: 0 auto;
+  color: var(--text);
+}
+
+.login-head {
+  margin-bottom: 16px;
+}
+
+.login-title {
+  margin: 0 0 6px;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.login-sub {
+  margin: 0;
+  font-size: 15px;
+  color: var(--sub);
+}
+
+/* 일러스트 카드 */
+.login-illust {
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  line-height: 0;
+}
+
+.login-illust svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 입력칸 */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.field-label {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.field-wrap {
+  position: relative;
+}
+
+.field-input {
+  width: 100%;
+  height: 48px;
+  box-sizing: border-box;
+  padding: 0 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #FFFFFF;
+  font: inherit;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.field-input::placeholder {
+  color: #A3AFA9;
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.field-wrap .field-input {
+  padding-right: 48px;
+}
+
+.pw-toggle {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  color: #8A9891;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.pw-toggle.is-on {
+  color: var(--primary);
+}
+
+/* 로그인 상태 유지 · 찾기 */
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #3C5048;
+  cursor: pointer;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.login-find {
+  color: var(--sub);
+  text-decoration: none;
+}
+
+.login-error {
+  margin: -4px 0 0;
+  font-size: 13px;
+  color: #E5533F;
+}
+
+/* 버튼 */
+.login-submit {
+  height: 52px;
+  margin-top: 4px;
+  border: none;
+  border-radius: 12px;
+  background: var(--primary);
+  color: #FFFFFF;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.login-submit:hover {
+  filter: brightness(0.92);
+}
+
+.login-foot {
+  margin: 28px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--sub);
+}
+
+.login-foot a {
+  margin-left: 6px;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: none;
+}
