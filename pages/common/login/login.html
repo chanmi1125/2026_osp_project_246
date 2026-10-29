@@ -8,11 +8,78 @@
 {% endblock %}
 
 {% block content %}
-{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: 로그인 버튼 → 학생이면 url_for('product_list'), 사장님이면 url_for('owner_reservations')
-   - TODO: '회원가입하기' 링크 → url_for('signup')
-#}
-<p class="todo">로그인 화면 (작업 중)</p>
+<div class="login">
+  <section class="login-head">
+    <h1 class="login-title">로그인</h1>
+    <p class="login-sub">이화픽에서 맛있는 하루를 시작하세요!</p>
+  </section>
+
+  <!-- 캠퍼스 일러스트 -->
+  <div class="login-illust" aria-hidden="true">
+    <svg viewBox="0 0 353 168" preserveAspectRatio="xMidYMid slice">
+      <rect width="353" height="168" fill="#DCEFE2"/>
+      <circle cx="314" cy="32" r="14" fill="#FFFFFF" fill-opacity="0.8"/>
+      <path d="M0 112 Q80 74 176 98 T353 90 V168 H0Z" fill="#C3E3CF"/>
+      <g fill="#FFFFFF" stroke="#3E6B57" stroke-width="1.5" stroke-linejoin="round">
+        <rect x="116" y="74" width="120" height="74"/>
+        <polygon points="116,74 134,54 152,74"/>
+        <polygon points="200,74 218,54 236,74"/>
+        <rect x="160" y="38" width="32" height="110"/>
+        <polygon points="160,38 176,8 192,38"/>
+      </g>
+      <g fill="#DCEFE2" stroke="#3E6B57" stroke-width="1.2">
+        <path d="M171 58v-6a5 5 0 0 1 10 0v6z"/>
+        <path d="M128 102v-10a5 5 0 0 1 10 0v10z"/>
+        <path d="M144 102v-10a5 5 0 0 1 10 0v10z"/>
+        <path d="M198 102v-10a5 5 0 0 1 10 0v10z"/>
+        <path d="M214 102v-10a5 5 0 0 1 10 0v10z"/>
+        <path d="M168 148v-22a8 8 0 0 1 16 0v22z"/>
+      </g>
+      <g fill="#7FC4A8"><circle cx="34" cy="112" r="24"/><circle cx="320" cy="110" r="24"/></g>
+      <g fill="#2F8A6C"><circle cx="66" cy="126" r="18"/><circle cx="14" cy="132" r="16"/><circle cx="290" cy="128" r="17"/><circle cx="342" cy="134" r="15"/></g>
+      <rect y="146" width="353" height="22" fill="#A8D8BF"/>
+    </svg>
+  </div>
+
+  <!-- TODO: 백엔드 연결 후 로그인 처리. 지금은 버튼 누르면 학생 상품 목록으로 이동 (사장님이면 url_for('owner_reservations')) -->
+  <form class="login-form" method="post" action="" data-next="{{ url_for('product_list') }}">
+    <div class="field">
+      <label class="field-label" for="login-id">아이디</label>
+      <input class="field-input" id="login-id" name="user_id" type="text"
+             placeholder="아이디를 입력하세요" autocomplete="username" required>
+    </div>
+
+    <div class="field">
+      <label class="field-label" for="login-pw">비밀번호</label>
+      <div class="field-wrap">
+        <input class="field-input" id="login-pw" name="password" type="password"
+               placeholder="비밀번호를 입력하세요" autocomplete="current-password" required>
+        <button type="button" class="pw-toggle" aria-label="비밀번호 보기" data-target="login-pw">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="login-options">
+      <label class="check">
+        <input type="checkbox" name="remember">
+        <span>로그인 상태 유지</span>
+      </label>
+      <a href="#" class="login-find">아이디 · 비밀번호 찾기</a>
+    </div>
+
+    <p class="login-error" id="login-error" hidden>아이디 또는 비밀번호가 맞지 않아요</p>
+
+    <button type="submit" class="login-submit">로그인하기</button>
+  </form>
+
+  <p class="login-foot">
+    아직 회원이 아니신가요?
+    <a href="{{ url_for('signup') }}">회원가입하기</a>
+  </p>
+</div>
 {% endblock %}
 
 {% block js %}
