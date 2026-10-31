@@ -1,1 +1,43 @@
-/* 마이페이지 · 담당: 박찬미 */
+/* 마이페이지 · 담당: 박찬미 (Figma: 마이페이지-사장님 · owner/mypage) */
+
+.page:has(.mypage) { padding-top: 14px; }
+.mypage { display: flex; flex-direction: column; gap: 14px; }
+.mypage .card { padding: 16px; }
+
+/* 가게 카드 */
+.profile-row { display: flex; align-items: center; gap: 12px; }
+.profile-avatar { flex: none; }
+.profile-text { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.profile-text strong { display: flex; align-items: center; gap: 10px; font-size: 18px; }
+.profile-text > span { font-size: 13px; color: var(--sub); }
+.owner-chip {
+  padding: 3px 10px; border-radius: 999px;
+  background: var(--chip); color: var(--primary); font-size: 11px; font-weight: 700;
+}
+
+.status-band {
+  display: flex; align-items: center; gap: 8px;
+  height: 36px; margin: 12px -4px -4px; padding: 0 12px;
+  border-radius: 10px; background: var(--chip);
+  font-size: 13px; font-weight: 700; color: var(--primary);
+}
+.status-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--primary); }
+.status-band span { margin-left: -4px; font-size: 12px; color: #3E6B57; }
+
+/* 가게 현황 (판매 중 / 예약 대기 / 받은 후기) */
+.mypage .stats-card { display: grid; grid-template-columns: repeat(3, 1fr); padding: 18px 0; }
+.stats-card a { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.stats-card a + a { border-left: 1px solid var(--border); }
+.stats-card b { font-size: 20px; color: var(--primary); }
+.stats-card span { font-size: 12px; color: var(--sub); }
+
+/* 상품 등록 버튼 */
+.register-btn { gap: 8px; }
+
+/* 목록 줄 오른쪽 칩 */
+.code-chip, .state-chip {
+  display: flex; align-items: center; height: 24px; padding: 0 10px;
+  border-radius: 999px; background: var(--chip);
+  font-size: 12px; font-weight: 700; color: var(--primary);
+}
+.state-chip.is-off { background: var(--divider); color: var(--sub); }

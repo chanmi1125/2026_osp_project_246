@@ -13,11 +13,106 @@
 
 {% block content %}
 {# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: '내가 등록한 상품' 메뉴 → 아직 페이지 없음 (만들면 라우트 추가)
-   - TODO: '고객센터' → 아직 페이지 없음
-   - TODO: '로그아웃' → url_for('login')
+   - TODO: 등록한 상품 클릭 → 상품 수정 페이지 생기면 연결 (지금은 이동 없음)
+   - TODO: '등록한 상품' 탭 '더보기' → 상품 더 불러오기 (데이터 생기면)
+   TODO: 로그인 기능 생기면 가게 이름·주소·현황 숫자·목록을 로그인한 사장님 정보로 바꾸기
 #}
-<p class="todo">마이페이지 화면 (작업 중)</p>
+<div class="mypage">
+
+  {# 가게 카드 #}
+  <section class="card store-card">
+    <div class="profile-row">
+      <svg class="profile-avatar" width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+        <circle cx="28" cy="28" r="28" fill="#DCEFE2"/>
+        <rect x="17.8" y="20.8" width="20.4" height="16.4" rx="1" fill="#FFFFFF" stroke="#00664F" stroke-width="1.6"/>
+        <path d="M14 20l3-8h22l3 8z" fill="#00664F"/>
+        <rect x="24" y="27" width="8" height="11" fill="#56B59B"/>
+      </svg>
+      <div class="profile-text">
+        <strong>카페 이화 <span class="owner-chip">사장님</span></strong>
+        <span>서울 서대문구 이화여대길 52</span>
+      </div>
+    </div>
+    <p class="status-band">
+      <i class="status-dot" aria-hidden="true"></i>
+      <b>오늘 영업 중</b> <span>· 마감 할인 18:00부터</span>
+    </p>
+  </section>
+
+  {# 가게 현황 #}
+  <section class="card stats-card">
+    <a href="{{ url_for('owner_reservations') }}"><b>3</b><span>판매 중</span></a>
+    <a href="{{ url_for('owner_reservations') }}"><b>2</b><span>예약 대기</span></a>
+    <a href="{{ url_for('owner_reviews') }}"><b>18</b><span>받은 후기</span></a>
+  </section>
+
+  <a class="btn btn-primary register-btn" href="{{ url_for('product_register') }}">
+    <svg width="14" height="14" viewBox="0 0 14.2 14.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M1.1 7.1h12M7.1 1.1v12"/></svg>
+    상품 등록하기
+  </a>
+
+  {# 오늘 픽업 예정 / 등록한 상품 탭 #}
+  <section class="tab-card">
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab" role="tab" id="tab-pickup" aria-selected="true" aria-controls="panel-pickup">오늘 픽업 예정 2</button>
+      <button type="button" class="tab" role="tab" id="tab-products" aria-selected="false" aria-controls="panel-products">등록한 상품 <b>3</b></button>
+    </div>
+
+    <div class="tab-panel" role="tabpanel" id="panel-pickup" aria-labelledby="tab-pickup">
+      <a class="list-row" href="{{ url_for('owner_reservations') }}">
+        <div class="thumb"></div>
+        <div class="row-text">
+          <strong>버터 크루아상 세트</strong>
+          <small>ewha_23 · 18:00–20:00</small>
+        </div>
+        <span class="code-chip">코드 4821</span>
+      </a>
+      <a class="list-row" href="{{ url_for('owner_reservations') }}">
+        <div class="thumb tone-pink"></div>
+        <div class="row-text">
+          <strong>딸기 생크림 케이크</strong>
+          <small>green · 19:00–20:00</small>
+        </div>
+        <span class="code-chip">코드 1937</span>
+      </a>
+      <a class="more-btn" href="{{ url_for('owner_reservations') }}">더보기
+        <svg width="10" height="6" viewBox="0 0 9.6 5.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M.8.8l4 4 4-4"/></svg>
+      </a>
+    </div>
+
+    {# 피그마에 이 탭 화면은 없어서 픽업 예정 줄 모양을 그대로 씀 #}
+    <div class="tab-panel" role="tabpanel" id="panel-products" aria-labelledby="tab-products" hidden>
+      <div class="list-row">
+        <div class="thumb"></div>
+        <div class="row-text">
+          <strong>버터 크루아상 세트</strong>
+          <small>마감 할인 30% · 남은 수량 3개</small>
+        </div>
+        <span class="state-chip">판매중</span>
+      </div>
+      <div class="list-row">
+        <div class="thumb tone-pink"></div>
+        <div class="row-text">
+          <strong>딸기 생크림 케이크</strong>
+          <small>마감 할인 40% · 남은 수량 1개</small>
+        </div>
+        <span class="state-chip">예약중</span>
+      </div>
+      <div class="list-row">
+        <div class="thumb tone-sage"></div>
+        <div class="row-text">
+          <strong>플레인 베이글</strong>
+          <small>이화인 할인 20% · 남은 수량 0개</small>
+        </div>
+        <span class="state-chip is-off">판매완료</span>
+      </div>
+      <button type="button" class="more-btn">더보기
+        <svg width="10" height="6" viewBox="0 0 9.6 5.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M.8.8l4 4 4-4"/></svg>
+      </button>
+    </div>
+  </section>
+
+</div>
 {% endblock %}
 
 {% block js %}
