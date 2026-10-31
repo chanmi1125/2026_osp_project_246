@@ -8,15 +8,189 @@
 {% endblock %}
 
 {% block page_title %}
-<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 상품 등록</div>
+<div class="page-title">
+  <a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 상품 등록
+  {# 임시저장: 이동 없음, 브라우저에 작성 중인 내용 저장 #}
+  <button type="button" class="temp-save" id="tempSave">임시저장</button>
+</div>
 {% endblock %}
 
 {% block content %}
-{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: '상품 등록하기' 버튼 → 저장 후 url_for('owner_reservations')  (내가 등록한 상품 페이지 생기면 그쪽으로)
-   - TODO: '임시저장'은 이동 없음
+{# 페이지 이동 TODO
+   - TODO: '상품 등록하기' 버튼 → 서버 저장 라우트 만들면 form action 연결,
+           저장 후 url_for('owner_reservations')  (내가 등록한 상품 페이지 생기면 그쪽으로)
 #}
-<p class="todo">상품 등록 화면 (작업 중)</p>
+<form class="register-form" id="registerForm" method="post" enctype="multipart/form-data"
+      data-done-url="{{ url_for('owner_reservations') }}" novalidate>
+
+  {# 가게 정보 (회원가입 때 등록한 가게, 수정 불가)
+     TODO: 로그인 기능 생기면 가게 이름·아이디·주소를 로그인한 사장님 정보로 바꾸기 #}
+  <div class="store-band">
+    <svg class="store-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true">
+      <path d="M3 7.5V15h12V7.5"/><path d="M2 7.5 3.5 3h11L16 7.5z"/><path d="M7 15v-4h4v4"/>
+    </svg>
+    <div>
+      <strong>카페 이화</strong>
+      <p>
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><path d="M6 11s3.5-3.2 3.5-6A3.5 3.5 0 0 0 2.5 5c0 2.8 3.5 6 3.5 6z"/><circle cx="6" cy="5" r="1.1"/></svg>
+        사장님 인증 완료 · 이 가게 이름으로 상품이 올라가요
+      </p>
+    </div>
+  </div>
+
+  {# 판매자 ID (자동 입력) #}
+  <div class="field">
+    <label class="label" for="sellerId">판매자 ID <span class="req">*</span></label>
+    <div class="input-box is-readonly">
+      <input id="sellerId" name="seller_id" value="cafe_ewha" readonly>
+      <span class="suffix muted">자동 입력</span>
+    </div>
+    <p class="help">로그인한 사장님 아이디로 자동 입력돼요</p>
+  </div>
+
+  {# 픽업 주소 #}
+  <div class="field">
+    <label class="label" for="address">픽업 주소 <span class="req">*</span></label>
+    <div class="input-box">
+      <input id="address" name="address" value="서대문구 이화여대길 52" readonly required>
+      <button type="button" class="suffix link" id="addressEdit">변경</button>
+    </div>
+    <p class="help">회원가입 때 등록한 가게 주소가 미리 들어가 있어요. 다른 곳에서 픽업하면 바꿔주세요</p>
+  </div>
+
+  {# 상품 사진 #}
+  <div class="field" data-field="photos">
+    <span class="label">상품 사진 <span class="req">*</span></span>
+    <div class="photo-list" id="photoList">
+      <button type="button" class="photo-add" id="photoAdd" aria-label="상품 사진 추가">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true"><path d="M3 9h4l2-3h8l2 3h4v12H3z"/><circle cx="13" cy="14.5" r="4"/></svg>
+        <span><b id="photoCount">0</b>/5</span>
+      </button>
+      <input type="file" id="photoInput" name="images" accept="image/*" multiple hidden>
+    </div>
+    <p class="help">첫 번째 사진이 상품 목록에 대표로 보여요 (최대 5장)</p>
+  </div>
+
+  {# 할인 유형 #}
+  <div class="field">
+    <span class="label">할인 유형 <span class="req">*</span></span>
+    <div class="segment segment-coral" role="radiogroup">
+      <label><input type="radio" name="discount_type" value="closing" checked><span>마감 할인</span></label>
+      <label><input type="radio" name="discount_type" value="ewha"><span>이화인 할인</span></label>
+    </div>
+    <p class="help">마감 할인은 영업 종료 전 남은 상품, 이화인 할인은 이화인 인증 학생 전용 가격이에요</p>
+  </div>
+
+  {# 카테고리 #}
+  <div class="field">
+    <span class="label">카테고리 <span class="req">*</span></span>
+    <div class="chips" role="radiogroup">
+      <label><input type="radio" name="category" value="bakery" checked><span>베이커리</span></label>
+      <label><input type="radio" name="category" value="lunchbox"><span>도시락</span></label>
+      <label><input type="radio" name="category" value="cafe"><span>카페</span></label>
+      <label><input type="radio" name="category" value="snack"><span>분식</span></label>
+    </div>
+  </div>
+
+  {# 상품 이름 #}
+  <div class="field">
+    <div class="label-row">
+      <label class="label" for="productName">상품 이름 <span class="req">*</span></label>
+      <span class="counter" data-counter-for="productName">0/30</span>
+    </div>
+    <div class="input-box">
+      <input id="productName" name="name" maxlength="30" placeholder="예) 플레인 베이글" required>
+    </div>
+  </div>
+
+  {# 정가 · 할인율 · 판매가 미리보기 #}
+  <div class="field">
+    <div class="price-row">
+      <div class="field">
+        <label class="label" for="price">정가 <span class="req">*</span></label>
+        <div class="input-box">
+          <input id="price" name="price" inputmode="numeric" maxlength="9" placeholder="0" value="3,200" required>
+          <span class="suffix muted-dark">원</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="label" for="discountRate">할인율 <span class="req">*</span></label>
+        <div class="input-box">
+          <input id="discountRate" name="discount_rate" inputmode="numeric" maxlength="2" placeholder="0" value="30" required>
+          <span class="suffix muted-dark">%</span>
+        </div>
+      </div>
+    </div>
+    <div class="price-preview">
+      <span class="preview-label">학생에게 보이는 판매가</span>
+      <span class="preview-price">
+        <b class="rate" id="previewRate">30%</b>
+        <b class="sale" id="previewSale">2,240원</b>
+        <s class="origin" id="previewOrigin">3,200원</s>
+      </span>
+    </div>
+    <p class="help">앱에서는 결제하지 않아요. 학생이 픽업할 때 매장에서 이 가격으로 결제해요</p>
+  </div>
+
+  {# 픽업 시간 #}
+  <div class="field">
+    <span class="label">픽업 시간 <span class="req">*</span></span>
+    <div class="time-row">
+      <div class="input-box">
+        <svg class="clock" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 1.5"/></svg>
+        <input type="time" name="pickup_start" value="16:00" aria-label="픽업 시작 시간" required>
+      </div>
+      <span class="tilde">~</span>
+      <div class="input-box">
+        <svg class="clock" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 1.5"/></svg>
+        <input type="time" name="pickup_end" value="16:30" aria-label="픽업 종료 시간" required>
+      </div>
+    </div>
+    <p class="help">오늘 픽업 가능한 시간대를 선택해주세요</p>
+  </div>
+
+  {# 판매 수량 #}
+  <div class="field">
+    <label class="label" for="quantity">판매 수량 <span class="req">*</span></label>
+    <div class="stepper">
+      <button type="button" class="step minus" data-step="-1" aria-label="수량 빼기">
+        <svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 8h9"/></svg>
+      </button>
+      <span class="qty"><input id="quantity" name="quantity" inputmode="numeric" maxlength="3" value="3" aria-label="판매 수량"><span>개</span></span>
+      <button type="button" class="step plus" data-step="1" aria-label="수량 더하기">
+        <svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 8h9M8 3.5v9"/></svg>
+      </button>
+    </div>
+    <p class="help">수량이 0이 되면 자동으로 품절 처리돼요</p>
+  </div>
+
+  {# 상품 상태 #}
+  <div class="field">
+    <span class="label">상품 상태 <span class="req">*</span></span>
+    <div class="segment segment-green" role="radiogroup">
+      <label><input type="radio" name="status" value="on_sale" checked><span>판매중</span></label>
+      <label><input type="radio" name="status" value="reserved"><span>예약중</span></label>
+      <label><input type="radio" name="status" value="sold_out"><span>판매완료</span></label>
+    </div>
+    <p class="help">예약이 다 차면 예약중, 다 팔리면 판매완료로 자동으로 바뀌어요</p>
+  </div>
+
+  {# 상품 설명 #}
+  <div class="field">
+    <label class="label" for="description">상품 설명</label>
+    <div class="textarea-box">
+      <textarea id="description" name="description" maxlength="200" rows="3"
+        placeholder="맛, 구성, 알레르기 정보 등을 알려주세요&#10;예) 오늘 아침에 구운 플레인 베이글이에요. 크림치즈 1개 포함!"></textarea>
+      <span class="counter" data-counter-for="description">0/200</span>
+    </div>
+  </div>
+
+  <div class="submit-bar">
+    <button type="submit" class="btn btn-primary">상품 등록하기</button>
+  </div>
+</form>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 {% endblock %}
 
 {% block js %}
