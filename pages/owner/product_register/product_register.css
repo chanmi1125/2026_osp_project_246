@@ -54,6 +54,7 @@
   width: 80px; height: 80px; border-radius: var(--radius);
 }
 .photo-add {
+  font: inherit;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   border: 1px dashed var(--placeholder); background: var(--white);
   color: var(--primary); cursor: pointer;
@@ -62,6 +63,8 @@
 .photo-add b { color: var(--primary); }
 .photo-add.is-full { opacity: .45; cursor: not-allowed; }
 .photo-add.is-invalid { border-color: var(--coral); }
+.photo-add:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.btn:disabled { opacity: .6; cursor: default; }
 .photo-item { overflow: hidden; background: #F3E1C7; }
 .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .photo-item .main-badge {

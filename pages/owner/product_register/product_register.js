@@ -17,12 +17,15 @@ const won = (n) => n.toLocaleString("ko-KR") + "원";
 /* ---------- 상품 사진 (최대 5장, 첫 장이 대표) ---------- */
 const photoInput = document.getElementById("photoInput");
 const photoList = document.getElementById("photoList");
-const photoAdd = photoList.querySelector(".photo-add");
+const photoAdd = document.getElementById("photoAdd");
 const photoCount = document.getElementById("photoCount");
 let photos = [];
 
 function renderPhotos() {
-  photoList.querySelectorAll(".photo-item").forEach((el) => el.remove());
+  photoList.querySelectorAll(".photo-item").forEach((el) => {
+    URL.revokeObjectURL(el.querySelector("img").src); // 이전 미리보기 메모리 정리
+    el.remove();
+  });
   photos.forEach((file, i) => {
     const item = document.createElement("div");
     item.className = "photo-item";
@@ -58,11 +61,12 @@ function renderPhotos() {
   photoAdd.classList.toggle("is-full", photos.length >= MAX_PHOTOS);
 }
 
-photoAdd.addEventListener("click", (e) => {
+photoAdd.addEventListener("click", () => {
   if (photos.length >= MAX_PHOTOS) {
-    e.preventDefault();
     showToast("사진은 최대 5장까지 올릴 수 있어요");
+    return;
   }
+  photoInput.click();
 });
 
 photoInput.addEventListener("change", () => {
@@ -103,10 +107,14 @@ function updatePreview() {
   document.getElementById("previewOrigin").textContent = won(p);
 }
 
+// 입력 중에는 숫자만 남기고, 칸을 벗어날 때 콤마 붙이기 (입력 중 커서가 튀지 않게)
 price.addEventListener("input", () => {
+  price.value = price.value.replace(/[^0-9,]/g, "");
+  updatePreview();
+});
+price.addEventListener("blur", () => {
   const digits = onlyDigits(price.value);
   price.value = digits ? Number(digits).toLocaleString("ko-KR") : "";
-  updatePreview();
 });
 rate.addEventListener("input", () => {
   const digits = onlyDigits(rate.value);
@@ -185,9 +193,11 @@ form.addEventListener("submit", (e) => {
     [address.value.trim() !== "", address.closest(".input-box"), "픽업 주소를 입력해주세요"],
     [form.elements.name.value.trim() !== "", form.elements.name.closest(".input-box"), "상품 이름을 입력해주세요"],
     [Number(onlyDigits(price.value)) > 0, price.closest(".input-box"), "정가를 입력해주세요"],
-    [rate.value !== "", rate.closest(".input-box"), "할인율을 입력해주세요"],
-    [form.elements.pickup_start.value < form.elements.pickup_end.value,
+    [Number(rate.value) >= 1 && Number(rate.value) <= 99, rate.closest(".input-box"), "할인율은 1~99% 사이로 입력해주세요"],
+    [form.elements.pickup_start.value !== "" && form.elements.pickup_end.value !== ""
+      && form.elements.pickup_start.value < form.elements.pickup_end.value,
       form.elements.pickup_end.closest(".input-box"), "픽업 종료 시간이 시작 시간보다 늦어야 해요"],
+    [Number(quantity.value) >= 1, quantity.closest(".stepper"), "판매 수량을 1개 이상 입력해주세요"],
   ];
 
   let firstError = null;
@@ -201,6 +211,9 @@ form.addEventListener("submit", (e) => {
     firstError.el.scrollIntoView({ behavior: "smooth", block: "center" });
     return;
   }
+
+  // 두 번 눌러서 두 번 등록되지 않게 막기
+  form.querySelector('[type="submit"]').disabled = true;
 
   // TODO: 서버 저장 라우트 생기면 아래 두 줄 대신 form.submit() 으로 보내기
   try { localStorage.removeItem(DRAFT_KEY); } catch {}
