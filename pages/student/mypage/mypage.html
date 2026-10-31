@@ -13,11 +13,111 @@
 
 {% block content %}
 {# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: 예약 카드 클릭 → url_for('product_detail', product_id=상품ID)
-   - TODO: 예약 내역 '리뷰 쓰기' 버튼 → url_for('review_write')
-   - TODO: '내가 쓴 후기' 탭은 같은 페이지에서 탭 전환 (이동 없음), 후기 클릭 → url_for('review_detail', review_id=리뷰ID)
+   - TODO: 예약 카드 클릭 → url_for('product_detail', product_id=상품ID)  (지금은 임시로 1번 상품)
+   - TODO: 후기 클릭 → url_for('review_detail', review_id=리뷰ID)  (지금은 임시로 1번 후기)
+   - TODO: '더보기' → 예약/후기 더 불러오기 (데이터 생기면)
+   TODO: 로그인 기능 생기면 이름·이메일·예약·후기를 로그인한 학생 정보로 바꾸기
 #}
-<p class="todo">마이페이지 화면 (작업 중)</p>
+<div class="mypage">
+
+  {# 프로필 카드 #}
+  <section class="card profile-card">
+    <div class="profile-row">
+      <svg class="profile-avatar" width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+        <circle cx="28" cy="28" r="28" fill="#DCEFE2"/>
+        <circle cx="28" cy="21" r="9" fill="#56B59B"/>
+        <path d="M12 46c0-9 7-14 16-14s16 5 16 14z" fill="#56B59B"/>
+      </svg>
+      <div class="profile-text">
+        <strong>이화인</strong>
+        <span>ewha@ewha.ac.kr</span>
+      </div>
+    </div>
+    <p class="status-band">
+      <svg width="24" height="16.2" viewBox="0 0 24 16.2" fill="#00664F" aria-hidden="true">
+        <path d="M12 0 0 6l12 6 12-6z"/>
+        <path d="M4 8.5V13c0 1.6 3.6 3.2 8 3.2s8-1.6 8-3.2V8.5l-8 4z"/>
+      </svg>
+      <b>이화인 인증 완료</b> <span>· 이화여자대학교 학생</span>
+    </p>
+  </section>
+
+  {# 픽업 대기 카드 (가장 가까운 예약 1개) #}
+  <a class="card pickup-card" href="{{ url_for('product_detail', product_id=1) }}">
+    <div class="thumb thumb-lg"></div>
+    <div class="pickup-text">
+      <span class="state-pill">예약 완료</span>
+      <strong>버터 크루아상 세트</strong>
+      <small>카페 이화 · 오늘 18:00–20:00</small>
+    </div>
+    <div class="pickup-code">
+      <span>픽업 코드</span>
+      <b>8153</b>
+    </div>
+  </a>
+
+  {# 예약 내역 / 내가 쓴 후기 탭 #}
+  <section class="tab-card">
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab" role="tab" id="tab-reserve" aria-selected="true" aria-controls="panel-reserve">예약 내역 3</button>
+      <button type="button" class="tab" role="tab" id="tab-review" aria-selected="false" aria-controls="panel-review">내가 쓴 후기 <b>5</b></button>
+    </div>
+
+    <div class="tab-panel" role="tabpanel" id="panel-reserve" aria-labelledby="tab-reserve">
+      <div class="list-row">
+        <div class="thumb"></div>
+        <a class="row-text" href="{{ url_for('product_detail', product_id=1) }}">
+          <strong>버터 크루아상 세트</strong>
+          <small>카페 이화 · 10/20 (오늘)</small>
+        </a>
+        <span class="code-chip"><span>코드</span><b>8153</b></span>
+      </div>
+      <div class="list-row">
+        <div class="thumb tone-pink"></div>
+        <a class="row-text" href="{{ url_for('product_detail', product_id=2) }}">
+          <strong>딸기 생크림 케이크</strong>
+          <small>달콤한 하루 · 10/17 · 픽업 완료</small>
+        </a>
+        <a class="review-btn" href="{{ url_for('review_write') }}">리뷰 쓰기</a>
+      </div>
+      <div class="list-row">
+        <div class="thumb tone-sage"></div>
+        <a class="row-text" href="{{ url_for('product_detail', product_id=3) }}">
+          <strong>닭가슴살 샐러드 도시락</strong>
+          <small>샐러드랩 · 10/14 · 픽업 완료</small>
+        </a>
+        <span class="review-done">리뷰 완료</span>
+      </div>
+      <button type="button" class="more-btn">더보기
+        <svg width="10" height="6" viewBox="0 0 9.6 5.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M.8.8l4 4 4-4"/></svg>
+      </button>
+    </div>
+
+    {# 피그마에 이 탭 화면은 없어서 예약 내역 줄 모양을 그대로 씀 #}
+    <div class="tab-panel" role="tabpanel" id="panel-review" aria-labelledby="tab-review" hidden>
+      <a class="list-row" href="{{ url_for('review_detail', review_id=1) }}">
+        <div class="thumb tone-sage"></div>
+        <div class="row-text">
+          <strong>닭가슴살 샐러드 도시락</strong>
+          <small>★★★★★ 양도 많고 신선했어요!</small>
+        </div>
+        <small class="row-date">10/14</small>
+      </a>
+      <a class="list-row" href="{{ url_for('review_detail', review_id=2) }}">
+        <div class="thumb"></div>
+        <div class="row-text">
+          <strong>플레인 베이글</strong>
+          <small>★★★★☆ 마감 할인이라 가성비 최고</small>
+        </div>
+        <small class="row-date">10/09</small>
+      </a>
+      <button type="button" class="more-btn">더보기
+        <svg width="10" height="6" viewBox="0 0 9.6 5.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M.8.8l4 4 4-4"/></svg>
+      </button>
+    </div>
+  </section>
+
+</div>
 {% endblock %}
 
 {% block js %}
