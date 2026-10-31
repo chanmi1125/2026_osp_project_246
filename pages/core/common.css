@@ -103,18 +103,18 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 .tab-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
 .tabs { display: flex; border-bottom: 1px solid var(--border); }
 .tab {
-  position: relative; flex: 1; height: 48px;
+  position: relative; flex: 1; height: 47px;
   font-size: 14px; color: var(--sub);
 }
 .tab b { font-weight: 700; }
 .tab[aria-selected="true"] { font-weight: 700; color: var(--primary); }
 .tab[aria-selected="true"]::after {
-  content: ""; position: absolute; left: 16px; right: 16px; bottom: -1px;
+  content: ""; position: absolute; left: 15px; right: 15px; bottom: -1px;
   height: 3px; border-radius: 2px; background: var(--primary);
 }
 .tab:focus-visible { outline: 2px solid var(--primary); outline-offset: -2px; }
 
-.list-row { display: flex; align-items: center; gap: 12px; margin: 0 16px; padding: 16px 0; }
+.list-row { display: flex; align-items: center; gap: 12px; margin: 0 15px; padding: 15px 0 16px; }
 .list-row + .list-row { border-top: 1px solid var(--divider); }
 .list-row .row-text { flex: 1; display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .list-row strong { font-size: 14px; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -128,8 +128,8 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 .thumb.tone-sage { background: #E2E8DA; }
 
 .more-btn {
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  width: 100%; padding: 4px 0 16px; font-size: 13px; color: var(--sub);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 0 0 15px; font-size: 13px; color: var(--sub);
 }
 
 .todo { color: var(--sub); }
