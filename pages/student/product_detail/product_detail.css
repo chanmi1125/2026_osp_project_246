@@ -1,1 +1,563 @@
-/* 상품 상세 · 담당: 윤한솔 */
+
+/* =========================================
+   상품 상세 페이지
+========================================= */
+
+/* 전체 페이지 */
+.page:has(.product-detail),
+.page:has(.detail-not-found) {
+  max-width: 470px;
+  margin: 0 auto;
+  padding: 0 20px 40px;
+}
+
+.product-detail {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  color: var(--text);
+}
+
+/* =========================================
+   상단 제목
+========================================= */
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-title a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+/* =========================================
+   상품 이미지
+========================================= */
+
+.detail-image {
+  width: 100%;
+  aspect-ratio: 393 / 290;
+  overflow: hidden;
+  background: var(--chip);
+}
+
+.detail-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =========================================
+   할인 배지
+========================================= */
+
+.detail-discount-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  min-width: 140px;
+  height: 46px;
+  padding: 0 20px;
+
+  color: var(--white);
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.detail-discount-badge.closing {
+  background: #FF897B;
+}
+
+.detail-discount-badge.ewha {
+  background: var(--primary);
+}
+
+/* =========================================
+   상품 기본 정보
+========================================= */
+
+.detail-info {
+  padding: 14px 30px 0;
+}
+
+.detail-name {
+  margin: 0 0 12px;
+
+  color: var(--text);
+  font-size: 27px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.6px;
+}
+
+/* =========================================
+   가게 정보
+========================================= */
+
+.detail-store {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 10px;
+
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 18px;
+
+  color: var(--text);
+  font-size: 10px;
+}
+
+.detail-store .store-name,
+.detail-store .store-address {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.detail-store .store-name {
+  flex-shrink: 0;
+}
+
+.detail-store .store-address {
+  flex: 1;
+}
+
+.store-address span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 공통 아이콘 */
+.detail-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+
+  color: #579F90;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* =========================================
+   리뷰 별점
+========================================= */
+
+.store-rating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+
+  flex-shrink: 0;
+
+  /* 세로 바와 별점을 함께 오른쪽으로 이동 */
+  margin-left: 12px;
+  padding-left: 10px;
+
+  border-left: 1px solid #579F90;
+
+  color: var(--text);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.rating-star {
+  color: #FFC400;
+  font-size: 17px;
+}
+
+.store-rating:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   상품 가격
+========================================= */
+
+.detail-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: nowrap;
+  gap: 8px;
+
+  margin-bottom: 22px;
+  white-space: nowrap;
+}
+
+/* 할인율 */
+.detail-price .discount-rate {
+  color: var(--coral);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* 할인 가격 */
+.current-price {
+  color: var(--text);
+  font-size: 34px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* 원래 가격 */
+.original-price {
+  color: #579F90;
+  font-size: 21px;
+  font-weight: 400;
+  text-decoration: line-through;
+}
+
+/* =========================================
+   픽업 및 판매 정보
+
+   [아이콘 + 항목명] [구분선] [정보]
+
+   - 항목명 시작 위치 통일
+   - 정보 시작 위치 통일
+   - 구분선은 두 영역 사이 가운데
+========================================= */
+
+.pickup-info {
+  display: grid;
+  grid-template-columns:
+    max-content
+    28px
+    minmax(0, 1fr);
+
+  column-gap: 0;
+  row-gap: 8px;
+
+  padding: 0;
+  margin: 0;
+
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* 모든 행이 같은 Grid 열을 사용 */
+.pickup-info .info-row {
+  display: contents;
+}
+
+/* 아이콘 + 왼쪽 항목명 */
+.pickup-info .info-label {
+  display: grid;
+  grid-template-columns: 17px max-content;
+  align-items: center;
+  column-gap: 5px;
+
+  width: auto;
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+/* 아이콘 크기 통일 */
+.pickup-info .info-label .detail-icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+}
+
+/* 오른쪽 정보 */
+.pickup-info .info-value {
+  grid-column: 3;
+
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: left;
+
+  overflow-wrap: anywhere;
+}
+
+/* 판매 상태, 판매자 ID 앞의 구분선 */
+.pickup-info .info-separator {
+  position: absolute;
+
+  /* 정보 왼쪽 28px 공간의 가운데 */
+  right: calc(100% + 14px);
+  transform: translateX(50%);
+
+  display: inline-block;
+  margin: 0;
+
+  color: #579F90;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+/* =========================================
+   상품 설명
+========================================= */
+
+.description-title {
+  margin: 26px 0 0;
+  padding: 0 0 12px;
+
+  border-bottom: 1px solid var(--border);
+
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.detail-description {
+  margin: 0;
+  padding: 16px 30px 0;
+
+  border: none;
+  background: transparent;
+}
+
+.description-text {
+  margin: 0;
+
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
+
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   예약 버튼
+========================================= */
+
+.detail-reservation {
+  margin-top: 44px;
+  padding: 0 30px;
+}
+
+.reserve-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 52px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: var(--primary);
+  color: var(--white);
+
+  font-size: 17px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.reserve-button:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.reserve-button:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.reserve-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.reserve-button:focus-visible,
+.store-rating:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+/* =========================================
+   상품이 없는 경우
+========================================= */
+
+.detail-not-found {
+  padding: 48px 0;
+  text-align: center;
+}
+
+.detail-not-found h2 {
+  margin-bottom: 20px;
+  color: var(--text);
+  font-size: 18px;
+}
+
+/* =========================================
+   모바일 화면
+========================================= */
+
+@media (max-width: 480px) {
+
+  .page:has(.product-detail),
+  .page:has(.detail-not-found) {
+    padding: 0 16px 35px;
+  }
+
+  .detail-info {
+    padding: 14px 20px 0;
+  }
+
+  .detail-name {
+    font-size: 24px;
+  }
+
+  /* 가게 정보 */
+  .detail-store {
+    gap: 5px;
+    font-size: 9px;
+  }
+
+  .detail-store .detail-icon {
+    width: 13px;
+    height: 13px;
+  }
+
+  /* 리뷰 별점 */
+  .store-rating {
+    margin-left: 12px;
+    padding-left: 6px;
+    font-size: 9px;
+  }
+
+  .rating-star {
+    font-size: 14px;
+  }
+
+  /* 가격 */
+  .detail-price {
+    gap: 6px;
+  }
+
+  .detail-price .discount-rate,
+  .current-price {
+    font-size: 34px;
+  }
+
+  .original-price {
+    font-size: 21px;
+  }
+
+  /* 픽업 정보 */
+  .pickup-info {
+    grid-template-columns:
+      max-content
+      28px
+      minmax(0, 1fr);
+
+    row-gap: 8px;
+  }
+
+  .pickup-info .info-label,
+  .pickup-info .info-value {
+    font-size: 12px;
+  }
+
+  /* 상품 설명 */
+  .detail-description {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  /* 예약 버튼 */
+  .detail-reservation {
+    padding: 0 20px;
+  }
+}
+
+/* =========================================
+   작은 모바일 화면
+========================================= */
+
+@media (max-width: 360px) {
+
+  .detail-info {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .detail-name {
+    font-size: 21px;
+  }
+
+  .detail-store {
+    flex-wrap: wrap;
+  }
+
+  .store-rating {
+    border-left: none;
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  /* 작은 화면에서 가격 넘침 방지 */
+  .detail-price .discount-rate,
+  .current-price {
+    font-size: 22px;
+  }
+
+  .original-price {
+    font-size: 12px;
+  }
+
+  /* 픽업 정보 정렬 유지 */
+  .pickup-info {
+    grid-template-columns:
+      max-content
+      24px
+      minmax(0, 1fr);
+  }
+
+  .pickup-info .info-label,
+  .pickup-info .info-value {
+    font-size: 11px;
+  }
+
+  /* 24px 구분선 영역 가운데 */
+  .pickup-info .info-separator {
+    right: calc(100% + 12px);
+    transform: translateX(50%);
+  }
+
+  .detail-description {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .detail-reservation {
+    padding: 0 12px;
+  }
+}
