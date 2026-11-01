@@ -8,15 +8,232 @@
 {% endblock %}
 
 {% block page_title %}
-<div class="page-title">상품 목록</div>
 {% endblock %}
 
+
 {% block content %}
-{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: 상품 카드 클릭 → url_for('product_detail', product_id=상품ID)
-   - TODO: 검색/필터 칩(전체·마감 할인·이화인 할인, 카테고리)은 같은 페이지에서 필터만 (이동 없음)
-#}
-<p class="todo">상품 목록 화면 (작업 중)</p>
+
+{# DB 연결 전 임시 상품 데이터 #}
+{% if products is not defined %}
+  {% set products = [
+    {
+      "id": 1,
+      "name": "플레인 베이글",
+      "image": "bagel.jpg",
+      "discount_type": "closing",
+      "category": "bakery",
+      "discount_rate": 30,
+      "price": 2240,
+      "store_name": "마더린 베이글",
+      "distance": "120m"
+    },
+    {
+      "id": 2,
+      "name": "초코 쫀득 츄러스",
+      "image": "churros.jpg",
+      "discount_type": "ewha",
+      "category": "cafe",
+      "discount_rate": 10,
+      "price": 2610,
+      "store_name": "마리바게트 카페대학점",
+      "distance": "150m"
+    },
+    {
+      "id": 3,
+      "name": "무화과 크림치즈 바게트",
+      "image": "baguette.jpg",
+      "discount_type": "closing",
+      "category": "bakery",
+      "discount_rate": 25,
+      "price": 6000,
+      "store_name": "아름다운 파머스마켓",
+      "distance": "200m"
+    },
+    {
+      "id": 4,
+      "name": "포케+음료선택1 세트",
+      "image": "rice.jpg",
+      "discount_type": "ewha",
+      "category": "lunchbox",
+      "discount_rate": 15,
+      "price": 11815,
+      "store_name": "샐러리아 이화여대점",
+      "distance": "300m"
+    }
+  ] %}
+{% endif %}
+
+<section class="product-list" aria-label="상품 목록">
+
+  <!-- 위치 아이콘 -->
+  <svg class="product-svg-defs" aria-hidden="true">
+    <symbol id="location-pin" viewBox="0 0 24 24">
+      <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z"
+            fill="none" stroke="currentColor" stroke-width="2"/>
+      <circle cx="12" cy="10" r="2.5"
+              fill="none" stroke="currentColor" stroke-width="2"/>
+    </symbol>
+  </svg>
+
+  <!-- 검색창 -->
+  <div class="search-panel" id="product-search-panel" hidden>
+    <label for="product-search" class="visually-hidden">상품 검색</label>
+    <input
+      type="search"
+      id="product-search"
+      class="input"
+      placeholder="상품명 또는 가게명 검색"
+      autocomplete="off"
+    >
+  </div>
+
+  <!-- 할인 유형 필터 -->
+  <div class="discount-filters">
+    <button type="button"
+            class="discount-filter active"
+            data-discount="all"
+            aria-pressed="true">전체</button>
+
+    <button type="button"
+            class="discount-filter"
+            data-discount="closing"
+            aria-pressed="false">마감 할인</button>
+
+    <button type="button"
+            class="discount-filter"
+            data-discount="ewha"
+            aria-pressed="false">이화인 할인</button>
+  </div>
+
+  <!-- 카테고리 필터 -->
+  <div class="category-filters">
+    <button type="button"
+            class="category-filter active"
+            data-category="all"
+            aria-pressed="true">전체</button>
+
+    <button type="button"
+            class="category-filter"
+            data-category="bakery"
+            aria-pressed="false">베이커리</button>
+
+    <button type="button"
+            class="category-filter"
+            data-category="lunchbox"
+            aria-pressed="false">도시락</button>
+
+    <button type="button"
+            class="category-filter"
+            data-category="cafe"
+            aria-pressed="false">카페</button>
+
+    <button type="button"
+            class="category-filter"
+            data-category="snack"
+            aria-pressed="false">분식</button>
+  </div>
+
+  <!-- 상품 목록 -->
+  <div class="product-grid" id="product-grid">
+
+    {% for product in products %}
+
+    <a
+      href="{{ url_for('product_detail', product_id=product.id) }}"
+      class="product-card"
+      data-discount="{{ product.discount_type }}"
+      data-category="{{ product.category }}"
+      data-name="{{ product.name }}"
+      data-store="{{ product.store_name }}"
+    >
+
+      <!-- 상품 이미지 -->
+      <div class="product-image">
+        <img
+          src="{{ url_for('static', filename='images/' ~ product.image) }}"
+          alt="{{ product.name }}"
+        >
+
+        <!-- 할인 배지 -->
+        <span class="discount-badge {{ product.discount_type }}">
+          {% if product.discount_type == "closing" %}
+            마감 할인
+          {% elif product.discount_type == "ewha" %}
+            이화인 할인
+          {% endif %}
+        </span>
+      </div>
+
+      <!-- 상품 정보 -->
+      <div class="product-info">
+
+        <h3 class="product-name">
+          {{ product.name }}
+        </h3>
+
+        <!-- 할인율 및 가격 -->
+        <div class="product-price">
+          <span class="discount-rate">
+            {{ product.discount_rate }}%
+          </span>
+
+          <span class="price">
+            {{ "{:,}".format(product.price) }}원
+          </span>
+        </div>
+
+        <!-- 가게 정보 및 거리 -->
+        <div class="product-location">
+
+          <span class="store-name">
+            <svg class="pin-icon" aria-hidden="true">
+              <use href="#location-pin"/>
+            </svg>
+            <span>{{ product.store_name }}</span>
+          </span>
+
+          <span class="distance">
+            <svg class="pin-icon" aria-hidden="true">
+              <use href="#location-pin"/>
+            </svg>
+            <span>{{ product.distance }}</span>
+          </span>
+
+        </div>
+      </div>
+
+    </a>
+
+    {% endfor %}
+
+  </div>
+
+  <!-- 검색 결과 없음 -->
+  <p class="empty-message" id="empty-message" hidden>
+    조건에 맞는 상품이 없습니다.
+  </p>
+
+  <!-- 페이지네이션 -->
+  <nav class="pagination" aria-label="상품 페이지">
+
+    <button
+      type="button"
+      class="page-arrow"
+      data-direction="prev"
+      aria-label="이전 페이지">❮</button>
+
+    <div class="page-numbers" id="page-numbers"></div>
+
+    <button
+      type="button"
+      class="page-arrow"
+      data-direction="next"
+      aria-label="다음 페이지">❯</button>
+
+  </nav>
+
+</section>
+
 {% endblock %}
 
 {% block js %}
