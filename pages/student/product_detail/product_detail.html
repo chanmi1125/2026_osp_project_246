@@ -1,3 +1,4 @@
+
 {# 상품 상세 · 담당: 윤한솔 #}
 {% extends "core/base.html" %}
 
@@ -8,15 +9,286 @@
 {% endblock %}
 
 {% block page_title %}
-<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 상품 상세</div>
+<div class="page-title">
+  <a href="{{ url_for('product_list') }}"
+     aria-label="상품 목록으로 돌아가기">
+    <svg width="24" height="24" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor"
+         stroke-width="2.5" stroke-linecap="round"
+         stroke-linejoin="round" aria-hidden="true">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </a>
+  상품 상세
+</div>
 {% endblock %}
 
 {% block content %}
-{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: '예약하기' 버튼 → 예약 저장 후 url_for('reserve_done')
-   - TODO: 가게 별점(4.5 (120)) 클릭 → url_for('review_list') (해당 가게 리뷰)
-#}
-<p class="todo">상품 상세 화면 (작업 중)</p>
+
+{# DB 연결 전 임시 상품 데이터 #}
+{% if product is not defined %}
+
+  {% set products = [
+    {
+      "id": 1,
+      "name": "플레인 베이글",
+      "image": "bagel.jpg",
+      "discount_type": "closing",
+      "discount_rate": 30,
+      "price": 2240,
+      "original_price": 3200,
+      "store_name": "마더린러 베이글",
+      "address": "서울 서대문구 이화여대5길 5 지상 1층",
+      "rating": 4.5,
+      "review_count": 120,
+      "pickup_time": "16:00 ~ 16:30",
+      "quantity": 3,
+      "status": "판매중",
+      "seller_id": "madle_bagel",
+      "description": "오늘 아침에 구운 플레인 베이글이에요.\n크림치즈 1개 포함!"
+    },
+    {
+      "id": 2,
+      "name": "초코 쫀득 츄러스",
+      "image": "churros.jpg",
+      "discount_type": "ewha",
+      "discount_rate": 10,
+      "price": 2610,
+      "original_price": 2900,
+      "store_name": "파리바게트 카페이대역점",
+      "address": "이화여대 인근",
+      "rating": 4.5,
+      "review_count": 120,
+      "pickup_time": "16:00 ~ 18:00",
+      "quantity": 5,
+      "status": "판매중",
+      "seller_id": "cafe_02",
+      "description": "쫀득한 츄러스에 달콤한 초콜릿을 더한 디저트입니다."
+    },
+    {
+      "id": 3,
+      "name": "무화과 크림치즈 바게트",
+      "image": "baguette.jpg",
+      "discount_type": "closing",
+      "discount_rate": 25,
+      "price": 6000,
+      "original_price": 8000,
+      "store_name": "아라마크 페어그라운드 신촌점",
+      "address": "이화여대 인근",
+      "rating": 4.5,
+      "review_count": 120,
+      "pickup_time": "17:00 ~ 18:00",
+      "quantity": 4,
+      "status": "판매중",
+      "seller_id": "bakery_03",
+      "description": "무화과와 크림치즈가 어우러진 바게트입니다."
+    },
+    {
+      "id": 4,
+      "name": "포케+음료선택1 세트",
+      "image": "rice.jpg",
+      "discount_type": "ewha",
+      "discount_rate": 15,
+      "price": 11815,
+      "original_price": 13900,
+      "store_name": "샐러리아 이화여대점",
+      "address": "이화여대 인근",
+      "rating": 4.5,
+      "review_count": 120,
+      "pickup_time": "11:00 ~ 19:00",
+      "quantity": 6,
+      "status": "판매중",
+      "seller_id": "salad_04",
+      "description": "신선한 포케와 음료 한 잔을 함께 즐길 수 있는 세트입니다."
+    }
+  ] %}
+
+  {% set product = products
+    | selectattr("id", "equalto", product_id)
+    | first
+    | default(none) %}
+
+{% endif %}
+
+{% if product %}
+
+<section class="product-detail">
+
+  <!-- 상품 이미지 -->
+  <div class="detail-image">
+    <img
+      src="{{ url_for('static', filename='images/' ~ product.image) }}"
+      alt="{{ product.name }}"
+    >
+  </div>
+
+  <!-- 할인 배지 -->
+  <div class="detail-discount-badge {{ product.discount_type }}">
+    {% if product.discount_type == "closing" %}
+      마감 할인
+    {% elif product.discount_type == "ewha" %}
+      이화인 할인
+    {% endif %}
+  </div>
+
+  <!-- 상품 기본 정보 -->
+  <div class="detail-info">
+
+    <h1 class="detail-name">{{ product.name }}</h1>
+
+    <!-- 가게명, 주소, 별점 -->
+    <div class="detail-store">
+
+      <span class="store-name">
+        <svg class="detail-icon" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
+             stroke-width="2" aria-hidden="true">
+          <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z"/>
+          <circle cx="12" cy="10" r="2.5"/>
+        </svg>
+        <span>{{ product.store_name }}</span>
+      </span>
+
+      <span class="store-address">
+        <svg class="detail-icon" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor"
+             stroke-width="2" aria-hidden="true">
+          <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z"/>
+          <circle cx="12" cy="10" r="2.5"/>
+        </svg>
+        <span>{{ product.address }}</span>
+      </span>
+
+      <!-- 별점 클릭 시 리뷰 목록으로 이동 -->
+      <a href="{{ url_for('review_list') }}"
+         class="store-rating"
+         aria-label="가게 리뷰 보기">
+        <span class="rating-star">★</span>
+        <span>{{ product.rating }} ({{ product.review_count }})</span>
+      </a>
+
+    </div>
+
+    <!-- 가격 정보 -->
+    <div class="detail-price">
+      <span class="discount-rate">
+        {{ product.discount_rate }}%
+      </span>
+
+      <strong class="current-price">
+        {{ "{:,}".format(product.price) }}원
+      </strong>
+
+      <del class="original-price">
+        {{ "{:,}".format(product.original_price) }}원
+      </del>
+    </div>
+
+    <!-- 픽업 및 판매 정보 -->
+    <div class="pickup-info">
+
+      <div class="info-row">
+        <span class="info-label">
+          <svg class="detail-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+          픽업 시간
+        </span>
+        <span class="info-value">{{ product.pickup_time }}</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">
+          <svg class="detail-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true">
+            <rect x="4" y="5" width="16" height="17" rx="2"/>
+            <path d="M9 5V3h6v2"/>
+          </svg>
+          남은 수량
+        </span>
+        <span class="info-value">{{ product.quantity }}개</span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">
+          <svg class="detail-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true">
+            <path d="M3 4h11l7 8-9 9-9-9V4Z"/>
+            <circle cx="8" cy="9" r="1"/>
+          </svg>
+          판매 상태
+        </span>
+        <span class="info-value">
+          <span class="info-separator">|</span>
+          {{ product.status }}
+        </span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">
+          <svg class="detail-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"/>
+            <path d="M4 22v-2a8 8 0 0 1 16 0v2"/>
+          </svg>
+          판매자 ID
+        </span>
+        <span class="info-value">
+          <span class="info-separator">|</span>
+          {{ product.seller_id }}
+        </span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- 상품 설명 제목 -->
+  <h2 class="description-title">상품 설명</h2>
+
+  <!-- 상품 설명 내용 -->
+  <div class="detail-description">
+    <p class="description-text">{{ product.description }}</p>
+  </div>
+
+  <!-- 예약하기 버튼 -->
+  <div class="detail-reservation">
+    <button
+      type="button"
+      class="btn btn-primary reserve-button"
+      data-product-id="{{ product.id }}"
+      {% if product.status != "판매중" or product.quantity <= 0 %}
+        disabled
+      {% endif %}
+    >
+      {% if product.status == "판매중" and product.quantity > 0 %}
+        예약하기
+      {% else %}
+        예약 불가
+      {% endif %}
+    </button>
+  </div>
+
+</section>
+
+{% else %}
+
+<div class="detail-not-found">
+  <h2>상품을 찾을 수 없습니다.</h2>
+  <a href="{{ url_for('product_list') }}"
+     class="btn btn-primary">
+    상품 목록으로 돌아가기
+  </a>
+</div>
+
+{% endif %}
+
 {% endblock %}
 
 {% block js %}
