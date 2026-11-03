@@ -1,4 +1,7 @@
-from flask import Flask, render_template, redirect, url_for, request
+import hashlib
+
+from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
+
 from database.database import DBhandler
 from werkzeug.utils import secure_filename
 from pathlib import Path
@@ -6,7 +9,10 @@ from uuid import uuid4
 
 # html·css·js를 페이지 폴더(pages/)에 같이 두고, css·js·이미지는 /pages/... 주소로 보내요
 app = Flask(__name__, template_folder="pages", static_folder="pages", static_url_path="/pages")
+app.config["SECRET_KEY"] = "team246-osp"   # flash 메시지용
+
 DB = DBhandler()
+
 
 # role: 헤더/메뉴 종류를 정함 (None = 로그인 전, "student" = 학생, "owner" = 사장님)
 
@@ -24,6 +30,23 @@ def login():
 @app.route("/signup")
 def signup():
     return render_template("common/signup/signup.html", role=None)
+
+
+@app.route("/signup_post", methods=["POST"])
+def signup_post():
+    data = request.form
+    pw_hash = hashlib.sha256(data["password"].encode("utf-8")).hexdigest()   # 비밀번호는 해시로 저장
+    if DB.insert_user(data, pw_hash):
+        return redirect(url_for("login"))
+    flash("이미 있는 아이디예요")
+    return redirect(url_for("signup"))
+
+
+@app.route("/check-id")
+def check_id():
+    """회원가입 화면의 '중복 확인' 버튼이 부르는 주소"""
+    user_id = request.args.get("user_id", "").strip()
+    return jsonify(available=DB.user_duplicate_check(user_id))
 
 
 # ---------- 학생 ----------
