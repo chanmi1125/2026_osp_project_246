@@ -6,3 +6,6 @@ __pycache__/
 # Firebase 인증 키 (절대 올리면 안 됨)
 authentication/
 .venv/
+
+# 상품 등록 때 올린 사진 (각자 테스트한 사진이 섞이지 않게)
+pages/uploads/
