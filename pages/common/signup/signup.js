@@ -58,10 +58,17 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // TODO: 백엔드 연결 후 서버에 중복 여부 물어보기
-    // fetch(`/check-id?user_id=${encodeURIComponent(id)}`).then(...)
-    idChecked = true;
-    showMsg(idMsg, '사용할 수 있는 아이디예요', true);
+    // 서버(Firebase)에 중복 여부 물어보기
+    fetch(`/check-id?user_id=${encodeURIComponent(id)}`)
+      .then((res) => res.json())
+      .then((data) => {
+        idChecked = data.available;
+        showMsg(idMsg, data.available ? '사용할 수 있는 아이디예요' : '이미 사용 중인 아이디예요', data.available);
+      })
+      .catch(() => {
+        idChecked = false;
+        showMsg(idMsg, '확인 중 오류가 났어요. 다시 시도해 주세요', false);
+      });
   });
 
   // 아이디를 바꾸면 다시 확인 필요
@@ -116,10 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
       formError.hidden = false;
       return;
     }
-
-    // TODO: 백엔드 연결 후 아래 두 줄 지우고 서버로 제출
-    e.preventDefault();
-    location.href = form.dataset.next;
+    // 검사 통과 → 그대로 서버(/signup_post)로 제출
   });
 
   switchType('student');
