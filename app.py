@@ -2,7 +2,7 @@ import hashlib
 
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 
-from database.database import DBhandler
+from database import DBhandler
 from werkzeug.utils import secure_filename
 from pathlib import Path
 from uuid import uuid4
