@@ -3,6 +3,9 @@ import hashlib
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 
 from database.database import DBhandler
+from werkzeug.utils import secure_filename
+from pathlib import Path
+from uuid import uuid4
 
 # html·css·js를 페이지 폴더(pages/)에 같이 두고, css·js·이미지는 /pages/... 주소로 보내요
 app = Flask(__name__, template_folder="pages", static_folder="pages", static_url_path="/pages")
@@ -83,9 +86,44 @@ def student_mypage():
 
 
 # ---------- 사장님 ----------
-@app.route("/owner/products/new")
+
+@app.route("/owner/products/new", methods=["GET", "POST"])
 def product_register():
-    return render_template("owner/product_register/product_register.html", role="owner")
+    if request.method == "POST":
+        data = request.form
+        name = data["name"].strip()
+
+        if not name:
+            return "상품 이름을 입력해주세요.", 400
+
+        # 상품 이미지 저장
+        upload_dir = Path(app.static_folder) / "uploads"
+        upload_dir.mkdir(parents=True, exist_ok=True)
+
+        img_paths = []
+
+        for image in request.files.getlist("images"):
+            if image and image.filename:
+                filename = secure_filename(image.filename)
+                if not filename:
+                    continue
+
+                filename = f"{uuid4().hex}_{filename}"
+                image.save(upload_dir / filename)
+
+                img_paths.append(f"uploads/{filename}")
+
+        # Firebase Realtime Database에 저장
+        DB.insert_item(name, data, img_paths)
+
+        # 등록 완료 후 사장님 예약 페이지 이동
+        return redirect(url_for("owner_reservations"))
+
+    return render_template(
+        "owner/product_register/product_register.html",
+        role="owner"
+    )
+
 
 
 @app.route("/owner/reservations")
