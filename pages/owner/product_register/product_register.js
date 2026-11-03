@@ -191,6 +191,8 @@ form.addEventListener("submit", (e) => {
   const checks = [
     [photos.length > 0, photoAdd, "상품 사진을 1장 이상 올려주세요"],
     [address.value.trim() !== "", address.closest(".input-box"), "픽업 주소를 입력해주세요"],
+    [form.elements.email.validity.valid && form.elements.email.value.trim() !== "",
+      form.elements.email.closest(".input-box"), "올바른 이메일을 입력해주세요"],
     [form.elements.name.value.trim() !== "", form.elements.name.closest(".input-box"), "상품 이름을 입력해주세요"],
     [Number(onlyDigits(price.value)) > 0, price.closest(".input-box"), "정가를 입력해주세요"],
     [Number(rate.value) >= 1 && Number(rate.value) <= 99, rate.closest(".input-box"), "할인율은 1~99% 사이로 입력해주세요"],
@@ -216,9 +218,7 @@ form.addEventListener("submit", (e) => {
   form.querySelector('[type="submit"]').disabled = true;
 
   // TODO: 서버 저장 라우트 생기면 아래 두 줄 대신 form.submit() 으로 보내기
-  try { localStorage.removeItem(DRAFT_KEY); } catch {}
-  showToast("상품을 등록했어요");
-  setTimeout(() => (location.href = form.dataset.doneUrl), 800);
+  form.submit();
 });
 
 // 입력하면 빨간 테두리 지우기
