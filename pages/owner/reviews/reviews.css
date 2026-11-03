@@ -40,6 +40,24 @@
   white-space: nowrap;
 }
 
+/* 평균 별점 채움 표시 */
+.score-star.full {
+  color: #FFCC00;
+}
+
+.score-star.half {
+  background: linear-gradient(to right, #FFCC00 50%, #E4EAE5 50%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+
+.score-star.empty {
+  color: #E4EAE5;
+}
+
+
 .review-count {
   font-size: 11px;
   color: var(--sub);

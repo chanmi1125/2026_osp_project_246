@@ -21,22 +21,46 @@
   {"id": 4, "user": "ewha23", "date": "2026.10.08", "date_iso": "2026-10-08", "product": "플레인 베이글", "rating": 5, "text": "베이글이 담백하고 직원분도 친절하셨어요. 다음에도 이용할게요.", "reply": "방문해 주셔서 감사합니다. 다음에도 맛있게 준비해 드릴게요!"},
   {"id": 5, "user": "breadlover", "date": "2026.10.06", "date_iso": "2026-10-06", "product": "버터 크루아상 세트", "rating": 5, "text": "빵이 바삭하고 따뜻해서 너무 맛있게 먹었어요.", "reply": "좋은 후기 감사드려요!"}
 ] %}
+
+{# 평균 별점 및 전체 리뷰 개수 계산 #}
+{% set review_count = reviews | length %}
+{% set average_rating = (reviews | sum(attribute='rating') / review_count) if review_count else 0 %}
+{% set star_rating = ((average_rating * 2 + 0.5) | int) / 2 %}
+
 <section class="received-reviews" aria-label="사장님 받은 리뷰">
 
   {# 평균 별점 및 별점별 리뷰 분포 (현재 예시 리뷰 5개 기준) #}
   <section class="card rating-summary" aria-label="리뷰 평점 요약">
+
+      {# 평균 별점 및 리뷰 개수 #}
     <div class="rating-score">
-      <strong class="score-number">4.6</strong>
-      <span class="score-stars" aria-label="평균 별점 4.6점">★★★★★</span>
-      <span class="review-count">리뷰 5개</span>
-    </div>
-    <div class="rating-distribution" aria-label="별점별 리뷰 개수">
-      <div class="rating-row"><span>5</span><div class="rating-track"><span style="width:100%"></span></div><span>3</span></div>
-      <div class="rating-row"><span>4</span><div class="rating-track"><span style="width:66.67%"></span></div><span>2</span></div>
-      <div class="rating-row"><span>3</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
-      <div class="rating-row"><span>2</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
-      <div class="rating-row"><span>1</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
-    </div>
+      <div class="rating-score">
+    <strong class="score-number">{{ "%.1f"|format(average_rating) }}</strong>
+
+    {# 평균 별점에 따라 전체 / 반쪽 / 빈 별 표시 #}
+    <span class="score-stars" aria-label="평균 별점 {{ '%.1f'|format(average_rating) }}점">
+      {% for n in range(5) %}
+        {% if star_rating >= n + 1 %}
+          <span class="score-star full">&#9733;</span>
+        {% elif star_rating >= n + 0.5 %}
+          <span class="score-star half">&#9733;</span>
+        {% else %}
+          <span class="score-star empty">&#9733;</span>
+        {% endif %}
+      {% endfor %}
+    </span>
+
+    <span class="review-count">리뷰 {{ review_count }}개</span>
+  </div>
+
+  {# 별점별 리뷰 분포 #}
+  <div class="rating-distribution" aria-label="별점별 리뷰 개수">
+    <div class="rating-row"><span>5</span><div class="rating-track"><span style="width:100%"></span></div><span>3</span></div>
+    <div class="rating-row"><span>4</span><div class="rating-track"><span style="width:66.67%"></span></div><span>2</span></div>
+    <div class="rating-row"><span>3</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
+    <div class="rating-row"><span>2</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
+    <div class="rating-row"><span>1</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
+  </div>
   </section>
 
   {# 전체 / 답글 대기 필터 #}
@@ -66,8 +90,10 @@
             <time class="review-date" datetime="{{ review.date_iso }}">{{ review.date }}</time>
           </div>
 
+          {# 리뷰 별점 #}
           <div class="review-stars" aria-label="별점 {{ review.rating }}점">
-            <span>{{ '★' * review.rating }}</span><span class="empty-stars">{{ '★' * (5 - review.rating) }}</span>
+           <span>{% for n in range(review.rating) %}&#9733;{% endfor %}</span>
+           <span class="empty-stars">{% for n in range(5 - review.rating) %}&#9733;{% endfor %}</span>
           </div>
         </div>
 
