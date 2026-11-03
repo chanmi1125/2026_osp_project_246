@@ -1,16 +1,14 @@
-import firebase_admin
-from firebase_admin import credentials, db
+import pyrebase
+import json
 
 
 class DBhandler:
     def __init__(self):
-        cred = credentials.Certificate("authentication/serviceAccountKey.json")
-        if not firebase_admin._apps:
-            firebase_admin.initialize_app(cred, {
-                "databaseURL": "https://team246-osp-default-rtdb.asia-southeast1.firebasedatabase.app/"
-            })
-        self.db = db.reference()
-        
+        with open('./authentication/firebase_auth.json') as f:
+            config = json.load(f)
+        firebase = pyrebase.initialize_app(config)
+        self.db = firebase.database()
+
     def insert_item(self, name, data, img_paths):
         item_info = {
             "seller_id": data["seller_id"],
@@ -35,7 +33,7 @@ class DBhandler:
     # ---------- 회원가입 ----------
     def user_duplicate_check(self, user_id):
         """이미 있는 아이디면 False, 쓸 수 있으면 True"""
-        return self.db.child("user").child(user_id).get() is None
+        return self.db.child("user").child(user_id).get().val() is None
 
     def insert_user(self, data, pw_hash):
         """user 노드 아래에 아이디를 키로 저장. 중복이면 False"""

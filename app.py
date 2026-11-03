@@ -2,7 +2,7 @@ import hashlib
 
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
 
-from database.database import DBhandler
+from database import DBhandler
 from werkzeug.utils import secure_filename
 from pathlib import Path
 from uuid import uuid4
@@ -104,11 +104,10 @@ def product_register():
 
         for image in request.files.getlist("images"):
             if image and image.filename:
-                filename = secure_filename(image.filename)
-                if not filename:
-                    continue
-
-                filename = f"{uuid4().hex}_{filename}"
+                # 이름은 겹치지 않게 랜덤으로, 확장자만 원래 파일에서 가져오기
+                # (secure_filename은 한글을 지워서 "사진.jpeg" → "jpeg"처럼 확장자가 사라짐)
+                ext = secure_filename(Path(image.filename).suffix.lower())
+                filename = f"{uuid4().hex}.{ext}" if ext else uuid4().hex
                 image.save(upload_dir / filename)
 
                 img_paths.append(f"uploads/{filename}")
