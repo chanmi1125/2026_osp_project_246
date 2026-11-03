@@ -11,5 +11,8 @@
       <svg width="28" height="28" viewBox="0 0 28 28" fill="currentColor"><rect x="3" y="6" width="22" height="2" rx="1.2"/><rect x="3" y="13" width="22" height="2" rx="1.2"/><rect x="3" y="20" width="22" height="2" rx="1.2"/></svg>
     </button>
   </div>
+  {% else %}
+  {# 로그인 전: 메뉴 버튼 대신 로그인 링크 #}
+  <a class="header-login" href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}aria-current="page"{% endif %}>로그인</a>
   {% endif %}
 </header>

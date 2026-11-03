@@ -6,14 +6,20 @@
 ```
 python3 -m venv venv
 source venv/bin/activate      # Windows: venv\Scripts\activate
-pip install flask
+pip install flask pyrebase4
 python app.py
 ```
 브라우저에서 http://127.0.0.1:5000 접속
 
+### Firebase 연결
+- `authentication/firebase_auth.json` 파일이 있어야 실행돼요. 깃에는 안 올라가니 팀원한테 따로 받아서 넣어 주세요.
+- 이 파일은 절대 깃에 올리면 안 돼요. (`.gitignore`에 `authentication/`이 들어 있어요)
+
 ## 폴더 구조
 ```
 app.py                      # 페이지 주소(라우트)
+database.py                 # Firebase 연결 (DBhandler)
+authentication/             # firebase_auth.json (깃에 안 올림)
 pages/
   core/                     # 공통 (담당: 박찬미)
     base.html               # 모든 페이지 공통 뼈대
