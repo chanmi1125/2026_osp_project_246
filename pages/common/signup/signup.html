@@ -19,8 +19,7 @@
     <button type="button" class="signup-tab" role="tab" data-type="owner" aria-selected="false">사장님</button>
   </div>
 
-  <!-- TODO: 백엔드 연결 후 회원가입 처리. 지금은 가입 버튼 누르면 로그인 화면으로 이동 -->
-  <form class="signup-form" method="post" action="" data-next="{{ url_for('login') }}" novalidate>
+  <form class="signup-form" method="post" action="{{ url_for('signup_post') }}" novalidate>
     <input type="hidden" name="user_type" id="user-type" value="student">
 
     <!-- 공통: 아이디 -->
@@ -44,6 +43,12 @@
       <label class="field-label" for="su-pw2">비밀번호 확인 <span class="req">*</span></label>
       <input class="field-input" id="su-pw2" name="password_confirm" type="password" placeholder="비밀번호를 한 번 더 입력하세요" autocomplete="new-password" required>
       <p class="field-msg" id="pw-msg" hidden></p>
+    </div>
+
+    <!-- 공통: 닉네임 -->
+    <div class="field">
+      <label class="field-label" for="su-nick">닉네임 <span class="req">*</span></label>
+      <input class="field-input" id="su-nick" name="nickname" type="text" placeholder="닉네임을 입력하세요" required>
     </div>
 
     <!-- 학생 전용 -->
@@ -103,7 +108,9 @@
       <a href="#" class="terms-link">보기</a>
     </div>
 
-    <p class="form-error" id="form-error" hidden></p>
+    {% with messages = get_flashed_messages() %}
+    <p class="form-error" id="form-error" {% if not messages %}hidden{% endif %}>{{ messages[0] if messages }}</p>
+    {% endwith %}
 
     <button type="submit" class="signup-submit" id="signup-submit">회원가입하기</button>
   </form>
