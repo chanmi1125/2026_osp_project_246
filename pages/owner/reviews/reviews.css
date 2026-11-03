@@ -5,17 +5,18 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-width: 480px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 16px 0 0;
 }
 
 /* 평점 요약 */
 .received-reviews .rating-summary {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 17px 18px;
-  min-height: 128px;
+  gap: 20px;
+  padding: 18px 20px;
+  min-height: 127px;
+  box-sizing: border-box;
 }
 
 .rating-score {
@@ -26,6 +27,7 @@
   text-align: center;
 }
 
+/* 평균 별점 (전체 / 반쪽 / 빈 별) */
 .score-number {
   font-size: 34px;
   font-weight: 800;
@@ -33,14 +35,20 @@
 }
 
 .score-stars {
-  color: #FFCC00;
+  display: flex;
+  gap: 2px;
+  margin-top: 6px;
   font-size: 14px;
-  letter-spacing: 2px;
-  margin-top: 7px;
+  line-height: 1;
   white-space: nowrap;
 }
 
-/* 평균 별점 채움 표시 */
+.score-star {
+  display: inline-block;
+  width: 1em;
+  line-height: 1;
+}
+
 .score-star.full {
   color: #FFCC00;
 }
@@ -57,11 +65,10 @@
   color: #E4EAE5;
 }
 
-
 .review-count {
+  margin-top: 6px;
   font-size: 11px;
   color: var(--sub);
-  margin-top: 3px;
 }
 
 /* 별점 분포 막대 */
@@ -75,7 +82,7 @@
 .rating-row {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   font-size: 11px;
   color: var(--sub);
 }
@@ -93,7 +100,7 @@
   flex: 1;
   height: 6px;
   background: var(--divider);
-  border-radius: 6px;
+  border-radius: 3px;
   overflow: hidden;
 }
 
@@ -101,7 +108,7 @@
   display: block;
   height: 100%;
   background: var(--primary);
-  border-radius: 6px;
+  border-radius: 3px;
 }
 
 /* 전체 / 답글 대기 필터 */
@@ -119,6 +126,7 @@
   color: var(--text);
   font-size: 12px;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .review-filter.active {
@@ -147,10 +155,11 @@
   display: none;
 }
 
+/* 프로필 사진과 사용자 정보 */
 .review-header {
   display: flex;
   align-items: flex-start;
-  gap: 9px;
+  gap: 10px;
   min-width: 0;
 }
 
@@ -208,8 +217,9 @@
   font-size: 11px;
 }
 
+/* 리뷰 내용 */
 .review-text {
-  margin: 11px 0 12px;
+  margin: 10px 0;
   font-size: 13px;
   line-height: 1.6;
   word-break: keep-all;
@@ -222,17 +232,22 @@
   border-radius: 10px;
 }
 
+/* 사장님 답글 제목 */
 .reply-title {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  padding: 0;
   color: var(--primary);
   font-size: 12px;
   font-weight: 800;
+  line-height: 18px;
 }
 
 .reply-text {
+  margin: 0;
   font-size: 12px;
   line-height: 1.6;
+  overflow-wrap: anywhere;
 }
 
 /* 답글 입력창 및 등록 버튼 */
@@ -244,6 +259,10 @@
   border: 1px solid var(--border);
   border-radius: 24px;
   background: var(--bg);
+}
+
+.reply-form:focus-within {
+  border-color: var(--primary);
 }
 
 .reply-input {
@@ -267,13 +286,14 @@
   color: var(--white);
   font-size: 12px;
   font-weight: 700;
+  cursor: pointer;
 }
 
-.reply-submit:focus-visible,
-.reply-form:focus-within {
-  border-color: var(--primary);
+.reply-submit:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
-.reply-input:focus-visible {
-  outline: none;
+html {
+  scrollbar-gutter: stable;
 }

@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const reviewList = page.querySelector("#review-list");
 
   let selectedFilter = "all";
+
+  // DB 연결 전 답글을 임시 저장
   const storageKey = "ewhapick-owner-review-replies-v1";
 
   // DB 연결 전 브라우저에 저장된 답글 불러오기
