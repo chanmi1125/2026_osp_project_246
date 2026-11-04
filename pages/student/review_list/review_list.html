@@ -7,15 +7,162 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='student/review_list/review_list.css') }}">
 {% endblock %}
 
-{% block page_title %}
-<div class="page-title">리뷰 목록</div>
-{% endblock %}
-
 {% block content %}
 {# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
    - TODO: 리뷰 카드 클릭 → url_for('review_detail', review_id=리뷰ID)
 #}
-<p class="todo">리뷰 목록 화면 (작업 중)</p>
+
+{# DB 연결 전 임시 리뷰 데이터 (페이지 이동 테스트용 10개) #}
+{% if reviews is not defined %}
+  {% set reviews = [
+    {"id": 1, "store": "이화 베이커리", "product": "버터 크루아상 세트", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "이화인", "date": "2026.10.05", "date_iso": "2026-10-05", "image": "croissant.jpeg", "text": "바삭한 겉면과 고소한 버터 향이 정말 좋았어요. 크루아상 세트로 주문했는데 한 번에 먹기 좋은 사이즈라 만족스러웠습니다. 특히 겉은 바삭하면서도 속은 촉촉하고 부드러워서 식감이 좋았고, 버터의 풍미도 진하게 느껴졌어요. 마감 할인 덕분에 평소보다 저렴한 가격으로 구매할 수 있었는데도 빵의 신선도와 맛이 기대 이상이었습니다. 픽업 시간에 맞춰 방문하니 미리 포장도 깔끔하게 준비되어 있어서 기다리지 않고 바로 받을 수 있었어요. 함께 먹은 친구도 맛있다고 해서 다음에는 다른 종류의 빵도 구매해 보려고 합니다. 가격과 맛, 서비스 모두 만족스러웠고 다음에도 꼭 다시 방문하고 싶어요!"},
+    {"id": 2, "store": "그린 키친", "product": "닭가슴살 샐러드 도시락", "category": "lunchbox", "category_label": "도시락", "rating": 4, "user": "ewha22", "date": "2026.10.03", "date_iso": "2026-10-03", "image": "salad.jpeg", "text": "양이 많아서 한 끼 든든하게 먹기 좋았어요. 채소가 신선하고 고추장 드레싱이 적당해서 매운맛이 부담스럽지 않았습니다."},
+    {"id": 3, "store": "카페 이화", "product": "아이스 아메리카노", "category": "cafe", "category_label": "카페", "rating": 5, "user": "green", "date": "2026.10.02", "date_iso": "2026-10-02", "image": "americano.jpeg", "text": "오늘도 재구매했어요! 에스프레소가 강하지 않아서 아이스 아메리카노로 마시기 딱 좋았어요. 바리스타 분이 친절하시고요."},
+    {"id": 4, "store": "마더린러 베이글", "product": "플레인베이글", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "ewha23", "date": "2026.09.28", "date_iso": "2026-09-28", "image": "bagel.jpg", "text": "겉은 살짝 바삭하고 속은 쫄깃해서 플레인베이글만 먹어도 고소했어요. 크림치즈를 곁들이니 더 맛있고, 커피와 함께 먹기 좋았습니다."},
+    {"id": 5, "store": "파리바게트 카페이대역점", "product": "초코 츄러스", "category": "bakery", "category_label": "베이커리", "rating": 4, "user": "ewha24", "date": "2026.09.25", "date_iso": "2026-09-25", "image": "churros.jpg", "text": "겉은 바삭하고 속은 촉촉해서 식감이 좋았어요. 진한 초콜릿이 더해져 달콤했고, 커피와 함께 먹으니 잘 어울렸습니다."},
+    {"id": 6, "store": "이화 베이커리", "product": "버터 크루아상 세트", "category": "bakery", "category_label": "베이커리", "rating": 4, "user": "ewha26", "date": "2026.09.22", "date_iso": "2026-09-22", "image": "croissant.jpeg", "text": "크루아상이 고소하고 맛있었어요. 다음에도 이용하고 싶어요."},
+    {"id": 7, "store": "그린 키친", "product": "닭가슴살 샐러드 도시락", "category": "lunchbox", "category_label": "도시락", "rating": 5, "user": "ewha27", "date": "2026.09.20", "date_iso": "2026-09-20", "image": "salad.jpeg", "text": "신선한 재료에 양도 넉넉해서 만족했어요."},
+    {"id": 8, "store": "카페 이화", "product": "아이스 아메리카노", "category": "cafe", "category_label": "카페", "rating": 3, "user": "ewha28", "date": "2026.09.18", "date_iso": "2026-09-18", "image": "americano.jpeg", "text": "픽업은 빨랐지만 커피가 조금 연하게 느껴졌어요."},
+    {"id": 9, "store": "마더린러 베이글", "product": "플레인베이글", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "ewha29", "date": "2026.09.15", "date_iso": "2026-09-15", "image": "bagel.jpg", "text": "베이글이 쫄깃하고 포장도 깔끔해서 좋았어요."},
+    {"id": 10, "store": "파리바게트 카페이대역점", "product": "초코 츄러스", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "ewha30", "date": "2026.09.12", "date_iso": "2026-09-12", "image": "churros.jpg", "text": "간식으로 먹기 좋고 가격도 만족스러웠어요."}
+  ] %}
+{% endif %}
+
+<section class="student-reviews" aria-label="리뷰 목록">
+
+  {# 카테고리 필터 #}
+  <div class="category-filters" role="group" aria-label="리뷰 카테고리">
+    <button type="button" class="category-filter active" data-category="all" aria-pressed="true">전체</button>
+    <button type="button" class="category-filter" data-category="bakery" aria-pressed="false">베이커리</button>
+    <button type="button" class="category-filter" data-category="lunchbox" aria-pressed="false">도시락</button>
+    <button type="button" class="category-filter" data-category="cafe" aria-pressed="false">카페</button>
+    <button type="button" class="category-filter" data-category="snack" aria-pressed="false">분식</button>
+  </div>
+
+  {# 리뷰 개수 및 정렬 #}
+  <div class="review-toolbar">
+    <p class="review-count" id="review-count" aria-live="polite">
+      전체 리뷰 <strong>{{ reviews | length }}개</strong>
+    </p>
+
+    {# 정렬 버튼: 클릭하면 바텀시트가 열림 #}
+    <button type="button" class="review-sort-trigger"
+            id="review-sort-trigger"
+            aria-haspopup="dialog"
+            aria-controls="review-sort-sheet"
+            aria-expanded="false">
+      <span id="review-sort-label">최신순</span>
+      <svg viewBox="0 0 24 24" width="14" height="14"
+           fill="none" stroke="currentColor"
+           stroke-width="2" aria-hidden="true">
+        <path d="m6 9 6 6 6-6"/>
+      </svg>
+    </button>
+  </div>
+
+  {# 리뷰 카드는 HTML에서 생성 #}
+  <div class="review-list" id="review-list" aria-live="polite">
+    {% for review in reviews %}
+    <article class="review-card"
+             data-category="{{ review.category }}"
+             data-rating="{{ review.rating }}"
+             data-date="{{ review.date_iso }}">
+
+      <div class="review-card-header">
+
+         {# 상품 이미지 #}
+        <img class="review-thumbnail"
+             src="{{ url_for('static', filename='images/' ~ review.image) }}"
+             alt="{{ review.product }} 사진" loading="lazy">
+
+        <div class="review-info">
+
+          {# 가게명 #}
+          <div class="store-heading">
+            <span class="store-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 10v10h16V10M3 5h18l-1 5H4L3 5ZM9 20v-7h6v7"/>
+                <path d="M4 10c1 2 3 2 4 0 1 2 3 2 4 0 1 2 3 2 4 0 1 2 3 2 4 0"/>
+              </svg>
+            </span>
+            <h2 class="store-name">{{ review.store }}</h2>
+          </div>
+
+          <p class="product-name">{{ review.product }}</p>
+          <p class="product-category">{{ review.category_label }}</p>
+
+          {# 별점 및 작성자 #}
+          <div class="review-stars" aria-label="별점 {{ review.rating }}점">
+            <span>{% for n in range(review.rating | int) %}&#9733;{% endfor %}</span><span class="empty-stars">{% for n in range(5 - (review.rating | int)) %}&#9733;{% endfor %}</span><span class="rating-number">{{ '%.1f' | format(review.rating | float) }}</span>
+          </div>
+          <div class="review-author">{{ review.user }} · {{ review.date }}</div>
+        </div>
+      </div>
+
+      {# 리뷰 내용 #}
+      <p class="review-excerpt">{{ review.text }}</p>
+
+      {# 리뷰 상세 페이지 이동 #}
+      <div class="review-detail-row">
+        <a class="review-detail-link" href="{{ url_for('review_detail', review_id=review.id) }}">
+          자세히 보기 <span class="detail-arrow" aria-hidden="true">›</span>
+        </a>
+      </div>
+
+    </article>
+    {% endfor %}
+  </div>
+
+  {# 검색 결과 없음 #}
+  <p class="empty-reviews" id="empty-reviews" hidden>해당 카테고리에 등록된 리뷰가 없습니다.</p>
+
+  {# 페이지 번호 #}
+  <nav class="review-pagination" id="review-pagination" aria-label="리뷰 페이지 이동"></nav>
+
+   {# 정렬 바텀시트 #}
+  <div class="review-sort-sheet" id="review-sort-sheet" hidden>
+    <div class="review-sort-backdrop" id="review-sort-backdrop"></div>
+
+    <div class="review-sort-panel"
+         role="dialog"
+         aria-modal="true"
+         aria-labelledby="review-sort-title"
+         tabindex="-1">
+
+      <div class="review-sort-handle" aria-hidden="true"></div>
+
+      <div class="review-sort-header">
+        <h2 id="review-sort-title">리뷰 정렬</h2>
+        <button type="button" class="review-sort-close"
+                id="review-sort-close" aria-label="닫기">✕</button>
+      </div>
+
+      <div class="review-sort-options" role="group" aria-label="정렬 기준">
+        <button type="button" class="review-sort-option active"
+                data-sort="recent" aria-pressed="true">
+          <span>최신순</span>
+          <span class="review-sort-check" aria-hidden="true">✓</span>
+        </button>
+
+        <button type="button" class="review-sort-option"
+                data-sort="high" aria-pressed="false">
+          <span>별점 높은순</span>
+          <span class="review-sort-check" aria-hidden="true">✓</span>
+        </button>
+
+        <button type="button" class="review-sort-option"
+                data-sort="low" aria-pressed="false">
+          <span>별점 낮은순</span>
+          <span class="review-sort-check" aria-hidden="true">✓</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</section>
+
 {% endblock %}
 
 {% block js %}
