@@ -12,11 +12,118 @@
 {% endblock %}
 
 {% block content %}
-{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: '답글 달기'는 같은 페이지에서 처리 (이동 없음)
-   - TODO: 리뷰 카드 클릭 → url_for('review_detail', review_id=리뷰ID) (필요하면)
-#}
-<p class="todo">받은 리뷰 화면 (작업 중)</p>
+
+{# DB 연결 전 임시 리뷰 데이터 5개 (답글 대기 2개) #}
+{% if reviews is not defined %}
+  {% set reviews = [
+    {"id": 1, "user": "eunha22", "date": "2026.10.12", "date_iso": "2026-10-12", "product": "플레인 베이글", "rating": 4, "text": "쫄깃하고 고소해요! 마감 할인가라 가격도 착해서 자주 올 것 같아요.", "reply": ""},
+    {"id": 2, "user": "minji", "date": "2026.10.10", "date_iso": "2026-10-10", "product": "버터 크루아상 세트", "rating": 5, "text": "버터 향이 진하고 겉결이 바삭해요. 픽업도 빨라서 좋았어요!", "reply": "맛있게 드셔주셔서 감사해요! 다음에도 갓 구운 빵으로 준비할게요."},
+    {"id": 3, "user": "green", "date": "2026.10.13", "date_iso": "2026-10-13", "product": "아메리카노+스콘", "rating": 4, "text": "스콘이 촉촉하고 커피랑 잘 어울려요. 마감 할인 덕분에 만족스러웠습니다.", "reply": ""},
+    {"id": 4, "user": "ewha23", "date": "2026.10.08", "date_iso": "2026-10-08", "product": "플레인 베이글", "rating": 5, "text": "베이글이 담백하고 직원분도 친절하셨어요. 다음에도 이용할게요.", "reply": "방문해 주셔서 감사합니다. 다음에도 맛있게 준비해 드릴게요!"},
+    {"id": 5, "user": "breadlover", "date": "2026.10.06", "date_iso": "2026-10-06", "product": "버터 크루아상 세트", "rating": 5, "text": "빵이 바삭하고 따뜻해서 너무 맛있게 먹었어요.", "reply": "좋은 후기 감사드려요!"}
+  ] %}
+{% endif %}
+
+{# 평균 별점 및 전체 리뷰 개수 계산 #}
+{% set review_count = reviews | length %}
+{% set average_rating = (reviews | sum(attribute='rating') / review_count) if review_count else 0 %}
+{% set star_rating = ((average_rating * 2 + 0.5) | int) / 2 %}
+
+<section class="received-reviews" aria-label="사장님 받은 리뷰">
+
+  {# 평균 별점 및 별점별 리뷰 분포 (현재 예시 리뷰 5개 기준) #}
+  <section class="card rating-summary" aria-label="리뷰 평점 요약">
+
+      {# 평균 별점 및 리뷰 개수 #}
+    <div class="rating-score">
+      <strong class="score-number">{{ "%.1f"|format(average_rating) }}</strong>
+
+    {# 평균 별점에 따라 전체 / 반쪽 / 빈 별 표시 #}
+    <span class="score-stars" aria-label="평균 별점 {{ '%.1f'|format(average_rating) }}점">
+      {% for n in range(5) %}
+        {% if star_rating >= n + 1 %}
+          <span class="score-star full">&#9733;</span>
+        {% elif star_rating >= n + 0.5 %}
+          <span class="score-star half">&#9733;</span>
+        {% else %}
+          <span class="score-star empty">&#9733;</span>
+        {% endif %}
+      {% endfor %}
+    </span>
+
+    <span class="review-count">리뷰 {{ review_count }}개</span>
+  </div>
+
+  {# 별점별 리뷰 분포 (DB 연결 전 임시 값) #}
+  <div class="rating-distribution" aria-label="별점별 리뷰 개수">
+    <div class="rating-row"><span>5</span><div class="rating-track"><span style="width:100%"></span></div><span>3</span></div>
+    <div class="rating-row"><span>4</span><div class="rating-track"><span style="width:66.67%"></span></div><span>2</span></div>
+    <div class="rating-row"><span>3</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
+    <div class="rating-row"><span>2</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
+    <div class="rating-row"><span>1</span><div class="rating-track"><span style="width:0%"></span></div><span>0</span></div>
+  </div>
+  </section>
+
+  {# 전체 / 답글 대기 필터 #}
+  <div class="review-filters" role="group" aria-label="답글 상태 필터">
+    <button type="button" class="review-filter active"
+            data-status="all" aria-pressed="true">전체</button>
+
+    <button type="button" class="review-filter"
+            data-status="pending" aria-pressed="false">
+      답글 대기 <span id="pending-count">2</span>
+    </button>
+  </div>
+
+  {# 리뷰 목록: 답글 등록은 같은 카드에서 처리 #}
+  <div class="review-list" id="review-list" aria-live="polite">
+    {% for review in reviews %}
+    <article class="card review-card"
+             data-review-id="{{ review.id }}"
+             data-replied="{{ 'true' if review.reply else 'false' }}">
+
+      <div class="review-header">
+        <div class="review-avatar" aria-hidden="true"></div>
+
+        <div class="review-details">
+          <div class="review-author">
+            <strong class="review-username">{{ review.user }}</strong>
+            <time class="review-date" datetime="{{ review.date_iso }}">{{ review.date }}</time>
+          </div>
+
+          {# 리뷰 별점 #}
+          <div class="review-stars" aria-label="별점 {{ review.rating }}점">
+            <span>{% for n in range(review.rating) %}&#9733;{% endfor %}</span><span class="empty-stars">{% for n in range(5 - review.rating) %}&#9733;{% endfor %}</span>
+          </div>
+        </div>
+
+        <span class="product-tag">{{ review.product }}</span>
+      </div>
+
+      <p class="review-text">{{ review.text }}</p>
+
+      {% if review.reply %}
+      {# 이미 답글이 등록된 리뷰 #}
+      <div class="owner-reply">
+        <strong class="reply-title">↳ 사장님 답글</strong>
+        <p class="reply-text">{{ review.reply }}</p>
+      </div>
+      
+      {% else %}
+      {# 답글이 없는 리뷰: 입력창과 등록 버튼 #}
+      <form class="reply-form">
+        <input type="text" class="reply-input" name="reply" maxlength="300"
+               placeholder="학생에게 답글을 남겨보세요"
+               aria-label="{{ review.user }}님 리뷰에 답글 작성" required>
+        <button type="submit" class="reply-submit">등록</button>
+      </form>
+      {% endif %}
+
+    </article>
+    {% endfor %}
+  </div>
+
+  </section>
 {% endblock %}
 
 {% block js %}
