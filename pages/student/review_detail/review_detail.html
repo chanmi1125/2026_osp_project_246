@@ -8,14 +8,188 @@
 {% endblock %}
 
 {% block page_title %}
-<div class="page-title"><a href="javascript:history.back()" aria-label="뒤로">&lsaquo;</a> 리뷰 상세</div>
+<div class="page-title"><a href="{{ url_for('review_list') }}" aria-label="뒤로">&lsaquo;</a> 리뷰 상세</div>
 {% endblock %}
 
 {% block content %}
 {# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
    - TODO: 상품 정보 클릭 → url_for('product_detail', product_id=상품ID)
 #}
-<p class="todo">리뷰 상세 화면 (작업 중)</p>
+{% if review is not defined %}
+{# DB 연결 전 시안용 데이터 #}
+{% set reviews = [
+  {
+    "id": 1,
+    "store": "이화 베이커리",
+    "product": "버터 크루아상 세트",
+    "category": "bakery",
+    "category_label": "베이커리",
+    "rating": 5,
+    "user": "이화인",
+    "date": "2026.10.05",
+    "date_iso": "2026-10-05",
+    "image": "croissant.jpeg",
+    "text": "바삭한 겉면과 고소한 버터 향이 정말 좋았어요. 크루아상 세트로 주문했는데 한 번에 먹기 좋은 사이즈라 만족스러웠습니다. 특히 겉은 바삭하면서도 속은 촉촉하고 부드러워서 식감이 좋았고, 버터의 풍미도 진하게 느껴졌어요. 마감 할인 덕분에 평소보다 저렴한 가격으로 구매할 수 있었는데도 빵의 신선도와 맛이 기대 이상이었습니다. 픽업 시간에 맞춰 방문하니 미리 포장도 깔끔하게 준비되어 있어서 기다리지 않고 바로 받을 수 있었어요. 함께 먹은 친구도 맛있다고 해서 다음에는 다른 종류의 빵도 구매해 보려고 합니다. 가격과 맛, 서비스 모두 만족스러웠고 다음에도 꼭 다시 방문하고 싶어요!",
+    "title": "바삭하고 고소해요!"
+  },
+  {
+    "id": 2,
+    "store": "그린 키친",
+    "product": "닭가슴살 샐러드 도시락",
+    "category": "lunchbox",
+    "category_label": "도시락",
+    "rating": 4,
+    "user": "ewha22",
+    "date": "2026.10.03",
+    "date_iso": "2026-10-03",
+    "image": "salad.jpeg",
+    "text": "양이 많아서 한 끼 든든하게 먹기 좋았어요. 채소가 신선하고 고추장 드레싱이 적당해서 매운맛이 부담스럽지 않았습니다."
+  },
+  {
+    "id": 3,
+    "store": "카페 이화",
+    "product": "아이스 아메리카노",
+    "category": "cafe",
+    "category_label": "카페",
+    "rating": 5,
+    "user": "green",
+    "date": "2026.10.02",
+    "date_iso": "2026-10-02",
+    "image": "americano.jpeg",
+    "text": "오늘도 재구매했어요! 에스프레소가 강하지 않아서 아이스 아메리카노로 마시기 딱 좋았어요. 바리스타 분이 친절하시고요."
+  },
+  {
+    "id": 4,
+    "store": "마더린러 베이글",
+    "product": "플레인베이글",
+    "category": "bakery",
+    "category_label": "베이커리",
+    "rating": 5,
+    "user": "ewha23",
+    "date": "2026.09.28",
+    "date_iso": "2026-09-28",
+    "image": "bagel.jpg",
+    "text": "겉은 살짝 바삭하고 속은 쫄깃해서 플레인베이글만 먹어도 고소했어요. 크림치즈를 곁들이니 더 맛있고, 커피와 함께 먹기 좋았습니다.",
+    "product_id": 1,
+    "address": "서울 서대문구 이화여대5길 5 지상 1층"
+  },
+  {
+    "id": 5,
+    "store": "파리바게트 카페이대역점",
+    "product": "초코 츄러스",
+    "category": "bakery",
+    "category_label": "베이커리",
+    "rating": 4,
+    "user": "ewha24",
+    "date": "2026.09.25",
+    "date_iso": "2026-09-25",
+    "image": "churros.jpg",
+    "text": "겉은 바삭하고 속은 촉촉해서 식감이 좋았어요. 진한 초콜릿이 더해져 달콤했고, 커피와 함께 먹으니 잘 어울렸습니다.",
+    "product_id": 2
+  },
+  {
+    "id": 6,
+    "store": "이화 베이커리",
+    "product": "버터 크루아상 세트",
+    "category": "bakery",
+    "category_label": "베이커리",
+    "rating": 4,
+    "user": "ewha26",
+    "date": "2026.09.22",
+    "date_iso": "2026-09-22",
+    "image": "croissant.jpeg",
+    "text": "크루아상이 고소하고 맛있었어요. 다음에도 이용하고 싶어요."
+  },
+  {
+    "id": 7,
+    "store": "그린 키친",
+    "product": "닭가슴살 샐러드 도시락",
+    "category": "lunchbox",
+    "category_label": "도시락",
+    "rating": 5,
+    "user": "ewha27",
+    "date": "2026.09.20",
+    "date_iso": "2026-09-20",
+    "image": "salad.jpeg",
+    "text": "신선한 재료에 양도 넉넉해서 만족했어요."
+  },
+  {
+    "id": 8,
+    "store": "카페 이화",
+    "product": "아이스 아메리카노",
+    "category": "cafe",
+    "category_label": "카페",
+    "rating": 3,
+    "user": "ewha28",
+    "date": "2026.09.18",
+    "date_iso": "2026-09-18",
+    "image": "americano.jpeg",
+    "text": "픽업은 빨랐지만 커피가 조금 연하게 느껴졌어요."
+  },
+  {
+    "id": 9,
+    "store": "마더린러 베이글",
+    "product": "플레인베이글",
+    "category": "bakery",
+    "category_label": "베이커리",
+    "rating": 5,
+    "user": "ewha29",
+    "date": "2026.09.15",
+    "date_iso": "2026-09-15",
+    "image": "bagel.jpg",
+    "text": "베이글이 쫄깃하고 포장도 깔끔해서 좋았어요.",
+    "product_id": 1,
+    "address": "서울 서대문구 이화여대5길 5 지상 1층"
+  },
+  {
+    "id": 10,
+    "store": "파리바게트 카페이대역점",
+    "product": "초코 츄러스",
+    "category": "bakery",
+    "category_label": "베이커리",
+    "rating": 5,
+    "user": "ewha30",
+    "date": "2026.09.12",
+    "date_iso": "2026-09-12",
+    "image": "churros.jpg",
+    "text": "간식으로 먹기 좋고 가격도 만족스러웠어요.",
+    "product_id": 2
+  }
+] %}
+  {% set review = reviews|selectattr('id','equalto',review_id)|first|default(none) %}
+{% endif %}
+{% if review %}
+{% set photos = review.photos|default([review.image]) %}
+<article class="review-detail" aria-labelledby="review-heading">
+  <header class="review-heading">
+    <div><h1 id="review-heading">{{ review.title|default(review.product ~ ' 후기') }}</h1>
+      <p class="detail-rating" aria-label="5점 만점에 {{ review.rating }}점"><span aria-hidden="true">{% for n in range(5) %}{{ '★' if n < review.rating|int else '☆' }}{% endfor %}</span><strong>{{ '%.1f'|format(review.rating|float) }}</strong></p>
+      <time datetime="{{ review.date_iso }}">{{ review.date }}</time>
+    </div>
+    <div class="detail-author"><span class="author-avatar" aria-hidden="true">{{ review.user[:1] }}</span><span>{{ review.user }}</span></div>
+  </header>
+  <p class="detail-body">{{ review.text }}</p>
+  {% if photos %}
+  <section class="review-gallery" aria-label="리뷰 사진">
+    <button type="button" class="review-main-photo" data-photo="0" aria-label="첫 번째 리뷰 사진 확대"><img src="{{ url_for('static', filename='images/' ~ photos[0]) }}" alt="{{ review.product }} 리뷰 사진 1"></button>
+    {% if photos|length > 1 %}<div class="review-thumbnails">
+    {% for photo in photos %}<button type="button" data-photo="{{ loop.index0 }}" aria-label="리뷰 사진 {{ loop.index }} 확대"><img src="{{ url_for('static', filename='images/' ~ photo) }}" alt="{{ review.product }} 사진 {{ loop.index }}" loading="lazy"></button>{% endfor %}
+    </div>{% endif %}
+  </section>
+  {% endif %}
+  <a class="detail-product card" href="{{ url_for('product_detail', product_id=review.product_id) if review.product_id else url_for('product_list') }}">
+    <img src="{{ url_for('static', filename='images/' ~ review.image) }}" alt="{{ review.product }}">
+    <span class="detail-product-text"><span>{{ review.store }}</span><strong>{{ review.product }}</strong>{% if review.address %}<small>● {{ review.address }}</small>{% endif %}</span>{% if not review.product_id %}<small>상품 목록 보기</small>{% endif %}<span class="product-chevron" aria-hidden="true">›</span>
+  </a>
+</article>
+<dialog id="review-photo-dialog" class="review-photo-dialog" aria-labelledby="photo-dialog-title">
+  <div class="photo-dialog-toolbar"><h2 id="photo-dialog-title">리뷰 사진</h2><button type="button" id="photo-close" aria-label="사진 닫기">✕</button></div>
+  <img id="expanded-review-photo" alt="">
+  <div class="photo-dialog-controls"><button type="button" id="photo-prev" aria-label="이전 사진">‹</button><span id="photo-position" aria-live="polite"></span><button type="button" id="photo-next" aria-label="다음 사진">›</button></div>
+</dialog>
+{% else %}
+<section class="review-not-found card"><h1>리뷰를 찾을 수 없습니다</h1><p>삭제되었거나 존재하지 않는 리뷰입니다.</p><a class="btn btn-primary" href="{{ url_for('review_list') }}">리뷰 목록으로</a></section>
+{% endif %}
 {% endblock %}
 
 {% block js %}
