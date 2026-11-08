@@ -15,7 +15,62 @@
 {# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
    - TODO: 필터 탭(전체·픽업 대기·픽업 완료·취소)·픽업 코드 확인·'픽업 완료' 버튼은 같은 페이지에서 처리 (이동 없음)
 #}
-<p class="todo">예약 관리 화면 (작업 중)</p>
+{# DB 연결 전 시안용 데이터. #}
+{% set is_demo = (reservations is not defined or not reservations) and reservations_demo|default(true) %}
+{% if is_demo %}
+{# 화면 확인용 데이터. 실제 예약 조회/저장은 서버 연동이 필요합니다. #}
+{% set reservations = [
+ {'id':'EP-1020-0417','product':'플레인 베이글','image':'images/bagel.jpg','price':2240,'user':'이화인','quantity':1,'time':'16:00–16:30','code':'4729','status':'waiting','soon':true},
+ {'id':'EP-1020-0418','product':'버터 크루아상 세트','image':'images/croissant.jpeg','price':7600,'user':'eunha22','quantity':2,'time':'18:00–20:00','code':'4821','status':'waiting'},
+ {'id':'EP-1020-0419','product':'아메리카노+스콘','image':'images/americano.jpeg','price':4250,'user':'minjji','quantity':1,'time':'18:00–20:00','code':'1937','status':'waiting'},
+ {'id':'EP-1020-0410','product':'플레인 베이글','image':'images/bagel.jpg','price':2240,'user':'green','quantity':1,'time':'12:00–12:30','code':'1001','status':'completed'},
+ {'id':'EP-1020-0411','product':'버터 크루아상 세트','image':'images/croissant.jpeg','price':3800,'user':'ewha23','quantity':1,'time':'12:00–13:00','code':'1002','status':'completed'},
+ {'id':'EP-1020-0412','product':'아메리카노+스콘','image':'images/americano.jpeg','price':4250,'user':'ewha24','quantity':1,'time':'13:00–14:00','code':'1003','status':'completed'},
+ {'id':'EP-1020-0413','product':'플레인 베이글','image':'images/bagel.jpg','price':4480,'user':'ewha25','quantity':2,'time':'14:00–14:30','code':'1004','status':'completed'},
+ {'id':'EP-1020-0414','product':'버터 크루아상 세트','image':'images/croissant.jpeg','price':3800,'user':'ewha26','quantity':1,'time':'14:00–15:00','code':'1005','status':'completed'},
+ {'id':'EP-1020-0415','product':'플레인 베이글','image':'images/bagel.jpg','price':2240,'user':'ewha27','quantity':1,'time':'15:00–15:30','code':'1006','status':'cancelled'}
+] %}
+{% elif reservations is not defined or not reservations %}
+{% set reservations = [] %}
+{% endif %}
+<section class="reservations" aria-label="예약 관리" data-demo="{{ 'true' if is_demo else 'false' }}">
+  <h1 class="reservation-sr-only">예약 관리</h1>
+<nav class="reservation-filters" aria-label="예약 상태 필터">
+  <div>{% for key, label in [('all','전체'),('waiting','픽업 대기'),('completed','픽업 완료'),('cancelled','취소')] %}
+  <button type="button" data-filter="{{ key }}" aria-pressed="{{ 'true' if key == 'all' else 'false' }}">{{ label }}{% if key != 'all' %} <span data-count="{{ key }}">{{ reservations|selectattr('status','equalto',key)|list|length }}</span>{% endif %}</button>
+  {% endfor %}</div>
+</nav>
+<div class="reservation-content">
+  <div class="reservation-summary card" aria-label="예약 요약">
+    <div><strong data-count="waiting">{{ reservations|selectattr('status','equalto','waiting')|list|length }}</strong><span>픽업 대기</span></div>
+    <div><strong data-count="completed">{{ reservations|selectattr('status','equalto','completed')|list|length }}</strong><span>픽업 완료</span></div>
+  </div>
+  <form id="pickup-code-form" class="pickup-code-card card" novalidate>
+    <h2>픽업 코드 확인</h2>
+    <p id="pickup-help">학생의 4자리 코드를 확인하고, 매장에서 결제를 받은 뒤 확인을 눌러주세요</p>
+    <div class="pickup-input-row"><div class="pickup-digits" role="group" aria-label="4자리 픽업 코드">
+    {% for n in range(4) %}<input aria-label="픽업 코드 {{ n + 1 }}번째 숫자" aria-describedby="pickup-help pickup-feedback" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" value="{{ ['4','7','',''][n] if is_demo else '' }}" placeholder="·" autocomplete="off">{% endfor %}
+    </div><button class="pickup-confirm" type="submit">확인</button></div>
+    <p id="pickup-feedback" role="status" aria-live="polite" hidden></p>
+  </form>
+  <div id="reservation-list">
+  {% for reservation in reservations %}
+    <article class="reservation-card card" data-id="{{ reservation.id }}" data-status="{{ reservation.status }}" data-code="{{ reservation.code }}">
+      {% if reservation.image %}<img class="reservation-thumb thumb" src="{{ url_for('static', filename=reservation.image) }}" alt="" loading="lazy">{% else %}<div class="reservation-thumb thumb" aria-hidden="true"></div>{% endif %}
+      <div class="reservation-info"><div class="reservation-badges"><span class="reservation-state">{{ {'waiting':'픽업 대기','completed':'픽업 완료','cancelled':'취소'}[reservation.status] }}</span>{% if reservation.soon and reservation.status == 'waiting' %}<span class="reservation-soon">곧 픽업</span>{% endif %}</div>
+        <h2>{{ reservation.product }}</h2><strong>현장 결제 {{ '{:,}'.format(reservation.price) }}원</strong><p>{{ reservation.user }} · {{ reservation.quantity }}개</p><p class="pickup-time">픽업 {{ reservation.time }}</p>
+      </div>
+      {% if reservation.status == 'waiting' %}<button type="button" class="complete-pickup{{ ' is-soon' if reservation.soon else '' }}" aria-label="{{ reservation.user }}님의 {{ reservation.product }} 픽업 완료">픽업 완료</button>{% endif %}
+    </article>
+  {% endfor %}
+  </div>
+  <p id="reservation-empty" class="card" hidden>해당 상태의 예약이 없습니다.</p>
+  {% if is_demo %}<p class="reservation-demo">시연용 데이터입니다. 변경 사항은 새로고침하면 초기화됩니다.</p>{% endif %}
+</div>
+</section>
+<dialog id="pickup-dialog" aria-labelledby="pickup-dialog-title">
+  <form method="dialog"><h2 id="pickup-dialog-title">픽업을 완료할까요?</h2><p id="pickup-dialog-description"></p><p>매장에서 결제와 상품 전달을 마쳤는지 확인해 주세요.</p><div><button value="cancel">돌아가기</button><button value="complete" class="pickup-confirm">픽업 완료</button></div></form>
+</dialog>
 {% endblock %}
 
 {% block js %}
