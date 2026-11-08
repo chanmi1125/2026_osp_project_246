@@ -1,1 +1,86 @@
 /* 예약 관리 · 담당: 김지우 */
+
+/* 상태 필터 (전체 · 픽업 대기 · 픽업 완료 · 취소) */
+.reservation-filters { margin: -20px calc(-1 * var(--gutter)) 0; background: var(--white); border-bottom: 1px solid var(--divider); }
+.reservation-filters > div { display: flex; gap: 6px; padding: 12px 20px; overflow-x: auto; }
+.reservation-filters button { flex: none; padding: 9px 14px; border: 1px solid var(--border); border-radius: 999px; color: var(--text); font-size: 14px; line-height: 17px; white-space: nowrap; }
+.reservation-filters button[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: var(--white); font-weight: 700; }
+ 
+/* 전체 레이아웃 */
+.reservations { display: flex; flex-direction: column; width: 100%; }
+.reservation-content { display: flex; flex-direction: column; gap: 14px; padding-top: 16px; }
+ 
+/* 예약 현황 요약 (픽업 대기 · 픽업 완료 · 취소 개수) */
+.reservation-summary { display: flex; padding: 18px 8px; }
+.reservation-summary > div { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.reservation-summary > div + div { border-left: 1px solid var(--divider); }
+.reservation-summary strong { font-size: 20px; color: var(--primary); }
+.reservation-summary [data-count="waiting"] { color: var(--coral); }
+.reservation-summary span { font-size: 12px; color: var(--sub); }
+ 
+/* 픽업 코드 확인 */
+.pickup-code-card { display: flex; flex-direction: column; gap: 10px; padding: 16px; }
+.pickup-code-card h2 { font-size: 15px; }
+.pickup-code-card p { font-size: 12px; color: var(--sub); line-height: 1.4; }
+.pickup-input-row { display: flex; gap: 8px; }
+.pickup-digits { display: flex; gap: 8px; }
+.pickup-digits input { width: 48px; height: 48px; min-width: 0; border: 1px solid var(--border); border-radius: 12px; background: var(--bg); text-align: center; color: var(--text); font-family: inherit; font-size: 20px; font-weight: 700; }
+.pickup-digits input:not(:placeholder-shown) { border: 1.5px solid var(--primary); background: var(--white); }
+.pickup-digits input::placeholder { color: var(--placeholder); }
+.pickup-confirm { flex: 1; min-height: 48px; padding: 0 14px; border-radius: 12px; background: var(--primary); color: var(--white); font-size: 15px; font-weight: 700; }
+ 
+/* 픽업 코드 결과 문구 (성공 / 오류) */
+#pickup-feedback { color: var(--primary); }
+#pickup-feedback.is-error { color: var(--coral); }
+ 
+/* 예약 목록 카드 */
+#reservation-list { display: grid; gap: 14px; }
+.reservation-card { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
+.reservation-thumb { flex: none; width: 60px; height: 60px; border-radius: 12px; }
+.reservation-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.reservation-info h2 { font-size: 15px; line-height: 18px; overflow-wrap: anywhere; }
+.reservation-info > strong { font-size: 13px; line-height: 16px; color: var(--primary); }
+.reservation-info p { font-size: 12px; line-height: 14px; color: var(--sub); }
+.reservation-info .pickup-time { color: var(--label); }
+ 
+/* 상태 배지 (픽업 대기 / 픽업 완료 / 취소 · 곧 픽업) */
+.reservation-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+.reservation-state,
+.reservation-soon { padding: 4px 9px; border-radius: 999px; background: var(--chip); color: var(--primary); font-size: 11px; font-weight: 700; }
+.reservation-soon { background: var(--coral); color: var(--white); }
+[data-status="cancelled"] .reservation-state { background: var(--divider); color: var(--sub); }
+ 
+/* 픽업 완료 버튼 */
+.complete-pickup { flex: none; padding: 8px 14px; border: 1px solid var(--primary); border-radius: 999px; background: var(--white); color: var(--primary); font-size: 12px; font-weight: 700; }
+.complete-pickup.is-soon { background: var(--primary); color: var(--white); }
+ 
+/* 안내 문구 · 빈 목록 */
+.reservation-demo { font-size: 12px; line-height: 1.5; color: var(--sub); }
+#reservation-empty { text-align: center; font-size: 14px; color: var(--sub); }
+ 
+/* hidden 속성이 항상 우선하도록 + 스크린리더 전용 텍스트 */
+.reservations [hidden] { display: none !important; }
+.reservation-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+ 
+/* 픽업 완료 확인 팝업 */
+#pickup-dialog { width: min(380px, calc(100% - 40px)); margin: auto; padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--white); color: var(--text); }
+#pickup-dialog::backdrop { background: color-mix(in srgb, var(--text) 50%, transparent); }
+#pickup-dialog h2 { margin-bottom: 16px; font-size: 19px; }
+#pickup-dialog p { margin-bottom: 12px; font-size: 14px; line-height: 1.6; }
+#pickup-dialog form > div { display: flex; gap: 12px; margin-top: 20px; }
+#pickup-dialog button { flex: 1; }
+ 
+/* 키보드 포커스 표시 */
+.reservation-filters button:focus-visible,
+.reservations button:focus-visible,
+.pickup-digits input:focus-visible,
+#pickup-dialog button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+ 
+/* 작은 화면 */
+@media (max-width: 370px) {
+  .pickup-digits { flex: 1; gap: 5px; }
+  .pickup-digits input { width: calc((100% - 15px) / 4); }
+  .reservation-card { gap: 8px; padding: 14px 12px; }
+  .reservation-thumb { width: 44px; height: 44px; }
+  .complete-pickup { padding: 8px; }
+}
