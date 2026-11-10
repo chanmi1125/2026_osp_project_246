@@ -57,8 +57,6 @@ def prevent_auth_page_cache(response):
     return response
 
 
-# role: 헤더/메뉴 종류를 정함 (None = 로그인 전, "student" = 학생, "owner" = 사장님)
-
 # ---------- 공통 ----------
 @app.route("/")
 def index():
@@ -124,7 +122,7 @@ def signup():
 @app.route("/signup_post", methods=["POST"])
 def signup_post():
     data = request.form
-    pw_hash = hashlib.sha256(data["password"].encode("utf-8")).hexdigest()   # 비밀번호는 해시로 저장
+    pw_hash = hashlib.sha256(data["password"].encode("utf-8")).hexdigest()
     if DB.insert_user(data, pw_hash):
         return redirect(url_for("login"))
     flash("이미 있는 아이디예요")
@@ -259,7 +257,6 @@ def product_register():
         if not name:
             return "상품 이름을 입력해주세요.", 400
 
-        # 상품 이미지 저장
         upload_dir = Path(app.static_folder) / "uploads"
         upload_dir.mkdir(parents=True, exist_ok=True)
 
@@ -275,10 +272,8 @@ def product_register():
 
                 img_paths.append(f"uploads/{filename}")
 
-        # Firebase Realtime Database에 저장
         DB.insert_item(name, data, img_paths)
 
-        # 등록 완료 후 사장님 예약 페이지 이동
         return redirect(url_for("owner_reservations"))
 
     return render_template(

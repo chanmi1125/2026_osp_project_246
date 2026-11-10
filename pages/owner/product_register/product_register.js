@@ -217,7 +217,6 @@ form.addEventListener("submit", (e) => {
   // 두 번 눌러서 두 번 등록되지 않게 막기
   form.querySelector('[type="submit"]').disabled = true;
 
-  // TODO: 서버 저장 라우트 생기면 아래 두 줄 대신 form.submit() 으로 보내기
   form.submit();
 });
 

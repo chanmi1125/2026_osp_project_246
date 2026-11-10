@@ -16,10 +16,6 @@
 {% endblock %}
 
 {% block content %}
-{# 페이지 이동 TODO
-   - TODO: '상품 등록하기' 버튼 → 서버 저장 라우트 만들면 form action 연결,
-           저장 후 url_for('owner_reservations')  (내가 등록한 상품 페이지 생기면 그쪽으로)
-#}
 <form class="register-form" id="registerForm" method="post" enctype="multipart/form-data"
       data-done-url="{{ url_for('owner_reservations') }}" novalidate>
 
