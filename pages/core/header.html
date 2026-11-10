@@ -1,8 +1,13 @@
 <header class="site-header">
-  <a class="logo" href="{{ url_for('product_list') if role == 'student' else url_for('owner_reservations') if role == 'owner' else url_for('login') }}">이화픽</a>
-  {% if role %}
+  <a class="logo" href="{{ url_for('index') }}">이화픽</a>
+  {% if session.get("id") %}
   <div class="header-actions">
-    {% if role == "student" %}
+    <span class="header-user" title="{{ session['id'] }}">{{ session['id'] }}님</span>
+    <form class="header-logout-form" action="{{ url_for('logout') }}" method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <button class="header-logout" type="submit">로그아웃</button>
+    </form>
+    {% if auth_role == "student" %}
     <a class="icon-btn" href="{{ url_for('product_list') }}" aria-label="검색">
       <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11.5" cy="11.5" r="8.5"/><line x1="18" y1="18" x2="25" y2="25"/></svg>
     </a>

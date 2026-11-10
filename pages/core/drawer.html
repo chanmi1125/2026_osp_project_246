@@ -12,8 +12,8 @@
     <a class="drawer-profile" href="{{ url_for(profile_endpoint) }}">
       <span class="avatar" aria-hidden="true"></span>
       <span class="profile-text">
-        <strong>{{ profile_name }}</strong>
-        <small>{{ profile_sub }}</small>
+        <strong>{{ session.get('id', profile_name) }}</strong>
+        <small>{{ ('사장님 회원' if auth_role == 'owner' else '학생 회원') if session.get('id') else profile_sub }}</small>
         <span class="profile-chip">{{ profile_chip }}</span>
       </span>
     </a>
@@ -28,7 +28,9 @@
     {% endfor %}
   </ul>
   <div class="drawer-foot">
-    {# TODO: 로그인 기능 생기면 세션 지우는 /logout 라우트로 바꾸기 #}
-    <a class="drawer-logout" href="{{ url_for('login') }}">로그아웃</a>
+    <form action="{{ url_for('logout') }}" method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <button class="drawer-logout" type="submit">로그아웃</button>
+    </form>
   </div>
 </nav>

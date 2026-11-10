@@ -1,17 +1,60 @@
 import hashlib
+import hmac
+import os
+import secrets
+from datetime import timedelta
 
-from flask import Flask, render_template, redirect, url_for, request, flash, jsonify
+from flask import Flask, render_template, redirect, url_for, request, flash, jsonify, session
 
 from database import DBhandler
 from werkzeug.utils import secure_filename
 from pathlib import Path
 from uuid import uuid4
 
-# html·css·js를 페이지 폴더(pages/)에 같이 두고, css·js·이미지는 /pages/... 주소로 보내요
 app = Flask(__name__, template_folder="pages", static_folder="pages", static_url_path="/pages")
-app.config["SECRET_KEY"] = "team246-osp"   # flash 메시지용
+app.config.update(
+    SECRET_KEY=os.environ.get("SECRET_KEY") or secrets.token_hex(32),
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    PERMANENT_SESSION_LIFETIME=timedelta(days=7),
+)
 
 DB = DBhandler()
+
+
+def csrf_token():
+    """로그인/로그아웃 폼이 이 브라우저에서 생성됐는지 확인할 토큰."""
+    if "_csrf_token" not in session:
+        session["_csrf_token"] = secrets.token_hex(32)
+    return session["_csrf_token"]
+
+
+def valid_csrf_token():
+    saved = session.get("_csrf_token")
+    submitted = request.form.get("_csrf_token", "")
+    return isinstance(saved, str) and hmac.compare_digest(
+        saved.encode("utf-8"), submitted.encode("utf-8")
+    )
+
+
+def home_endpoint():
+    if session.get("id") and session.get("user_type") == "owner":
+        return "owner_reservations"
+    return "product_list"
+
+
+@app.context_processor
+def auth_context():
+    # 페이지의 role 값과 무관하게 로그인한 회원 유형에 맞는 메뉴를 표시.
+    auth_role = session.get("user_type") if session.get("id") else None
+    return {"auth_role": auth_role, "csrf_token": csrf_token}
+
+
+@app.after_request
+def prevent_auth_page_cache(response):
+    if session.get("id") or request.endpoint in {"login", "login_confirm", "logout"}:
+        response.headers["Cache-Control"] = "no-store"
+    return response
 
 
 # role: 헤더/메뉴 종류를 정함 (None = 로그인 전, "student" = 학생, "owner" = 사장님)
@@ -19,12 +62,58 @@ DB = DBhandler()
 # ---------- 공통 ----------
 @app.route("/")
 def index():
-    return redirect(url_for("login"))
+    return redirect(url_for(home_endpoint()))
 
 
 @app.route("/login")
 def login():
+    if session.get("id"):
+        return redirect(url_for(home_endpoint()))
     return render_template("common/login/login.html", role=None)
+
+
+@app.route("/login_confirm", methods=["POST"])
+def login_confirm():
+    if not valid_csrf_token():
+        flash("로그인 화면이 만료됐습니다. 다시 시도해 주세요.", "error")
+        return redirect(url_for("login"))
+
+    if session.get("id"):
+        return redirect(url_for(home_endpoint()))
+
+    user_id = request.form.get("user_id", "").strip()
+    password = request.form.get("password", "")
+    if not user_id or not password:
+        flash("아이디와 비밀번호를 모두 입력해 주세요.", "error")
+        return redirect(url_for("login"))
+
+    # 기존 회원가입과 동일한 SHA-256 방식으로 비교.
+    pw_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
+    try:
+        user = DB.authenticate_user(user_id, pw_hash)
+    except Exception as error:
+        # 라이브러리 예외 내용에는 연결 정보가 포함될 수 있어 종류만 기록.
+        app.logger.error("Firebase 로그인 조회 실패 (%s)", type(error).__name__)
+        flash("서버에 연결할 수 없습니다. 잠시 후 다시 로그인해 주세요.", "error")
+        return redirect(url_for("login"))
+
+    if user is None:
+        flash("아이디 또는 비밀번호가 올바르지 않습니다.", "error")
+        return redirect(url_for("login"))
+
+    session.clear()
+    session["id"] = user["id"]
+    session["user_type"] = user["user_type"]
+    session.permanent = request.form.get("remember") == "on"
+    return redirect(url_for(home_endpoint()))
+
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    if not valid_csrf_token():
+        return "잘못된 로그아웃 요청입니다. 페이지를 새로고침해 주세요.", 400
+    session.clear()
+    return redirect(url_for("index"))
 
 
 @app.route("/signup")
