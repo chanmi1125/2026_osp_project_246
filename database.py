@@ -1,10 +1,14 @@
 import pyrebase
 import json
+import hmac
+import re
+from pathlib import Path
 
 
 class DBhandler:
     def __init__(self):
-        with open('./authentication/firebase_auth.json') as f:
+        config_path = Path(__file__).resolve().parent / 'authentication' / 'firebase_auth.json'
+        with config_path.open(encoding='utf-8') as f:
             config = json.load(f)
         firebase = pyrebase.initialize_app(config)
         self.db = firebase.database()
@@ -70,3 +74,28 @@ class DBhandler:
 
         self.db.child("user").child(user_id).set(user_info)
         return True
+
+
+    # ---------- 로그인 ----------
+    def authenticate_user(self, user_id, pw_hash):
+        """Firebase user/<아이디>의 기존 해시를 확인하고 최소 회원 정보만 반환."""
+        if (not isinstance(user_id, str) or not user_id
+                or any(char in user_id for char in '.#$[]/')
+                or any(ord(char) < 32 or ord(char) == 127 for char in user_id)
+                or len(user_id.encode('utf-8')) > 768):
+            return None
+        if not isinstance(pw_hash, str) or not re.fullmatch(r'[0-9a-f]{64}', pw_hash):
+            return None
+
+        user = self.db.child('user').child(user_id).get().val()
+        if not isinstance(user, dict):
+            return None
+        stored_hash = user.get('pw')
+        if not isinstance(stored_hash, str) or not re.fullmatch(r'[0-9a-f]{64}', stored_hash):
+            return None
+        if not hmac.compare_digest(stored_hash, pw_hash):
+            return None
+        if user.get('user_type') not in ('student', 'owner'):
+            return None
+        # 비밀번호 해시와 개인정보 전체를 세션에 담지 않음.
+        return {'id': user_id, 'user_type': user['user_type']}

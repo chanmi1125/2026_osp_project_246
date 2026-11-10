@@ -5,15 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}이화픽{% endblock %} · 이화픽</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='core/common.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='core/common.css', v='auth-20261110') }}">
   {% block css %}{% endblock %}
 </head>
 <body>
   {% include "core/header.html" %}
 
-  {% if role == "student" %}
+  {% if auth_role == "student" %}
     {% include "core/menu_student.html" %}
-  {% elif role == "owner" %}
+  {% elif auth_role == "owner" %}
     {% include "core/menu_owner.html" %}
   {% endif %}
 

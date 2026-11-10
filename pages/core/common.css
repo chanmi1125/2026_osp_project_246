@@ -134,3 +134,16 @@ button { font: inherit; cursor: pointer; border: none; background: none; }
 }
 
 .todo { color: var(--sub); }
+
+
+/* 로그인 상태 표시: 기존 화면 너비 및 헤더 높이는 유지 */
+.header-actions { align-items:center; min-width:0; }
+.header-user { max-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:14px; }
+.header-logout-form { display:flex; flex:none; }
+.header-logout { color:var(--white); font-size:14px; font-weight:700; white-space:nowrap; }
+.header-logout:focus-visible,.drawer-logout:focus-visible { outline:2px solid currentColor; outline-offset:4px; }
+@media(max-width:420px) {
+  .header-actions { gap:8px; }
+  .header-user { max-width:84px; font-size:12px; }
+  .header-logout { font-size:12px; }
+}
