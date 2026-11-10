@@ -34,6 +34,10 @@ class DBhandler:
         """item 노드 전체 {상품이름: 상품정보}. 없으면 빈 딕셔너리"""
         return self.db.child("item").get().val() or {}
 
+    def get_item(self, name):
+        """상품 이름을 키로 조회. 없으면 None."""
+        return self.db.child("item").child(name).get().val()
+
     def get_user(self, user_id):
         """user/아이디 정보. 없으면 None"""
         return self.db.child("user").child(user_id).get().val()

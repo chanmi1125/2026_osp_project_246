@@ -25,101 +25,18 @@
 
 {% block content %}
 
-{# DB 연결 전 임시 상품 데이터 #}
-{% if product is not defined %}
-
-  {% set products = [
-    {
-      "id": 1,
-      "name": "플레인 베이글",
-      "image": "bagel.jpg",
-      "discount_type": "closing",
-      "discount_rate": 30,
-      "price": 2240,
-      "original_price": 3200,
-      "store_name": "마더린러 베이글",
-      "address": "서울 서대문구 이화여대5길 5 지상 1층",
-      "rating": 4.5,
-      "review_count": 120,
-      "pickup_time": "16:00 ~ 16:30",
-      "quantity": 3,
-      "status": "판매중",
-      "seller_id": "madle_bagel",
-      "description": "오늘 아침에 구운 플레인 베이글이에요.\n크림치즈 1개 포함!"
-    },
-    {
-      "id": 2,
-      "name": "초코 쫀득 츄러스",
-      "image": "churros.jpg",
-      "discount_type": "ewha",
-      "discount_rate": 10,
-      "price": 2610,
-      "original_price": 2900,
-      "store_name": "파리바게트 카페이대역점",
-      "address": "이화여대 인근",
-      "rating": 4.5,
-      "review_count": 120,
-      "pickup_time": "16:00 ~ 18:00",
-      "quantity": 5,
-      "status": "판매중",
-      "seller_id": "cafe_02",
-      "description": "쫀득한 츄러스에 달콤한 초콜릿을 더한 디저트입니다."
-    },
-    {
-      "id": 3,
-      "name": "무화과 크림치즈 바게트",
-      "image": "baguette.jpg",
-      "discount_type": "closing",
-      "discount_rate": 25,
-      "price": 6000,
-      "original_price": 8000,
-      "store_name": "아라마크 페어그라운드 신촌점",
-      "address": "이화여대 인근",
-      "rating": 4.5,
-      "review_count": 120,
-      "pickup_time": "17:00 ~ 18:00",
-      "quantity": 4,
-      "status": "판매중",
-      "seller_id": "bakery_03",
-      "description": "무화과와 크림치즈가 어우러진 바게트입니다."
-    },
-    {
-      "id": 4,
-      "name": "포케+음료선택1 세트",
-      "image": "rice.jpg",
-      "discount_type": "ewha",
-      "discount_rate": 15,
-      "price": 11815,
-      "original_price": 13900,
-      "store_name": "샐러리아 이화여대점",
-      "address": "이화여대 인근",
-      "rating": 4.5,
-      "review_count": 120,
-      "pickup_time": "11:00 ~ 19:00",
-      "quantity": 6,
-      "status": "판매중",
-      "seller_id": "salad_04",
-      "description": "신선한 포케와 음료 한 잔을 함께 즐길 수 있는 세트입니다."
-    }
-  ] %}
-
-  {% set product = products
-    | selectattr("id", "equalto", product_id)
-    | first
-    | default(none) %}
-
-{% endif %}
-
 {% if product %}
 
 <section class="product-detail">
 
   <!-- 상품 이미지 -->
   <div class="detail-image">
+    {% if product.image %}
     <img
-      src="{{ url_for('static', filename='images/' ~ product.image) }}"
+      src="{{ url_for('static', filename=product.image) }}"
       alt="{{ product.name }}"
     >
+    {% endif %}
   </div>
 
   <!-- 할인 배지 -->
@@ -242,6 +159,22 @@
         <span class="info-value">
           <span class="info-separator">|</span>
           {{ product.seller_id }}
+        </span>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">
+          <svg class="detail-icon" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor"
+               stroke-width="2" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2"/>
+            <path d="m3 6 9 7 9-7"/>
+          </svg>
+          이메일
+        </span>
+        <span class="info-value">
+          <span class="info-separator">|</span>
+          {{ product.email }}
         </span>
       </div>
 

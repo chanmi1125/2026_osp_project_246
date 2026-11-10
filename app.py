@@ -99,7 +99,39 @@ def product_list():
 @app.route("/products/<int:product_id>")
 @app.route("/products/<name>")
 def product_detail(product_id=None, name=None):
-    return render_template("student/product_detail/product_detail.html", role="student", product_id=product_id, name=name)
+    product = None
+    # 숫자 ID 링크는 유지하되, Firebase 상품은 이름을 키로 조회한다.
+    item_name = name if name is not None else str(product_id)
+    info = DB.get_item(item_name)
+    if info is not None:
+        seller_id = info.get("seller_id", "")
+        seller = (DB.get_user(seller_id) or {}) if seller_id else {}
+        original_price = info.get("price", 0)
+        discount_rate = info.get("discount_rate", 0)
+        product = {
+            **info,
+            "id": item_name,
+            "name": item_name,
+            "image": (info.get("img_path") or [None])[0],
+            "discount_type": info.get("discount_type", ""),
+            "discount_rate": discount_rate,
+            "original_price": original_price,
+            "price": original_price * (100 - discount_rate) // 100,
+            "store_name": seller.get("store_name") or seller_id,
+            "address": info.get("address", ""),
+            "seller_id": seller_id,
+            "email": info.get("email", ""),
+            "quantity": info.get("quantity", 0),
+            "description": info.get("description", ""),
+            "status": {
+                "on_sale": "판매중", "reserved": "예약중", "sold_out": "판매완료",
+            }.get(info.get("status"), info.get("status", "")),
+            "pickup_time": f"{info.get('pickup_start', '')}–{info.get('pickup_end', '')}",
+            "rating": 0,
+            "review_count": 0,
+        }
+    return render_template("student/product_detail/product_detail.html",
+                           role="student", product=product)
 
 
 @app.route("/reserve/done")
