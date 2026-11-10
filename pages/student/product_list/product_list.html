@@ -13,55 +13,9 @@
 
 {% block content %}
 
-{# DB 연결 전 임시 상품 데이터 #}
-{% if products is not defined %}
-  {% set products = [
-    {
-      "id": 1,
-      "name": "플레인 베이글",
-      "image": "bagel.jpg",
-      "discount_type": "closing",
-      "category": "bakery",
-      "discount_rate": 30,
-      "price": 2240,
-      "store_name": "마더린러 베이글",
-      "distance": "120m"
-    },
-    {
-      "id": 2,
-      "name": "초코 쫀득 츄러스",
-      "image": "churros.jpg",
-      "discount_type": "ewha",
-      "category": "cafe",
-      "discount_rate": 10,
-      "price": 2610,
-      "store_name": "파리바게트 카페이대역점",
-      "distance": "150m"
-    },
-    {
-      "id": 3,
-      "name": "무화과 크림치즈 바게트",
-      "image": "baguette.jpg",
-      "discount_type": "closing",
-      "category": "bakery",
-      "discount_rate": 25,
-      "price": 6000,
-      "store_name": "아라마크 페어그라운드 신촌점",
-      "distance": "200m"
-    },
-    {
-      "id": 4,
-      "name": "포케+음료선택1 세트",
-      "image": "rice.jpg",
-      "discount_type": "ewha",
-      "category": "lunchbox",
-      "discount_rate": 15,
-      "price": 11815,
-      "store_name": "샐러리아 이화여대점",
-      "distance": "300m"
-    }
-  ] %}
-{% endif %}
+{# products, page, total_pages, discount, category 는 app.py product_list()에서 받아요 (Firebase item 노드) #}
+{% set discounts = [("all", "전체"), ("closing", "마감 할인"), ("ewha", "이화인 할인")] %}
+{% set categories = [("all", "전체"), ("bakery", "베이커리"), ("lunchbox", "도시락"), ("cafe", "카페"), ("snack", "분식")] %}
 
 <section class="product-list" aria-label="상품 목록">
 
@@ -87,50 +41,22 @@
     >
   </div>
 
-  <!-- 할인 유형 필터 -->
+  <!-- 할인 유형 필터 (누르면 1페이지부터 다시) -->
   <div class="discount-filters">
-    <button type="button"
-            class="discount-filter active"
-            data-discount="all"
-            aria-pressed="true">전체</button>
-
-    <button type="button"
-            class="discount-filter"
-            data-discount="closing"
-            aria-pressed="false">마감 할인</button>
-
-    <button type="button"
-            class="discount-filter"
-            data-discount="ewha"
-            aria-pressed="false">이화인 할인</button>
+    {% for value, label in discounts %}
+    <a class="discount-filter{% if value == discount %} active{% endif %}"
+       href="{{ url_for('product_list', discount=value, category=category) }}"
+       {% if value == discount %}aria-current="true"{% endif %}>{{ label }}</a>
+    {% endfor %}
   </div>
 
   <!-- 카테고리 필터 -->
   <div class="category-filters">
-    <button type="button"
-            class="category-filter active"
-            data-category="all"
-            aria-pressed="true">전체</button>
-
-    <button type="button"
-            class="category-filter"
-            data-category="bakery"
-            aria-pressed="false">베이커리</button>
-
-    <button type="button"
-            class="category-filter"
-            data-category="lunchbox"
-            aria-pressed="false">도시락</button>
-
-    <button type="button"
-            class="category-filter"
-            data-category="cafe"
-            aria-pressed="false">카페</button>
-
-    <button type="button"
-            class="category-filter"
-            data-category="snack"
-            aria-pressed="false">분식</button>
+    {% for value, label in categories %}
+    <a class="category-filter{% if value == category %} active{% endif %}"
+       href="{{ url_for('product_list', discount=discount, category=value) }}"
+       {% if value == category %}aria-current="true"{% endif %}>{{ label }}</a>
+    {% endfor %}
   </div>
 
   <!-- 상품 목록 -->
@@ -139,20 +65,18 @@
     {% for product in products %}
 
     <a
-      href="{{ url_for('product_detail', product_id=product.id) }}"
+      href="{{ url_for('product_detail', name=product.name) }}"
       class="product-card"
-      data-discount="{{ product.discount_type }}"
-      data-category="{{ product.category }}"
-      data-name="{{ product.name }}"
-      data-store="{{ product.store_name }}"
     >
 
       <!-- 상품 이미지 -->
       <div class="product-image">
+        {% if product.image %}
         <img
-          src="{{ url_for('static', filename='images/' ~ product.image) }}"
+          src="{{ url_for('static', filename=product.image) }}"
           alt="{{ product.name }}"
         >
+        {% endif %}
 
         <!-- 할인 배지 -->
         <span class="discount-badge {{ product.discount_type }}">
@@ -191,14 +115,6 @@
             </svg>
             <span>{{ product.store_name }}</span>
           </span>
-
-          <span class="distance">
-            <svg class="pin-icon" aria-hidden="true">
-              <use href="#location-pin"/>
-            </svg>
-            <span>{{ product.distance }}</span>
-          </span>
-
         </div>
       </div>
 
@@ -209,33 +125,33 @@
   </div>
 
   <!-- 검색 결과 없음 -->
-  <p class="empty-message" id="empty-message" hidden>
+  <p class="empty-message" {% if products %}hidden{% endif %}>
     조건에 맞는 상품이 없습니다.
   </p>
 
-  <!-- 페이지네이션 -->
+  <!-- 페이지네이션 (?page=번호, 지금 고른 필터는 그대로 유지) -->
   <nav class="pagination" aria-label="상품 페이지">
+    {% if page > 1 %}
+    <a class="page-arrow" href="{{ url_for('product_list', discount=discount, category=category, page=page - 1) }}" aria-label="이전 페이지">❮</a>
+    {% else %}
+    <span class="page-arrow" aria-disabled="true">❮</span>
+    {% endif %}
 
-    <button
-      type="button"
-      class="page-arrow"
-      data-direction="prev"
-      aria-label="이전 페이지">❮</button>
+    <div class="page-numbers">
+      {% for n in range(1, total_pages + 1) %}
+      <a class="page-number{% if n == page %} active{% endif %}"
+         href="{{ url_for('product_list', discount=discount, category=category, page=n) }}"
+         {% if n == page %}aria-current="page"{% endif %}>{{ n }}</a>
+      {% endfor %}
+    </div>
 
-    <div class="page-numbers" id="page-numbers"></div>
-
-    <button
-      type="button"
-      class="page-arrow"
-      data-direction="next"
-      aria-label="다음 페이지">❯</button>
-
+    {% if page < total_pages %}
+    <a class="page-arrow" href="{{ url_for('product_list', discount=discount, category=category, page=page + 1) }}" aria-label="다음 페이지">❯</a>
+    {% else %}
+    <span class="page-arrow" aria-disabled="true">❯</span>
+    {% endif %}
   </nav>
 
 </section>
 
-{% endblock %}
-
-{% block js %}
-<script src="{{ url_for('static', filename='student/product_list/product_list.js') }}"></script>
 {% endblock %}

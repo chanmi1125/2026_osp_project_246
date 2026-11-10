@@ -50,14 +50,56 @@ def check_id():
 
 
 # ---------- 학생 ----------
+ITEMS_PER_PAGE = 4   # 상품 목록 한 페이지에 보여줄 개수 (2열 × 2줄)
+
+
 @app.route("/products")
 def product_list():
-    return render_template("student/product_list/product_list.html", role="student")
+    # 필터와 페이지는 주소 뒤 ?discount=closing&category=cafe&page=2 로 받기
+    discount = request.args.get("discount", "all")
+    category = request.args.get("category", "all")
+    page = request.args.get("page", 1, type=int)
+
+    items = [
+        (name, info) for name, info in DB.get_items().items()
+        if (discount == "all" or info.get("discount_type") == discount)
+        and (category == "all" or info.get("category") == category)
+    ]
+
+    total_pages = max(1, (len(items) + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE)
+    page = max(1, min(page, total_pages))
+    start = (page - 1) * ITEMS_PER_PAGE
+    page_items = items[start:start + ITEMS_PER_PAGE]
+
+    store_names = {}   # 같은 가게를 여러 번 읽지 않게
+    products = []
+    for name, info in page_items:
+        seller_id = info.get("seller_id", "")
+        if seller_id not in store_names:
+            seller = DB.get_user(seller_id) or {}
+            store_names[seller_id] = seller.get("store_name", seller_id)
+        price = info.get("price", 0)
+        rate = info.get("discount_rate", 0)
+        products.append({
+            "name": name,
+            "image": (info.get("img_path") or [None])[0],
+            "discount_type": info.get("discount_type"),
+            "category": info.get("category"),
+            "discount_rate": rate,
+            "price": price * (100 - rate) // 100,   # 할인 적용한 가격
+            "store_name": store_names[seller_id],
+        })
+
+    return render_template("student/product_list/product_list.html", role="student",
+                           products=products, page=page, total_pages=total_pages,
+                           discount=discount, category=category)
 
 
+# 상세 페이지 · 상품 목록에서는 DB 키(상품 이름)로 들어와요: /products/아메리카노
 @app.route("/products/<int:product_id>")
-def product_detail(product_id):
-    return render_template("student/product_detail/product_detail.html", role="student", product_id=product_id)
+@app.route("/products/<name>")
+def product_detail(product_id=None, name=None):
+    return render_template("student/product_detail/product_detail.html", role="student", product_id=product_id, name=name)
 
 
 @app.route("/reserve/done")
