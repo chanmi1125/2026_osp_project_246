@@ -8,6 +8,9 @@
 {% endblock %}
 
 {% block content %}
+{% with messages = get_flashed_messages() %}
+<script id="login-messages" type="application/json">{{ messages|tojson }}</script>
+{% endwith %}
 <div class="login">
   <section class="login-head">
     <h1 class="login-title">로그인</h1>
@@ -41,8 +44,9 @@
     </svg>
   </div>
 
-  <!-- TODO: 백엔드 연결 후 로그인 처리. 지금은 버튼 누르면 학생 상품 목록으로 이동 (사장님이면 url_for('owner_reservations')) -->
-  <form class="login-form" method="post" action="" data-next="{{ url_for('product_list') }}">
+  <!-- 로그인 정보는 서버에서 Firebase와 대조. -->
+  <form class="login-form" method="post" action="{{ url_for('login_confirm') }}">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
     <div class="field">
       <label class="field-label" for="login-id">아이디</label>
       <input class="field-input" id="login-id" name="user_id" type="text"
@@ -70,7 +74,7 @@
       <a href="#" class="login-find">아이디 · 비밀번호 찾기</a>
     </div>
 
-    <p class="login-error" id="login-error" hidden>아이디 또는 비밀번호가 맞지 않아요</p>
+    <p class="login-error" id="login-error" role="alert" hidden>아이디 또는 비밀번호가 맞지 않아요</p>
 
     <button type="submit" class="login-submit">로그인하기</button>
   </form>
@@ -83,5 +87,5 @@
 {% endblock %}
 
 {% block js %}
-<script src="{{ url_for('static', filename='common/login/login.js') }}"></script>
+<script src="{{ url_for('static', filename='common/login/login.js', v='auth-20261110') }}"></script>
 {% endblock %}
