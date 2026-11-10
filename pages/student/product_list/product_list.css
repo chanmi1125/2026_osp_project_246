@@ -414,7 +414,7 @@
     font-weight: 700;
   }
   
-  .page-arrow:disabled {
+  .page-arrow[aria-disabled="true"] {
     opacity: 0.3;
     cursor: default;
   }
