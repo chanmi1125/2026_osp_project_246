@@ -30,6 +30,14 @@ class DBhandler:
 
         return True
 
+    def get_items(self):
+        """item 노드 전체 {상품이름: 상품정보}. 없으면 빈 딕셔너리"""
+        return self.db.child("item").get().val() or {}
+
+    def get_user(self, user_id):
+        """user/아이디 정보. 없으면 None"""
+        return self.db.child("user").child(user_id).get().val()
+
     # ---------- 회원가입 ----------
     def user_duplicate_check(self, user_id):
         """이미 있는 아이디면 False, 쓸 수 있으면 True"""
