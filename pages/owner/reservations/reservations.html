@@ -14,7 +14,7 @@
 {% set is_demo = (reservations is not defined or not reservations) and reservations_demo|default(true) %}
 {% if is_demo %}
 {% set reservations = [
- {'id':'EP-1020-0417','product':'플레인 베이글','image':'images/bagel.jpg','price':2240,'user':'이화인','quantity':1,'time':'16:00–16:30','code':'4729','status':'waiting','soon':true},
+ {'id':'EP-1020-0417','product':'플레인 베이글','image':'images/bagel.jpg','price':2240,'user':'김이화','quantity':1,'time':'16:00–16:30','code':'4729','status':'waiting','soon':true},
  {'id':'EP-1020-0418','product':'버터 크루아상 세트','image':'images/croissant.jpeg','price':7600,'user':'eunha22','quantity':2,'time':'18:00–20:00','code':'4821','status':'waiting'},
  {'id':'EP-1020-0419','product':'아메리카노+스콘','image':'images/americano.jpeg','price':4250,'user':'minjji','quantity':1,'time':'18:00–20:00','code':'1937','status':'waiting'},
  {'id':'EP-1020-0410','product':'플레인 베이글','image':'images/bagel.jpg','price':2240,'user':'green','quantity':1,'time':'12:00–12:30','code':'1001','status':'completed'},

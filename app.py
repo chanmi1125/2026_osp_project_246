@@ -45,16 +45,12 @@ def home_endpoint():
 
 
 @app.context_processor
-
-
 def auth_context():
     auth_role = session.get("user_type") if session.get("id") else None
     return {"auth_role": auth_role, "csrf_token": csrf_token}
 
 
 @app.after_request
-
-
 def prevent_auth_page_cache(response):
     if session.get("id") or request.endpoint in {"login", "login_confirm", "logout"}:
         response.headers["Cache-Control"] = "no-store"
@@ -62,15 +58,13 @@ def prevent_auth_page_cache(response):
 
 
 @app.route("/")
-
-
 def index():
+    if not session.get("id"):
+        return redirect(url_for("login"))
     return redirect(url_for(home_endpoint()))
 
 
 @app.route("/login")
-
-
 def login():
     if session.get("id"):
         return redirect(url_for(home_endpoint()))
@@ -78,8 +72,6 @@ def login():
 
 
 @app.route("/login_confirm", methods=["POST"])
-
-
 def login_confirm():
     if not valid_csrf_token():
         flash("로그인 화면이 만료됐습니다. 다시 시도해 주세요.", "error")
@@ -114,8 +106,6 @@ def login_confirm():
 
 
 @app.route("/logout", methods=["POST"])
-
-
 def logout():
     if not valid_csrf_token():
         return "잘못된 로그아웃 요청입니다. 페이지를 새로고침해 주세요.", 400
@@ -124,15 +114,11 @@ def logout():
 
 
 @app.route("/signup")
-
-
 def signup():
     return render_template("common/signup/signup.html")
 
 
 @app.route("/signup_post", methods=["POST"])
-
-
 def signup_post():
     data = request.form
     pw_hash = hashlib.sha256(data["password"].encode("utf-8")).hexdigest()
@@ -143,8 +129,6 @@ def signup_post():
 
 
 @app.route("/check-id")
-
-
 def check_id():
     """회원가입 화면의 '중복 확인' 버튼이 부르는 주소"""
     user_id = request.args.get("user_id", "").strip()
@@ -155,8 +139,6 @@ ITEMS_PER_PAGE = 4
 
 
 @app.route("/products")
-
-
 def product_list():
     discount = request.args.get("discount", "all")
     category = request.args.get("category", "all")
@@ -199,8 +181,6 @@ def product_list():
 
 @app.route("/products/<int:product_id>")
 @app.route("/products/<name>")
-
-
 def product_detail(product_id=None, name=None):
     product = None
     item_name = name if name is not None else str(product_id)
@@ -236,43 +216,31 @@ def product_detail(product_id=None, name=None):
 
 
 @app.route("/reserve/done")
-
-
 def reserve_done():
     return render_template("student/reserve_done/reserve_done.html")
 
 
 @app.route("/reviews")
-
-
 def review_list():
     return render_template("student/review_list/review_list.html")
 
 
 @app.route("/reviews/<int:review_id>")
-
-
 def review_detail(review_id):
     return render_template("student/review_detail/review_detail.html", review_id=review_id)
 
 
 @app.route("/reviews/write")
-
-
 def review_write():
     return render_template("student/review_write/review_write.html")
 
 
 @app.route("/mypage")
-
-
 def student_mypage():
     return render_template("student/mypage/mypage.html")
 
 
 @app.route("/owner/products/new", methods=["GET", "POST"])
-
-
 def product_register():
     if request.method == "POST":
         data = request.form
@@ -302,22 +270,16 @@ def product_register():
 
 
 @app.route("/owner/reservations")
-
-
 def owner_reservations():
     return render_template("owner/reservations/reservations.html")
 
 
 @app.route("/owner/reviews")
-
-
 def owner_reviews():
     return render_template("owner/reviews/reviews.html")
 
 
 @app.route("/owner/mypage")
-
-
 def owner_mypage():
     return render_template("owner/mypage/mypage.html")
 

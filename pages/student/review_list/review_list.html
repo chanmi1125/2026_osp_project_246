@@ -10,7 +10,7 @@
 
 {% if reviews is not defined %}
   {% set reviews = [
-    {"id": 1, "store": "이화 베이커리", "product": "버터 크루아상 세트", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "이화인", "date": "2026.10.05", "date_iso": "2026-10-05", "image": "croissant.jpeg", "text": "바삭한 겉면과 고소한 버터 향이 정말 좋았어요. 크루아상 세트로 주문했는데 한 번에 먹기 좋은 사이즈라 만족스러웠습니다. 특히 겉은 바삭하면서도 속은 촉촉하고 부드러워서 식감이 좋았고, 버터의 풍미도 진하게 느껴졌어요. 마감 할인 덕분에 평소보다 저렴한 가격으로 구매할 수 있었는데도 빵의 신선도와 맛이 기대 이상이었습니다. 픽업 시간에 맞춰 방문하니 미리 포장도 깔끔하게 준비되어 있어서 기다리지 않고 바로 받을 수 있었어요. 함께 먹은 친구도 맛있다고 해서 다음에는 다른 종류의 빵도 구매해 보려고 합니다. 가격과 맛, 서비스 모두 만족스러웠고 다음에도 꼭 다시 방문하고 싶어요!"},
+    {"id": 1, "store": "이화 베이커리", "product": "버터 크루아상 세트", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "김이화", "date": "2026.10.05", "date_iso": "2026-10-05", "image": "croissant.jpeg", "text": "바삭한 겉면과 고소한 버터 향이 정말 좋았어요. 크루아상 세트로 주문했는데 한 번에 먹기 좋은 사이즈라 만족스러웠습니다. 특히 겉은 바삭하면서도 속은 촉촉하고 부드러워서 식감이 좋았고, 버터의 풍미도 진하게 느껴졌어요. 마감 할인 덕분에 평소보다 저렴한 가격으로 구매할 수 있었는데도 빵의 신선도와 맛이 기대 이상이었습니다. 픽업 시간에 맞춰 방문하니 미리 포장도 깔끔하게 준비되어 있어서 기다리지 않고 바로 받을 수 있었어요. 함께 먹은 친구도 맛있다고 해서 다음에는 다른 종류의 빵도 구매해 보려고 합니다. 가격과 맛, 서비스 모두 만족스러웠고 다음에도 꼭 다시 방문하고 싶어요!"},
     {"id": 2, "store": "그린 키친", "product": "닭가슴살 샐러드 도시락", "category": "lunchbox", "category_label": "도시락", "rating": 4, "user": "ewha22", "date": "2026.10.03", "date_iso": "2026-10-03", "image": "salad.jpeg", "text": "양이 많아서 한 끼 든든하게 먹기 좋았어요. 채소가 신선하고 고추장 드레싱이 적당해서 매운맛이 부담스럽지 않았습니다."},
     {"id": 3, "store": "카페 이화", "product": "아이스 아메리카노", "category": "cafe", "category_label": "카페", "rating": 5, "user": "green", "date": "2026.10.02", "date_iso": "2026-10-02", "image": "americano.jpeg", "text": "오늘도 재구매했어요! 에스프레소가 강하지 않아서 아이스 아메리카노로 마시기 딱 좋았어요. 바리스타 분이 친절하시고요."},
     {"id": 4, "store": "마더린러 베이글", "product": "플레인베이글", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "ewha23", "date": "2026.09.28", "date_iso": "2026-09-28", "image": "bagel.jpg", "text": "겉은 살짝 바삭하고 속은 쫄깃해서 플레인베이글만 먹어도 고소했어요. 크림치즈를 곁들이니 더 맛있고, 커피와 함께 먹기 좋았습니다."},
@@ -20,8 +20,8 @@
     {"id": 8, "store": "카페 이화", "product": "아이스 아메리카노", "category": "cafe", "category_label": "카페", "rating": 3, "user": "ewha28", "date": "2026.09.18", "date_iso": "2026-09-18", "image": "americano.jpeg", "text": "픽업은 빨랐지만 커피가 조금 연하게 느껴졌어요."},
     {"id": 9, "store": "마더린러 베이글", "product": "플레인베이글", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "ewha29", "date": "2026.09.15", "date_iso": "2026-09-15", "image": "bagel.jpg", "text": "베이글이 쫄깃하고 포장도 깔끔해서 좋았어요."},
     {"id": 10, "store": "파리바게트 카페이대역점", "product": "초코 츄러스", "category": "bakery", "category_label": "베이커리", "rating": 5, "user": "ewha30", "date": "2026.09.12", "date_iso": "2026-09-12", "image": "churros.jpg", "text": "간식으로 먹기 좋고 가격도 만족스러웠어요."},
-    {"id": 11, "store": "그린 키친", "product": "닭가슴살 샐러드 도시락", "category": "lunchbox", "category_label": "도시락", "rating": 5, "user": "이화인", "date": "2026.10.14", "date_iso": "2026-10-14", "image": "salad.jpeg", "text": "닭가슴살이 퍽퍽하지 않고 채소도 아삭해서 끝까지 맛있게 먹었어요. 마감 할인으로 사서 가격도 부담 없었어요."},
-    {"id": 12, "store": "마더린러 베이글", "product": "플레인 베이글", "category": "bakery", "category_label": "베이커리", "rating": 4, "user": "이화인", "date": "2026.10.09", "date_iso": "2026-10-09", "image": "bagel.jpg", "text": "저녁에 들러서 마감 할인으로 샀는데 여전히 쫄깃했어요. 크림치즈를 따로 챙기면 더 좋을 것 같아요."}
+    {"id": 11, "store": "그린 키친", "product": "닭가슴살 샐러드 도시락", "category": "lunchbox", "category_label": "도시락", "rating": 5, "user": "김이화", "date": "2026.10.14", "date_iso": "2026-10-14", "image": "salad.jpeg", "text": "닭가슴살이 퍽퍽하지 않고 채소도 아삭해서 끝까지 맛있게 먹었어요. 마감 할인으로 사서 가격도 부담 없었어요."},
+    {"id": 12, "store": "마더린러 베이글", "product": "플레인 베이글", "category": "bakery", "category_label": "베이커리", "rating": 4, "user": "김이화", "date": "2026.10.09", "date_iso": "2026-10-09", "image": "bagel.jpg", "text": "저녁에 들러서 마감 할인으로 샀는데 여전히 쫄깃했어요. 크림치즈를 따로 챙기면 더 좋을 것 같아요."}
   ] %}
 {% endif %}
 

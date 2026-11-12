@@ -12,6 +12,7 @@
 {% block content %}
 
 {% set discounts = [("all", "전체"), ("closing", "마감 할인"), ("ewha", "이화인 할인")] %}
+{% set distances = {"크림치즈 베이글": 120, "무화과 크림치즈 바게트": 200, "버터 크루아상 세트": 150, "초코 쫀득 츄러스": 150, "바닐라 라떼": 90, "포케 + 음료 세트": 300, "닭가슴살 샐러드 도시락": 300, "가래떡 떡볶이": 240, "참치 김밥": 180, "찹쌀 순대": 240, "어묵꼬치 세트": 260} %}
 {% set categories = [("all", "전체"), ("bakery", "베이커리"), ("lunchbox", "도시락"), ("cafe", "카페"), ("snack", "분식")] %}
 
 <section class="product-list" aria-label="상품 목록">
@@ -90,6 +91,12 @@
               <use href="#location-pin"/>
             </svg>
             <span>{{ product.store_name }}</span>
+          </span>
+          <span class="distance" aria-label="가게까지 거리">
+            <svg class="pin-icon" aria-hidden="true">
+              <use href="#location-pin"/>
+            </svg>
+            {{ distances.get(product.name, 250) }}m
           </span>
         </div>
       </div>
