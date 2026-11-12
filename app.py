@@ -19,13 +19,16 @@ app.config.update(
     PERMANENT_SESSION_LIFETIME=timedelta(days=7),
 )
 
+
 DB = DBhandler()
+
 
 def csrf_token():
     """로그인/로그아웃 폼이 이 브라우저에서 생성됐는지 확인할 토큰."""
     if "_csrf_token" not in session:
         session["_csrf_token"] = secrets.token_hex(32)
     return session["_csrf_token"]
+
 
 def valid_csrf_token():
     saved = session.get("_csrf_token")
@@ -34,33 +37,49 @@ def valid_csrf_token():
         saved.encode("utf-8"), submitted.encode("utf-8")
     )
 
+
 def home_endpoint():
     if session.get("id") and session.get("user_type") == "owner":
         return "owner_reservations"
     return "product_list"
 
+
 @app.context_processor
+
+
 def auth_context():
     auth_role = session.get("user_type") if session.get("id") else None
     return {"auth_role": auth_role, "csrf_token": csrf_token}
 
+
 @app.after_request
+
+
 def prevent_auth_page_cache(response):
     if session.get("id") or request.endpoint in {"login", "login_confirm", "logout"}:
         response.headers["Cache-Control"] = "no-store"
     return response
 
+
 @app.route("/")
+
+
 def index():
     return redirect(url_for(home_endpoint()))
 
+
 @app.route("/login")
+
+
 def login():
     if session.get("id"):
         return redirect(url_for(home_endpoint()))
-    return render_template("common/login/login.html", role=None)
+    return render_template("common/login/login.html")
+
 
 @app.route("/login_confirm", methods=["POST"])
+
+
 def login_confirm():
     if not valid_csrf_token():
         flash("로그인 화면이 만료됐습니다. 다시 시도해 주세요.", "error")
@@ -93,18 +112,27 @@ def login_confirm():
     session.permanent = request.form.get("remember") == "on"
     return redirect(url_for(home_endpoint()))
 
+
 @app.route("/logout", methods=["POST"])
+
+
 def logout():
     if not valid_csrf_token():
         return "잘못된 로그아웃 요청입니다. 페이지를 새로고침해 주세요.", 400
     session.clear()
     return redirect(url_for("index"))
 
+
 @app.route("/signup")
+
+
 def signup():
-    return render_template("common/signup/signup.html", role=None)
+    return render_template("common/signup/signup.html")
+
 
 @app.route("/signup_post", methods=["POST"])
+
+
 def signup_post():
     data = request.form
     pw_hash = hashlib.sha256(data["password"].encode("utf-8")).hexdigest()
@@ -113,15 +141,22 @@ def signup_post():
     flash("이미 있는 아이디예요")
     return redirect(url_for("signup"))
 
+
 @app.route("/check-id")
+
+
 def check_id():
     """회원가입 화면의 '중복 확인' 버튼이 부르는 주소"""
     user_id = request.args.get("user_id", "").strip()
     return jsonify(available=DB.user_duplicate_check(user_id))
 
+
 ITEMS_PER_PAGE = 4
 
+
 @app.route("/products")
+
+
 def product_list():
     discount = request.args.get("discount", "all")
     category = request.args.get("category", "all")
@@ -157,12 +192,15 @@ def product_list():
             "store_name": store_names[seller_id],
         })
 
-    return render_template("student/product_list/product_list.html", role="student",
+    return render_template("student/product_list/product_list.html",
                            products=products, page=page, total_pages=total_pages,
                            discount=discount, category=category)
 
+
 @app.route("/products/<int:product_id>")
 @app.route("/products/<name>")
+
+
 def product_detail(product_id=None, name=None):
     product = None
     item_name = name if name is not None else str(product_id)
@@ -194,30 +232,47 @@ def product_detail(product_id=None, name=None):
             "rating": 0,
             "review_count": 0,
         }
-    return render_template("student/product_detail/product_detail.html",
-                           role="student", product=product)
+    return render_template("student/product_detail/product_detail.html", product=product)
+
 
 @app.route("/reserve/done")
+
+
 def reserve_done():
-    return render_template("student/reserve_done/reserve_done.html", role="student")
+    return render_template("student/reserve_done/reserve_done.html")
+
 
 @app.route("/reviews")
+
+
 def review_list():
-    return render_template("student/review_list/review_list.html", role="student")
+    return render_template("student/review_list/review_list.html")
+
 
 @app.route("/reviews/<int:review_id>")
+
+
 def review_detail(review_id):
-    return render_template("student/review_detail/review_detail.html", role="student", review_id=review_id)
+    return render_template("student/review_detail/review_detail.html", review_id=review_id)
+
 
 @app.route("/reviews/write")
+
+
 def review_write():
-    return render_template("student/review_write/review_write.html", role="student")
+    return render_template("student/review_write/review_write.html")
+
 
 @app.route("/mypage")
+
+
 def student_mypage():
-    return render_template("student/mypage/mypage.html", role="student")
+    return render_template("student/mypage/mypage.html")
+
 
 @app.route("/owner/products/new", methods=["GET", "POST"])
+
+
 def product_register():
     if request.method == "POST":
         data = request.form
@@ -243,22 +298,29 @@ def product_register():
 
         return redirect(url_for("owner_reservations"))
 
-    return render_template(
-        "owner/product_register/product_register.html",
-        role="owner"
-    )
+    return render_template("owner/product_register/product_register.html")
+
 
 @app.route("/owner/reservations")
+
+
 def owner_reservations():
-    return render_template("owner/reservations/reservations.html", role="owner")
+    return render_template("owner/reservations/reservations.html")
+
 
 @app.route("/owner/reviews")
+
+
 def owner_reviews():
-    return render_template("owner/reviews/reviews.html", role="owner")
+    return render_template("owner/reviews/reviews.html")
+
 
 @app.route("/owner/mypage")
+
+
 def owner_mypage():
-    return render_template("owner/mypage/mypage.html", role="owner")
+    return render_template("owner/mypage/mypage.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)

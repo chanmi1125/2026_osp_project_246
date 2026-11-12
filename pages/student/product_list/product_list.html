@@ -25,17 +25,6 @@
     </symbol>
   </svg>
 
-  <div class="search-panel" id="product-search-panel" hidden>
-    <label for="product-search" class="visually-hidden">상품 검색</label>
-    <input
-      type="search"
-      id="product-search"
-      class="input"
-      placeholder="상품명 또는 가게명 검색"
-      autocomplete="off"
-    >
-  </div>
-
   <div class="discount-filters">
     {% for value, label in discounts %}
     <a class="discount-filter{% if value == discount %} active{% endif %}"
