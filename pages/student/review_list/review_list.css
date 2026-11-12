@@ -1,6 +1,3 @@
-/* 리뷰 목록 · 담당: 정난희 */
-
-/* 전체 페이지 */
 .page:has(.student-reviews) {
   padding: 16px 16px 36px;
 }
@@ -9,7 +6,6 @@
   width: 100%;
 }
 
-/* 카테고리 필터 */
 .category-filters {
   display: flex;
   align-items: center;
@@ -41,7 +37,6 @@
   color: var(--white);
 }
 
-/* 리뷰 개수 및 정렬 */
 .review-toolbar {
   display: flex;
   align-items: center;
@@ -61,7 +56,6 @@
   font-weight: 800;
 }
 
-/* 정렬 버튼 */
 .review-sort-trigger {
   display: inline-flex;
   align-items: center;
@@ -79,7 +73,6 @@
   cursor: pointer;
 }
 
-/* 정렬 바텀시트 */
 .review-sort-sheet {
   position: fixed;
   inset: 0;
@@ -178,7 +171,6 @@ body.review-sort-open {
   overflow: hidden;
 }
 
-/* 리뷰 목록 */
 .review-list {
   background: var(--white);
 }
@@ -192,7 +184,6 @@ body.review-sort-open {
   display: none;
 }
 
-/* 상품 이미지 및 가게 정보 */
 .review-card-header {
   display: flex;
   align-items: flex-start;
@@ -263,7 +254,6 @@ body.review-sort-open {
   line-height: 1.5;
 }
 
-/* 별점 및 작성자 */
 .review-stars {
   color: #FFCC00;
   font-size: 13px;
@@ -293,7 +283,6 @@ body.review-sort-open {
   font-size: 11px;
 }
 
-/* 리뷰 내용(최대 2줄 표시)*/
 .review-excerpt {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -305,7 +294,6 @@ body.review-sort-open {
   line-height: 1.5;
 }
 
-/* 자세히 보기 */
 .review-detail-row {
   display: flex;
   justify-content: flex-end;
@@ -328,7 +316,6 @@ body.review-sort-open {
   line-height: 0.7;
 }
 
-/* 페이지 번호 */
 .review-pagination {
   display: flex;
   align-items: center;
@@ -369,7 +356,6 @@ body.review-sort-open {
   cursor: default;
 }
 
-/* 리뷰가 없는 경우 */
 .empty-reviews {
   padding: 44px 14px;
   color: var(--sub);

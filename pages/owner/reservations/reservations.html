@@ -1,4 +1,3 @@
-{# 예약 관리 · 담당: 김지우 #}
 {% extends "core/base.html" %}
 
 {% block title %}예약 관리{% endblock %}
@@ -12,13 +11,8 @@
 {% endblock %}
 
 {% block content %}
-{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: 필터 탭(전체·픽업 대기·픽업 완료·취소)·픽업 코드 확인·'픽업 완료' 버튼은 같은 페이지에서 처리 (이동 없음)
-#}
-{# DB 연결 전 시안용 데이터. #}
 {% set is_demo = (reservations is not defined or not reservations) and reservations_demo|default(true) %}
 {% if is_demo %}
-{# 화면 확인용 데이터. 실제 예약 조회/저장은 서버 연동이 필요합니다. #}
 {% set reservations = [
  {'id':'EP-1020-0417','product':'플레인 베이글','image':'images/bagel.jpg','price':2240,'user':'이화인','quantity':1,'time':'16:00–16:30','code':'4729','status':'waiting','soon':true},
  {'id':'EP-1020-0418','product':'버터 크루아상 세트','image':'images/croissant.jpeg','price':7600,'user':'eunha22','quantity':2,'time':'18:00–20:00','code':'4821','status':'waiting'},

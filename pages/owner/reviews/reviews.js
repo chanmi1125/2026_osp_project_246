@@ -1,5 +1,3 @@
-// 받은 리뷰 · 담당: 정난희
-
 document.addEventListener("DOMContentLoaded", function () {
   const page = document.querySelector(".received-reviews");
   if (!page) return;
@@ -11,10 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let selectedFilter = "all";
 
-  // DB 연결 전 답글을 임시 저장
   const storageKey = "ewhapick-owner-review-replies-v1";
 
-  // DB 연결 전 브라우저에 저장된 답글 불러오기
   let savedReplies = {};
 
   try {
@@ -23,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function () {
     savedReplies = {};
   }
 
-  // 답글 등록 후 입력창을 사장님 답글로 변경
   function showReply(card, reply) {
     const form = card.querySelector(".reply-form");
     if (!form) return;
@@ -44,7 +39,6 @@ document.addEventListener("DOMContentLoaded", function () {
     card.dataset.replied = "true";
   }
 
-  // 저장된 답글 표시
   reviewCards.forEach(function (card) {
     const reply = savedReplies[card.dataset.reviewId];
     if (typeof reply === "string" && reply.trim()) {
@@ -52,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  // 전체 / 답글 대기 필터
   function updateReviews() {
     let pending = 0;
 
@@ -67,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function () {
     pendingCount.textContent = pending;
   }
 
-  // 필터 버튼 클릭
   filterButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       selectedFilter = button.dataset.status;
@@ -82,7 +74,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // 답글 등록 (페이지 이동 없음)
   reviewList.addEventListener("submit", function (event) {
     const form = event.target.closest(".reply-form");
     if (!form) return;
@@ -96,13 +87,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const card = form.closest(".review-card");
     showReply(card, reply);
 
-    // TODO: DB 연결 후 답글 서버 저장
     savedReplies[card.dataset.reviewId] = reply;
 
     try {
       localStorage.setItem(storageKey, JSON.stringify(savedReplies));
     } catch (error) {
-      // 저장할 수 없어도 현재 화면에는 답글 표시
     }
 
     updateReviews();

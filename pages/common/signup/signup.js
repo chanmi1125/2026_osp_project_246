@@ -1,5 +1,3 @@
-// 회원가입 페이지 · common/signup
-
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('.signup-form');
   const tabs = document.querySelectorAll('.signup-tab');
@@ -10,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const submitBtn = document.getElementById('signup-submit');
   const formError = document.getElementById('form-error');
 
-  // 숨겨진 칸은 비활성화해서 제출·검사에서 빠지게 함
   function setBoxEnabled(box, enabled) {
     box.hidden = !enabled;
     box.querySelectorAll('input').forEach((input) => {
@@ -18,7 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 1. 학생 / 사장님 탭 전환
   function switchType(type) {
     tabs.forEach((tab) => {
       const on = tab.dataset.type === type;
@@ -37,7 +33,6 @@ document.addEventListener('DOMContentLoaded', () => {
     tab.addEventListener('click', () => switchType(tab.dataset.type));
   });
 
-  // 2. 아이디 중복 확인
   const idInput = document.getElementById('su-id');
   const idMsg = document.getElementById('id-msg');
   let idChecked = false;
@@ -58,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 서버(Firebase)에 중복 여부 물어보기
     fetch(`/check-id?user_id=${encodeURIComponent(id)}`)
       .then((res) => res.json())
       .then((data) => {
@@ -71,13 +65,11 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   });
 
-  // 아이디를 바꾸면 다시 확인 필요
   idInput.addEventListener('input', () => {
     idChecked = false;
     idMsg.hidden = true;
   });
 
-  // 3. 비밀번호 일치 확인
   const pw = document.getElementById('su-pw');
   const pw2 = document.getElementById('su-pw2');
   const pwMsg = document.getElementById('pw-msg');
@@ -95,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
   pw.addEventListener('input', checkPw);
   pw2.addEventListener('input', checkPw);
 
-  // 4. 제출 전 검사
   form.addEventListener('submit', (e) => {
     let message = '';
 
@@ -106,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (pw.value !== pw2.value) {
       message = '비밀번호가 일치하지 않아요';
     } else {
-      // 보이는 칸 중 비어 있는 필수 칸 찾기
       const empty = [...form.querySelectorAll('input[required]:not([disabled])')]
         .find((input) => input.type !== 'checkbox' && !input.value.trim());
       if (empty) {
@@ -123,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
       formError.hidden = false;
       return;
     }
-    // 검사 통과 → 그대로 서버(/signup_post)로 제출
   });
 
   switchType('student');

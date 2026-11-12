@@ -1,4 +1,3 @@
-{# 회원가입 · 담당: 강지호 #}
 {% extends "core/base.html" %}
 
 {% block title %}회원가입{% endblock %}
@@ -13,7 +12,6 @@
 
 {% block content %}
 <div class="signup">
-  <!-- 학생 / 사장님 탭 -->
   <div class="signup-tabs" role="tablist">
     <button type="button" class="signup-tab is-active" role="tab" data-type="student" aria-selected="true">학생</button>
     <button type="button" class="signup-tab" role="tab" data-type="owner" aria-selected="false">사장님</button>
@@ -22,7 +20,6 @@
   <form class="signup-form" method="post" action="{{ url_for('signup_post') }}" novalidate>
     <input type="hidden" name="user_type" id="user-type" value="student">
 
-    <!-- 공통: 아이디 -->
     <div class="field">
       <label class="field-label" for="su-id">아이디 <span class="req">*</span></label>
       <div class="field-row">
@@ -32,7 +29,6 @@
       <p class="field-msg" id="id-msg" hidden></p>
     </div>
 
-    <!-- 공통: 비밀번호 -->
     <div class="field">
       <label class="field-label" for="su-pw">비밀번호 <span class="req">*</span></label>
       <input class="field-input" id="su-pw" name="password" type="password" placeholder="비밀번호를 입력하세요" autocomplete="new-password" required>
@@ -45,13 +41,11 @@
       <p class="field-msg" id="pw-msg" hidden></p>
     </div>
 
-    <!-- 공통: 닉네임 -->
     <div class="field">
       <label class="field-label" for="su-nick">닉네임 <span class="req">*</span></label>
       <input class="field-input" id="su-nick" name="nickname" type="text" placeholder="닉네임을 입력하세요" required>
     </div>
 
-    <!-- 학생 전용 -->
     <div class="only-student">
       <div class="field">
         <label class="field-label" for="su-email-s">이메일 <span class="req">*</span></label>
@@ -68,7 +62,6 @@
       </div>
     </div>
 
-    <!-- 사장님 전용 -->
     <div class="only-owner" hidden>
       <div class="field">
         <label class="field-label" for="su-email-o">이메일 <span class="req">*</span></label>
@@ -99,7 +92,6 @@
       </div>
     </div>
 
-    <!-- 약관 -->
     <div class="signup-terms">
       <label class="check">
         <input type="checkbox" name="agree" id="su-agree" required>

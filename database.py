@@ -4,7 +4,6 @@ import hmac
 import re
 from pathlib import Path
 
-
 class DBhandler:
     def __init__(self):
         config_path = Path(__file__).resolve().parent / 'authentication' / 'firebase_auth.json'
@@ -46,7 +45,6 @@ class DBhandler:
         """user/아이디 정보. 없으면 None"""
         return self.db.child("user").child(user_id).get().val()
 
-    # ---------- 회원가입 ----------
     def user_duplicate_check(self, user_id):
         """이미 있는 아이디면 False, 쓸 수 있으면 True"""
         return self.db.child("user").child(user_id).get().val() is None
@@ -75,8 +73,6 @@ class DBhandler:
         self.db.child("user").child(user_id).set(user_info)
         return True
 
-
-    # ---------- 로그인 ----------
     def authenticate_user(self, user_id, pw_hash):
         """Firebase user/<아이디>의 기존 해시를 확인하고 최소 회원 정보만 반환."""
         if (not isinstance(user_id, str) or not user_id
@@ -97,5 +93,4 @@ class DBhandler:
             return None
         if user.get('user_type') not in ('student', 'owner'):
             return None
-        # 비밀번호 해시와 개인정보 전체를 세션에 담지 않음.
         return {'id': user_id, 'user_type': user['user_type']}

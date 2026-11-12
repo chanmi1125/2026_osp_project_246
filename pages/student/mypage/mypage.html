@@ -1,4 +1,3 @@
-{# 마이페이지 · 담당: 박찬미 #}
 {% extends "core/base.html" %}
 
 {% block title %}마이페이지{% endblock %}
@@ -12,15 +11,8 @@
 {% endblock %}
 
 {% block content %}
-{# 페이지 이동 TODO (메뉴·헤더는 core에서 이미 연결됨)
-   - TODO: 예약 카드 클릭 → url_for('product_detail', product_id=상품ID)  (지금은 임시로 1번 상품)
-   - TODO: 후기 클릭 → url_for('review_detail', review_id=리뷰ID)  (지금은 임시로 1번 후기)
-   - TODO: '더보기' → 예약/후기 더 불러오기 (데이터 생기면)
-   TODO: 로그인 기능 생기면 이름·이메일·예약·후기를 로그인한 학생 정보로 바꾸기
-#}
 <div class="mypage">
 
-  {# 프로필 카드 #}
   <section class="card profile-card">
     <div class="profile-row">
       <svg class="profile-avatar" width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
@@ -42,7 +34,6 @@
     </p>
   </section>
 
-  {# 픽업 대기 카드 (가장 가까운 예약 1개) #}
   <a class="card pickup-card" href="{{ url_for('product_detail', product_id=1) }}">
     <div class="thumb thumb-lg"></div>
     <div class="pickup-text">
@@ -56,7 +47,6 @@
     </div>
   </a>
 
-  {# 예약 내역 / 내가 쓴 후기 탭 #}
   <section class="tab-card">
     <div class="tabs" role="tablist">
       <button type="button" class="tab" role="tab" id="tab-reserve" aria-selected="true" aria-controls="panel-reserve">예약 내역 3</button>
@@ -93,7 +83,6 @@
       </button>
     </div>
 
-    {# 피그마에 이 탭 화면은 없어서 예약 내역 줄 모양을 그대로 씀 #}
     <div class="tab-panel" role="tabpanel" id="panel-review" aria-labelledby="tab-review" hidden>
       <a class="list-row" href="{{ url_for('review_detail', review_id=1) }}">
         <div class="thumb tone-sage"></div>

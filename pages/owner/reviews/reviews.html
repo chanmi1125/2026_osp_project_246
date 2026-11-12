@@ -1,4 +1,3 @@
-{# 받은 리뷰 · 담당: 정난희 #}
 {% extends "core/base.html" %}
 
 {% block title %}받은 리뷰{% endblock %}
@@ -13,7 +12,6 @@
 
 {% block content %}
 
-{# DB 연결 전 임시 리뷰 데이터 5개 (답글 대기 2개) #}
 {% if reviews is not defined %}
   {% set reviews = [
     {"id": 1, "user": "eunha22", "date": "2026.10.12", "date_iso": "2026-10-12", "product": "플레인 베이글", "rating": 4, "text": "쫄깃하고 고소해요! 마감 할인가라 가격도 착해서 자주 올 것 같아요.", "reply": ""},
@@ -24,21 +22,17 @@
   ] %}
 {% endif %}
 
-{# 평균 별점 및 전체 리뷰 개수 계산 #}
 {% set review_count = reviews | length %}
 {% set average_rating = (reviews | sum(attribute='rating') / review_count) if review_count else 0 %}
 {% set star_rating = ((average_rating * 2 + 0.5) | int) / 2 %}
 
 <section class="received-reviews" aria-label="사장님 받은 리뷰">
 
-  {# 평균 별점 및 별점별 리뷰 분포 (현재 예시 리뷰 5개 기준) #}
   <section class="card rating-summary" aria-label="리뷰 평점 요약">
 
-      {# 평균 별점 및 리뷰 개수 #}
     <div class="rating-score">
       <strong class="score-number">{{ "%.1f"|format(average_rating) }}</strong>
 
-    {# 평균 별점에 따라 전체 / 반쪽 / 빈 별 표시 #}
     <span class="score-stars" aria-label="평균 별점 {{ '%.1f'|format(average_rating) }}점">
       {% for n in range(5) %}
         {% if star_rating >= n + 1 %}
@@ -54,7 +48,6 @@
     <span class="review-count">리뷰 {{ review_count }}개</span>
   </div>
 
-  {# 별점별 리뷰 분포 (DB 연결 전 임시 값) #}
   <div class="rating-distribution" aria-label="별점별 리뷰 개수">
     <div class="rating-row"><span>5</span><div class="rating-track"><span style="width:100%"></span></div><span>3</span></div>
     <div class="rating-row"><span>4</span><div class="rating-track"><span style="width:66.67%"></span></div><span>2</span></div>
@@ -64,7 +57,6 @@
   </div>
   </section>
 
-  {# 전체 / 답글 대기 필터 #}
   <div class="review-filters" role="group" aria-label="답글 상태 필터">
     <button type="button" class="review-filter active"
             data-status="all" aria-pressed="true">전체</button>
@@ -75,7 +67,6 @@
     </button>
   </div>
 
-  {# 리뷰 목록: 답글 등록은 같은 카드에서 처리 #}
   <div class="review-list" id="review-list" aria-live="polite">
     {% for review in reviews %}
     <article class="card review-card"
@@ -91,7 +82,6 @@
             <time class="review-date" datetime="{{ review.date_iso }}">{{ review.date }}</time>
           </div>
 
-          {# 리뷰 별점 #}
           <div class="review-stars" aria-label="별점 {{ review.rating }}점">
             <span>{% for n in range(review.rating) %}&#9733;{% endfor %}</span><span class="empty-stars">{% for n in range(5 - review.rating) %}&#9733;{% endfor %}</span>
           </div>
@@ -103,14 +93,12 @@
       <p class="review-text">{{ review.text }}</p>
 
       {% if review.reply %}
-      {# 이미 답글이 등록된 리뷰 #}
       <div class="owner-reply">
         <strong class="reply-title">↳ 사장님 답글</strong>
         <p class="reply-text">{{ review.reply }}</p>
       </div>
       
       {% else %}
-      {# 답글이 없는 리뷰: 입력창과 등록 버튼 #}
       <form class="reply-form">
         <input type="text" class="reply-input" name="reply" maxlength="300"
                placeholder="학생에게 답글을 남겨보세요"

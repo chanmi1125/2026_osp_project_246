@@ -1,5 +1,3 @@
-// 리뷰 목록 · 담당: 정난희
-
 document.addEventListener("DOMContentLoaded", function () {
   const page = document.querySelector(".student-reviews");
   if (!page) return;
@@ -24,14 +22,12 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedSort = "recent";
   let currentPage = 1;
 
-  // 정렬 바텀시트 열기
   function openSortSheet() {
     sortSheet.hidden = false;
     document.body.classList.add("review-sort-open");
     sortTrigger.setAttribute("aria-expanded", "true");
   }
 
-  // 정렬 바텀시트 닫기
   function closeSortSheet() {
     sortSheet.hidden = true;
     document.body.classList.remove("review-sort-open");
@@ -42,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
   sortBackdrop.addEventListener("click", closeSortSheet);
   sortClose.addEventListener("click", closeSortSheet);
 
-  // 정렬 옵션 선택
   sortOptions.forEach(function (button) {
     button.addEventListener("click", function () {
       selectedSort = button.dataset.sort;
@@ -60,7 +55,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // 페이지 번호 버튼 생성
   function createPageButton(label, targetPage, isArrow, disabled) {
     const button = document.createElement("button");
 
@@ -98,7 +92,6 @@ document.addEventListener("DOMContentLoaded", function () {
     return button;
   }
 
-  // 페이지네이션 표시
   function updatePagination(totalPages, totalReviews) {
     pagination.replaceChildren();
 
@@ -113,7 +106,6 @@ document.addEventListener("DOMContentLoaded", function () {
       )
     );
 
-    // 페이지 번호는 최대 5개 표시
     const startPage = Math.max(
       1,
       Math.min(currentPage - 2, totalPages - 4)
@@ -137,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   }
 
-  // 카테고리 필터, 정렬, 페이지 표시
   function updateReviews() {
     const filtered = reviewCards.filter(function (card) {
       return selectedCategory === "all" ||
@@ -167,17 +158,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     currentPage = Math.min(currentPage, totalPages);
 
-    // 정렬된 순서대로 카드 배치
     filtered.forEach(function (card) {
       reviewList.appendChild(card);
     });
 
-    // 모든 카드 숨기기
     reviewCards.forEach(function (card) {
       card.hidden = true;
     });
 
-    // 현재 페이지 카드만 표시
     const startIndex = (currentPage - 1) * itemsPerPage;
 
     filtered
@@ -186,7 +174,6 @@ document.addEventListener("DOMContentLoaded", function () {
         card.hidden = false;
       });
 
-    // 표시할 리뷰 개수
     const number = document.createElement("strong");
     number.textContent = filtered.length + "개";
 
@@ -200,7 +187,6 @@ document.addEventListener("DOMContentLoaded", function () {
     updatePagination(totalPages, filtered.length);
   }
 
-  // 카테고리 버튼 클릭
   categoryButtons.forEach(function (button) {
     button.addEventListener("click", function () {
       selectedCategory = button.dataset.category;

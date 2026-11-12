@@ -1,5 +1,3 @@
-/* 로그인 페이지 · common/login */
-
 .login {
   max-width: 430px;
   margin: 0 auto;
@@ -23,7 +21,6 @@
   color: var(--sub);
 }
 
-/* 일러스트 카드 */
 .login-illust {
   border-radius: 20px;
   overflow: hidden;
@@ -37,7 +34,6 @@
   display: block;
 }
 
-/* 입력칸 */
 .login-form {
   display: flex;
   flex-direction: column;
@@ -104,7 +100,6 @@
   color: var(--primary);
 }
 
-/* 로그인 상태 유지 · 찾기 */
 .login-options {
   display: flex;
   justify-content: space-between;
@@ -138,7 +133,6 @@
   color: #E5533F;
 }
 
-/* 버튼 */
 .login-submit {
   height: 52px;
   margin-top: 4px;

@@ -1,4 +1,3 @@
-// 상품 등록 · 담당: 박찬미
 const form = document.getElementById("registerForm");
 const toastEl = document.getElementById("toast");
 const DRAFT_KEY = "ewhapick:product-draft";
@@ -14,7 +13,6 @@ function showToast(message) {
 const onlyDigits = (value) => value.replace(/[^0-9]/g, "");
 const won = (n) => n.toLocaleString("ko-KR") + "원";
 
-/* ---------- 상품 사진 (최대 5장, 첫 장이 대표) ---------- */
 const photoInput = document.getElementById("photoInput");
 const photoList = document.getElementById("photoList");
 const photoAdd = document.getElementById("photoAdd");
@@ -23,7 +21,7 @@ let photos = [];
 
 function renderPhotos() {
   photoList.querySelectorAll(".photo-item").forEach((el) => {
-    URL.revokeObjectURL(el.querySelector("img").src); // 이전 미리보기 메모리 정리
+    URL.revokeObjectURL(el.querySelector("img").src);
     el.remove();
   });
   photos.forEach((file, i) => {
@@ -52,7 +50,6 @@ function renderPhotos() {
     photoList.appendChild(item);
   });
 
-  // 서버로 보낼 input.files 도 같은 순서로 맞추기
   const dt = new DataTransfer();
   photos.forEach((file) => dt.items.add(file));
   photoInput.files = dt.files;
@@ -77,7 +74,6 @@ photoInput.addEventListener("change", () => {
   renderPhotos();
 });
 
-/* ---------- 픽업 주소 변경 ---------- */
 const address = document.getElementById("address");
 document.getElementById("addressEdit").addEventListener("click", (e) => {
   address.readOnly = false;
@@ -86,7 +82,6 @@ document.getElementById("addressEdit").addEventListener("click", (e) => {
   e.currentTarget.hidden = true;
 });
 
-/* ---------- 글자 수 ---------- */
 document.querySelectorAll("[data-counter-for]").forEach((counter) => {
   const target = document.getElementById(counter.dataset.counterFor);
   const update = () => (counter.textContent = `${target.value.length}/${target.maxLength}`);
@@ -94,20 +89,18 @@ document.querySelectorAll("[data-counter-for]").forEach((counter) => {
   update();
 });
 
-/* ---------- 가격 · 할인율 → 판매가 미리보기 ---------- */
 const price = document.getElementById("price");
 const rate = document.getElementById("discountRate");
 
 function updatePreview() {
   const p = Number(onlyDigits(price.value)) || 0;
   const r = Math.min(Number(onlyDigits(rate.value)) || 0, 99);
-  const sale = Math.round((p * (100 - r)) / 100 / 10) * 10; // 10원 단위 반올림
+  const sale = Math.round((p * (100 - r)) / 100 / 10) * 10;
   document.getElementById("previewRate").textContent = `${r}%`;
   document.getElementById("previewSale").textContent = won(sale);
   document.getElementById("previewOrigin").textContent = won(p);
 }
 
-// 입력 중에는 숫자만 남기고, 칸을 벗어날 때 콤마 붙이기 (입력 중 커서가 튀지 않게)
 price.addEventListener("input", () => {
   price.value = price.value.replace(/[^0-9,]/g, "");
   updatePreview();
@@ -123,7 +116,6 @@ rate.addEventListener("input", () => {
 });
 updatePreview();
 
-/* ---------- 픽업 시간: 칸 어디를 눌러도 시간 선택창 열기 ---------- */
 document.querySelectorAll(".time-row .input-box").forEach((box) => {
   const input = box.querySelector("input");
   box.addEventListener("click", () => {
@@ -131,7 +123,6 @@ document.querySelectorAll(".time-row .input-box").forEach((box) => {
   });
 });
 
-/* ---------- 판매 수량 스테퍼 ---------- */
 const quantity = document.getElementById("quantity");
 const minus = document.querySelector(".step.minus");
 
@@ -146,7 +137,6 @@ document.querySelectorAll("[data-step]").forEach((btn) =>
 quantity.addEventListener("input", () => setQuantity(Number(onlyDigits(quantity.value)) || 0));
 setQuantity(Number(quantity.value));
 
-/* ---------- 임시저장 (사진 제외, 이 브라우저에만 저장) ---------- */
 const DRAFT_FIELDS = ["address", "discount_type", "category", "name", "price", "discount_rate",
   "pickup_start", "pickup_end", "quantity", "status", "description"];
 
@@ -181,7 +171,6 @@ function loadDraft() {
 }
 loadDraft();
 
-/* ---------- 등록하기 (필수 항목 확인) ---------- */
 function markInvalid(el, invalid) {
   el.classList.toggle("is-invalid", invalid);
 }
@@ -214,13 +203,11 @@ form.addEventListener("submit", (e) => {
     return;
   }
 
-  // 두 번 눌러서 두 번 등록되지 않게 막기
   form.querySelector('[type="submit"]').disabled = true;
 
   form.submit();
 });
 
-// 입력하면 빨간 테두리 지우기
 form.addEventListener("input", (e) => {
   const box = e.target.closest(".is-invalid");
   if (box) box.classList.remove("is-invalid");

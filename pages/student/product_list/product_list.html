@@ -1,4 +1,3 @@
-{# 상품 목록 · 담당: 윤한솔 #}
 {% extends "core/base.html" %}
 
 {% block title %}상품 목록{% endblock %}
@@ -10,16 +9,13 @@
 {% block page_title %}
 {% endblock %}
 
-
 {% block content %}
 
-{# products, page, total_pages, discount, category 는 app.py product_list()에서 받아요 (Firebase item 노드) #}
 {% set discounts = [("all", "전체"), ("closing", "마감 할인"), ("ewha", "이화인 할인")] %}
 {% set categories = [("all", "전체"), ("bakery", "베이커리"), ("lunchbox", "도시락"), ("cafe", "카페"), ("snack", "분식")] %}
 
 <section class="product-list" aria-label="상품 목록">
 
-  <!-- 위치 아이콘 -->
   <svg class="product-svg-defs" aria-hidden="true">
     <symbol id="location-pin" viewBox="0 0 24 24">
       <path d="M20 10c0 5.5-8 11-8 11S4 15.5 4 10a8 8 0 1 1 16 0Z"
@@ -29,7 +25,6 @@
     </symbol>
   </svg>
 
-  <!-- 검색창 -->
   <div class="search-panel" id="product-search-panel" hidden>
     <label for="product-search" class="visually-hidden">상품 검색</label>
     <input
@@ -41,7 +36,6 @@
     >
   </div>
 
-  <!-- 할인 유형 필터 (누르면 1페이지부터 다시) -->
   <div class="discount-filters">
     {% for value, label in discounts %}
     <a class="discount-filter{% if value == discount %} active{% endif %}"
@@ -50,7 +44,6 @@
     {% endfor %}
   </div>
 
-  <!-- 카테고리 필터 -->
   <div class="category-filters">
     {% for value, label in categories %}
     <a class="category-filter{% if value == category %} active{% endif %}"
@@ -59,7 +52,6 @@
     {% endfor %}
   </div>
 
-  <!-- 상품 목록 -->
   <div class="product-grid" id="product-grid">
 
     {% for product in products %}
@@ -69,7 +61,6 @@
       class="product-card"
     >
 
-      <!-- 상품 이미지 -->
       <div class="product-image">
         {% if product.image %}
         <img
@@ -78,7 +69,6 @@
         >
         {% endif %}
 
-        <!-- 할인 배지 -->
         <span class="discount-badge {{ product.discount_type }}">
           {% if product.discount_type == "closing" %}
             마감 할인
@@ -88,14 +78,12 @@
         </span>
       </div>
 
-      <!-- 상품 정보 -->
       <div class="product-info">
 
         <h3 class="product-name">
           {{ product.name }}
         </h3>
 
-        <!-- 할인율 및 가격 -->
         <div class="product-price">
           <span class="discount-rate">
             {{ product.discount_rate }}%
@@ -106,7 +94,6 @@
           </span>
         </div>
 
-        <!-- 가게 정보 -->
         <div class="product-location">
 
           <span class="store-name">
@@ -124,12 +111,10 @@
 
   </div>
 
-  <!-- 검색 결과 없음 -->
   <p class="empty-message" {% if products %}hidden{% endif %}>
     조건에 맞는 상품이 없습니다.
   </p>
 
-  <!-- 페이지네이션 (?page=번호, 지금 고른 필터는 그대로 유지) -->
   <nav class="pagination" aria-label="상품 페이지">
     {% if page > 1 %}
     <a class="page-arrow" href="{{ url_for('product_list', discount=discount, category=category, page=page - 1) }}" aria-label="이전 페이지">❮</a>
