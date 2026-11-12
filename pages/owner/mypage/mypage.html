@@ -33,9 +33,9 @@
   </section>
 
   <section class="card stats-card">
-    <a href="#products" data-open-tab="tab-products"><b>3</b><span>판매 중</span></a>
-    <a href="{{ url_for('owner_reservations') }}"><b>2</b><span>예약 대기</span></a>
-    <a href="{{ url_for('owner_reviews') }}"><b>18</b><span>받은 후기</span></a>
+    <a href="#products" data-open-tab="tab-products"><b>1</b><span>판매 중</span></a>
+    <a href="{{ url_for('owner_reservations') }}"><b>3</b><span>예약 대기</span></a>
+    <a href="{{ url_for('owner_reviews') }}"><b>5</b><span>받은 후기</span></a>
   </section>
 
   <a class="btn btn-primary register-btn" href="{{ url_for('product_register') }}">
@@ -45,7 +45,7 @@
 
   <section class="tab-card" id="products">
     <div class="tabs" role="tablist">
-      <button type="button" class="tab" role="tab" id="tab-pickup" aria-selected="true" aria-controls="panel-pickup">오늘 픽업 예정 2</button>
+      <button type="button" class="tab" role="tab" id="tab-pickup" aria-selected="true" aria-controls="panel-pickup">오늘 픽업 예정 <b>3</b></button>
       <button type="button" class="tab" role="tab" id="tab-products" aria-selected="false" aria-controls="panel-products">등록한 상품 <b>3</b></button>
     </div>
 
@@ -53,18 +53,18 @@
       <a class="list-row" href="{{ url_for('owner_reservations') }}">
         <div class="thumb"></div>
         <div class="row-text">
-          <strong>버터 크루아상 세트</strong>
-          <small>ewha_23 · 18:00–20:00</small>
+          <strong>플레인 베이글</strong>
+          <small>이화인 · 16:00–16:30</small>
         </div>
-        <span class="code-chip">코드 4821</span>
+        <span class="code-chip">코드 4729</span>
       </a>
       <a class="list-row" href="{{ url_for('owner_reservations') }}">
         <div class="thumb tone-pink"></div>
         <div class="row-text">
-          <strong>딸기 생크림 케이크</strong>
-          <small>green · 19:00–20:00</small>
+          <strong>버터 크루아상 세트</strong>
+          <small>eunha22 · 18:00–20:00</small>
         </div>
-        <span class="code-chip">코드 1937</span>
+        <span class="code-chip">코드 4821</span>
       </a>
       <a class="more-btn" href="{{ url_for('owner_reservations') }}">더보기
         <svg width="10" height="6" viewBox="0 0 9.6 5.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M.8.8l4 4 4-4"/></svg>

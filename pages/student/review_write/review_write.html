@@ -14,7 +14,7 @@
 <form class="review-form" id="review-form" data-next="{{ url_for('review_list') }}" novalidate>
   <div class="field">
     <label class="field-label" for="writer">작성자 ID <span class="req">*</span></label>
-    <input class="input" id="writer" name="writer" placeholder="작성자 ID를 입력하세요" required>
+    <input class="input" id="writer" name="writer" placeholder="작성자 ID를 입력하세요" value="{{ session.get('id', '') }}" {% if session.get('id') %}readonly{% endif %} required>
   </div>
 
   <div class="field">

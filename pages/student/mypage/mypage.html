@@ -50,7 +50,7 @@
   <section class="tab-card">
     <div class="tabs" role="tablist">
       <button type="button" class="tab" role="tab" id="tab-reserve" aria-selected="true" aria-controls="panel-reserve">예약 내역 3</button>
-      <button type="button" class="tab" role="tab" id="tab-review" aria-selected="false" aria-controls="panel-review">내가 쓴 후기 <b>5</b></button>
+      <button type="button" class="tab" role="tab" id="tab-review" aria-selected="false" aria-controls="panel-review">내가 쓴 후기 <b>3</b></button>
     </div>
 
     <div class="tab-panel" role="tabpanel" id="panel-reserve" aria-labelledby="tab-reserve">
@@ -99,6 +99,14 @@
           <small>★★★★☆ 마감 할인이라 가성비 최고</small>
         </div>
         <small class="row-date">10/09</small>
+      </a>
+      <a class="list-row" href="{{ url_for('review_detail', review_id=1) }}" hidden>
+        <div class="thumb"></div>
+        <div class="row-text">
+          <strong>버터 크루아상 세트</strong>
+          <small>★★★★★ 바삭하고 고소해요!</small>
+        </div>
+        <small class="row-date">10/05</small>
       </a>
       <button type="button" class="more-btn">더보기
         <svg width="10" height="6" viewBox="0 0 9.6 5.6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M.8.8l4 4 4-4"/></svg>

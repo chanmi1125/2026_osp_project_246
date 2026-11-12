@@ -33,7 +33,7 @@
   <div class="field">
     <label class="label" for="sellerId">판매자 ID <span class="req">*</span></label>
     <div class="input-box is-readonly">
-      <input id="sellerId" name="seller_id" value="cafe_ewha" readonly>
+      <input id="sellerId" name="seller_id" value="{{ session.get('id', '') }}" readonly>
       <span class="suffix muted">자동 입력</span>
     </div>
     <p class="help">로그인한 사장님 아이디로 자동 입력돼요</p>

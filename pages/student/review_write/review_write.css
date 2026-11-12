@@ -27,3 +27,4 @@
 .photo-empty[hidden], .photo-preview[hidden] { display: none; }
 
 .form-error { margin-bottom: -8px; font-size: 13px; color: var(--coral); }
+.input[readonly] { background: var(--bg); color: var(--sub); }

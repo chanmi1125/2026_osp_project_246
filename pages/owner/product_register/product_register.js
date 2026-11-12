@@ -137,7 +137,7 @@ document.querySelectorAll("[data-step]").forEach((btn) =>
 quantity.addEventListener("input", () => setQuantity(Number(onlyDigits(quantity.value)) || 0));
 setQuantity(Number(quantity.value));
 
-const DRAFT_FIELDS = ["address", "discount_type", "category", "name", "price", "discount_rate",
+const DRAFT_FIELDS = ["email", "address", "discount_type", "category", "name", "price", "discount_rate",
   "pickup_start", "pickup_end", "quantity", "status", "description"];
 
 document.getElementById("tempSave").addEventListener("click", () => {
@@ -183,6 +183,8 @@ form.addEventListener("submit", (e) => {
     [form.elements.email.validity.valid && form.elements.email.value.trim() !== "",
       form.elements.email.closest(".input-box"), "올바른 이메일을 입력해주세요"],
     [form.elements.name.value.trim() !== "", form.elements.name.closest(".input-box"), "상품 이름을 입력해주세요"],
+    [!/[.#$\[\]\/]/.test(form.elements.name.value), form.elements.name.closest(".input-box"),
+      "상품 이름에는 . # $ [ ] / 를 쓸 수 없어요"],
     [Number(onlyDigits(price.value)) > 0, price.closest(".input-box"), "정가를 입력해주세요"],
     [Number(rate.value) >= 1 && Number(rate.value) <= 99, rate.closest(".input-box"), "할인율은 1~99% 사이로 입력해주세요"],
     [form.elements.pickup_start.value !== "" && form.elements.pickup_end.value !== ""
@@ -204,6 +206,9 @@ form.addEventListener("submit", (e) => {
   }
 
   form.querySelector('[type="submit"]').disabled = true;
+  try {
+    localStorage.removeItem(DRAFT_KEY);
+  } catch {}
 
   form.submit();
 });

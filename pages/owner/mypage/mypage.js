@@ -15,3 +15,15 @@ document.querySelectorAll("[data-open-tab]").forEach((link) =>
 );
 
 if (location.hash === "#products") selectTab(document.getElementById("tab-products"));
+
+document.querySelectorAll("button.more-btn").forEach((button) => {
+  const rows = button.closest(".tab-panel").querySelectorAll(".list-row[hidden]");
+  if (!rows.length) {
+    button.hidden = true;
+    return;
+  }
+  button.addEventListener("click", () => {
+    rows.forEach((row) => (row.hidden = false));
+    button.hidden = true;
+  });
+});
