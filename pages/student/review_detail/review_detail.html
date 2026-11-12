@@ -17,6 +17,7 @@
     "id": 1,
     "store": "이화 베이커리",
     "product": "버터 크루아상 세트",
+    "product_key": "버터 크루아상 세트",
     "category": "bakery",
     "category_label": "베이커리",
     "rating": 5,
@@ -31,6 +32,7 @@
     "id": 2,
     "store": "그린 키친",
     "product": "닭가슴살 샐러드 도시락",
+    "product_key": "닭가슴살 샐러드 도시락",
     "category": "lunchbox",
     "category_label": "도시락",
     "rating": 4,
@@ -65,7 +67,6 @@
     "date_iso": "2026-09-28",
     "image": "bagel.jpg",
     "text": "겉은 살짝 바삭하고 속은 쫄깃해서 플레인베이글만 먹어도 고소했어요. 크림치즈를 곁들이니 더 맛있고, 커피와 함께 먹기 좋았습니다.",
-    "product_id": 1,
     "address": "서울 서대문구 이화여대5길 5 지상 1층"
   },
   {
@@ -80,12 +81,13 @@
     "date_iso": "2026-09-25",
     "image": "churros.jpg",
     "text": "겉은 바삭하고 속은 촉촉해서 식감이 좋았어요. 진한 초콜릿이 더해져 달콤했고, 커피와 함께 먹으니 잘 어울렸습니다.",
-    "product_id": 2
+    "product_key": "초코 쫀득 츄러스"
   },
   {
     "id": 6,
     "store": "이화 베이커리",
     "product": "버터 크루아상 세트",
+    "product_key": "버터 크루아상 세트",
     "category": "bakery",
     "category_label": "베이커리",
     "rating": 4,
@@ -99,6 +101,7 @@
     "id": 7,
     "store": "그린 키친",
     "product": "닭가슴살 샐러드 도시락",
+    "product_key": "닭가슴살 샐러드 도시락",
     "category": "lunchbox",
     "category_label": "도시락",
     "rating": 5,
@@ -133,7 +136,6 @@
     "date_iso": "2026-09-15",
     "image": "bagel.jpg",
     "text": "베이글이 쫄깃하고 포장도 깔끔해서 좋았어요.",
-    "product_id": 1,
     "address": "서울 서대문구 이화여대5길 5 지상 1층"
   },
   {
@@ -148,7 +150,36 @@
     "date_iso": "2026-09-12",
     "image": "churros.jpg",
     "text": "간식으로 먹기 좋고 가격도 만족스러웠어요.",
-    "product_id": 2
+    "product_key": "초코 쫀득 츄러스"
+  },
+  {
+    "id": 11,
+    "store": "그린 키친",
+    "product": "닭가슴살 샐러드 도시락",
+    "product_key": "닭가슴살 샐러드 도시락",
+    "category": "lunchbox",
+    "category_label": "도시락",
+    "rating": 5,
+    "user": "이화인",
+    "date": "2026.10.14",
+    "date_iso": "2026-10-14",
+    "image": "salad.jpeg",
+    "title": "양도 많고 신선했어요!",
+    "text": "닭가슴살이 퍽퍽하지 않고 채소도 아삭해서 끝까지 맛있게 먹었어요. 마감 할인으로 사서 가격도 부담 없었어요."
+  },
+  {
+    "id": 12,
+    "store": "마더린러 베이글",
+    "product": "플레인 베이글",
+    "category": "bakery",
+    "category_label": "베이커리",
+    "rating": 4,
+    "user": "이화인",
+    "date": "2026.10.09",
+    "date_iso": "2026-10-09",
+    "image": "bagel.jpg",
+    "title": "마감 할인이라 가성비 최고",
+    "text": "저녁에 들러서 마감 할인으로 샀는데 여전히 쫄깃했어요. 크림치즈를 따로 챙기면 더 좋을 것 같아요."
   }
 ] %}
   {% set review = reviews|selectattr('id','equalto',review_id)|first|default(none) %}
@@ -172,9 +203,9 @@
     </div>{% endif %}
   </section>
   {% endif %}
-  <a class="detail-product card" href="{{ url_for('product_detail', product_id=review.product_id) if review.product_id else url_for('product_list') }}">
+  <a class="detail-product card" href="{{ url_for('product_detail', name=review.product_key) if review.product_key else url_for('product_list', category=review.category) }}">
     <img src="{{ url_for('static', filename='images/' ~ review.image) }}" alt="{{ review.product }}">
-    <span class="detail-product-text"><span>{{ review.store }}</span><strong>{{ review.product }}</strong>{% if review.address %}<small>● {{ review.address }}</small>{% endif %}</span>{% if not review.product_id %}<small>상품 목록 보기</small>{% endif %}<span class="product-chevron" aria-hidden="true">›</span>
+    <span class="detail-product-text"><span>{{ review.store }}</span><strong>{{ review.product }}</strong>{% if review.address %}<small>● {{ review.address }}</small>{% endif %}</span>{% if not review.product_key %}<small>상품 목록 보기</small>{% endif %}<span class="product-chevron" aria-hidden="true">›</span>
   </a>
 </article>
 <dialog id="review-photo-dialog" class="review-photo-dialog" aria-labelledby="photo-dialog-title">

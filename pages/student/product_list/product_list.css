@@ -1,13 +1,5 @@
-.page:has(.product-list) {
-    max-width: 470px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
   .product-list {
     width: 100%;
-    max-width: 430px;
-    margin: 0 auto;
   }
   
   .product-svg-defs {
@@ -338,10 +330,6 @@
   
   @media (max-width: 480px) {
   
-    .page:has(.product-list) {
-      padding: 12px 16px 40px;
-    }
-  
     .discount-filters {
       gap: 7px;
       margin-bottom: 10px;
@@ -391,11 +379,6 @@
   
   
   @media (max-width: 360px) {
-  
-    .page:has(.product-list) {
-      padding-left: 10px;
-      padding-right: 10px;
-    }
   
     .product-grid {
       gap: 18px 10px;

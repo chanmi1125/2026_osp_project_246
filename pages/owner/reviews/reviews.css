@@ -2,8 +2,6 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  max-width: none;
-  margin: 16px 0 0;
 }
 
 .received-reviews .rating-summary {
@@ -25,7 +23,7 @@
 
 .score-number {
   font-size: 34px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.15;
 }
 
@@ -176,7 +174,7 @@
 
 .review-username {
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .review-date {
@@ -227,7 +225,7 @@
   padding: 0;
   color: var(--primary);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 18px;
 }
 

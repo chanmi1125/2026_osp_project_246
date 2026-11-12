@@ -34,7 +34,7 @@
     </p>
   </section>
 
-  <a class="card pickup-card" href="{{ url_for('product_detail', product_id=1) }}">
+  <a class="card pickup-card" href="{{ url_for('product_detail', name='버터 크루아상 세트') }}">
     <div class="thumb thumb-lg"></div>
     <div class="pickup-text">
       <span class="state-pill">예약 완료</span>
@@ -56,7 +56,7 @@
     <div class="tab-panel" role="tabpanel" id="panel-reserve" aria-labelledby="tab-reserve">
       <div class="list-row">
         <div class="thumb"></div>
-        <a class="row-text" href="{{ url_for('product_detail', product_id=1) }}">
+        <a class="row-text" href="{{ url_for('product_detail', name='버터 크루아상 세트') }}">
           <strong>버터 크루아상 세트</strong>
           <small>카페 이화 · 10/20 (오늘)</small>
         </a>
@@ -64,17 +64,17 @@
       </div>
       <div class="list-row">
         <div class="thumb tone-pink"></div>
-        <a class="row-text" href="{{ url_for('product_detail', product_id=2) }}">
-          <strong>딸기 생크림 케이크</strong>
-          <small>달콤한 하루 · 10/17 · 픽업 완료</small>
+        <a class="row-text" href="{{ url_for('product_detail', name='무화과 크림치즈 바게트') }}">
+          <strong>무화과 크림치즈 바게트</strong>
+          <small>카페 이화 · 10/17 · 픽업 완료</small>
         </a>
         <a class="review-btn" href="{{ url_for('review_write') }}">리뷰 쓰기</a>
       </div>
       <div class="list-row">
         <div class="thumb tone-sage"></div>
-        <a class="row-text" href="{{ url_for('product_detail', product_id=3) }}">
+        <a class="row-text" href="{{ url_for('product_detail', name='닭가슴살 샐러드 도시락') }}">
           <strong>닭가슴살 샐러드 도시락</strong>
-          <small>샐러드랩 · 10/14 · 픽업 완료</small>
+          <small>카페 이화 · 10/14 · 픽업 완료</small>
         </a>
         <span class="review-done">리뷰 완료</span>
       </div>
@@ -84,7 +84,7 @@
     </div>
 
     <div class="tab-panel" role="tabpanel" id="panel-review" aria-labelledby="tab-review" hidden>
-      <a class="list-row" href="{{ url_for('review_detail', review_id=1) }}">
+      <a class="list-row" href="{{ url_for('review_detail', review_id=11) }}">
         <div class="thumb tone-sage"></div>
         <div class="row-text">
           <strong>닭가슴살 샐러드 도시락</strong>
@@ -92,7 +92,7 @@
         </div>
         <small class="row-date">10/14</small>
       </a>
-      <a class="list-row" href="{{ url_for('review_detail', review_id=2) }}">
+      <a class="list-row" href="{{ url_for('review_detail', review_id=12) }}">
         <div class="thumb"></div>
         <div class="row-text">
           <strong>플레인 베이글</strong>

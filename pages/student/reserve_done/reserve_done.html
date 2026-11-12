@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block content %}
+{% set a = request.args %}
+{% set qty = a.get('qty', '1')|int(1) %}
+{% set total = a.get('total', '2240')|int(2240) %}
 <section class="done-head">
   <div class="done-icon">
     <svg width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18.5l6 6 12-13"/></svg>
@@ -47,13 +50,13 @@
   <div class="product">
     <div class="product-thumb"></div>
     <div>
-      <strong class="product-name">플레인 베이글</strong>
-      <p class="product-meta">1개 · 마감 할인 30%</p>
+      <strong class="product-name">{{ a.get('name', '플레인 베이글') }}</strong>
+      <p class="product-meta">{{ qty }}개 · {{ a.get('discount', '마감 할인 30%') }}</p>
     </div>
   </div>
   <dl class="info-rows">
-    <div><dt>픽업 시간</dt><dd>오늘 16:00 ~ 16:30</dd></div>
-    <div><dt>결제 금액</dt><dd class="price">현장 결제 2,240원</dd></div>
+    <div><dt>픽업 시간</dt><dd>오늘 {{ a.get('pickup', '16:00 ~ 16:30') }}</dd></div>
+    <div><dt>결제 금액</dt><dd class="price">현장 결제 {{ "{:,}".format(total) }}원</dd></div>
     <div><dt>예약 번호</dt><dd>EP-1020-0417</dd></div>
   </dl>
 </section>
@@ -68,8 +71,8 @@
     </svg>
     <span class="map-pin"></span>
   </div>
-  <strong class="store-name">마더린러 베이글</strong>
-  <p class="store-addr">서울 서대문구 이화여대길 5 지상 1층</p>
+  <strong class="store-name">{{ a.get('store', '마더린러 베이글') }}</strong>
+  <p class="store-addr">{{ a.get('address', '서울 서대문구 이화여대길 5 지상 1층') }}</p>
 </section>
 
 <div class="actions">

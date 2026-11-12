@@ -1,4 +1,3 @@
-.page:has(.mypage) { padding-top: 14px; }
 .mypage { display: flex; flex-direction: column; gap: 14px; }
 .mypage .card { padding: 15px; }
 

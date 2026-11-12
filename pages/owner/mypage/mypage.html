@@ -33,7 +33,7 @@
   </section>
 
   <section class="card stats-card">
-    <a href="{{ url_for('owner_reservations') }}"><b>3</b><span>판매 중</span></a>
+    <a href="#products" data-open-tab="tab-products"><b>3</b><span>판매 중</span></a>
     <a href="{{ url_for('owner_reservations') }}"><b>2</b><span>예약 대기</span></a>
     <a href="{{ url_for('owner_reviews') }}"><b>18</b><span>받은 후기</span></a>
   </section>
@@ -43,7 +43,7 @@
     상품 등록하기
   </a>
 
-  <section class="tab-card">
+  <section class="tab-card" id="products">
     <div class="tabs" role="tablist">
       <button type="button" class="tab" role="tab" id="tab-pickup" aria-selected="true" aria-controls="panel-pickup">오늘 픽업 예정 2</button>
       <button type="button" class="tab" role="tab" id="tab-products" aria-selected="false" aria-controls="panel-products">등록한 상품 <b>3</b></button>

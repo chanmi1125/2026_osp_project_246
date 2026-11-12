@@ -1,14 +1,10 @@
 .page:has(.product-detail),
 .page:has(.detail-not-found) {
-  max-width: 470px;
-  margin: 0 auto;
-  padding: 0 20px 40px;
+  padding-top: 0;
 }
 
 .product-detail {
   width: 100%;
-  max-width: 430px;
-  margin: 0 auto;
   color: var(--text);
 }
 
@@ -300,6 +296,76 @@
   padding: 0 30px;
 }
 
+.reserve-qty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reserve-qty-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--label);
+}
+
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 44px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.qty-step {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--border);
+  color: var(--text);
+}
+
+.qty-step.plus {
+  background: var(--primary);
+  color: var(--white);
+}
+
+.qty-step:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.qty-value {
+  min-width: 3ch;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--text);
+}
+
+.reserve-total {
+  margin-left: auto;
+  font-size: 14px;
+  color: var(--sub);
+}
+
+.reserve-total strong {
+  margin-left: 4px;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.reserve-qty-help {
+  margin: 8px 0 14px;
+  font-size: 12px;
+  color: var(--sub);
+}
+
 .reserve-button {
   display: flex;
   align-items: center;
@@ -350,11 +416,6 @@
 }
 
 @media (max-width: 480px) {
-
-  .page:has(.product-detail),
-  .page:has(.detail-not-found) {
-    padding: 0 16px 35px;
-  }
 
   .detail-info {
     padding: 14px 20px 0;

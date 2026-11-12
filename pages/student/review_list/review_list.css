@@ -1,7 +1,3 @@
-.page:has(.student-reviews) {
-  padding: 16px 16px 36px;
-}
-
 .student-reviews {
   width: 100%;
 }
@@ -53,7 +49,7 @@
 
 .review-count strong {
   color: var(--primary);
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .review-sort-trigger {
@@ -119,7 +115,7 @@
 
 .review-sort-header h2 {
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .review-sort-close {
@@ -234,7 +230,7 @@ body.review-sort-open {
   white-space: nowrap;
   text-overflow: ellipsis;
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .product-name {
@@ -307,7 +303,7 @@ body.review-sort-open {
   padding: 2px 0;
   color: var(--primary);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
 }
 
 .detail-arrow {
