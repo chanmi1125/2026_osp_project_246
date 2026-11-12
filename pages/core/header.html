@@ -17,7 +17,6 @@
     </button>
   </div>
   {% else %}
-  {# 로그인 전: 메뉴 버튼 대신 로그인 링크 #}
   <a class="header-login" href="{{ url_for('login') }}" {% if request.endpoint == 'login' %}aria-current="page"{% endif %}>로그인</a>
   {% endif %}
 </header>

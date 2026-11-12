@@ -1,5 +1,3 @@
-
-{# 상품 상세 · 담당: 윤한솔 #}
 {% extends "core/base.html" %}
 
 {% block title %}상품 상세{% endblock %}
@@ -29,7 +27,6 @@
 
 <section class="product-detail">
 
-  <!-- 상품 이미지 -->
   <div class="detail-image">
     {% if product.image %}
     <img
@@ -39,7 +36,6 @@
     {% endif %}
   </div>
 
-  <!-- 할인 배지 -->
   <div class="detail-discount-badge {{ product.discount_type }}">
     {% if product.discount_type == "closing" %}
       마감 할인
@@ -48,12 +44,10 @@
     {% endif %}
   </div>
 
-  <!-- 상품 기본 정보 -->
   <div class="detail-info">
 
     <h1 class="detail-name">{{ product.name }}</h1>
 
-    <!-- 가게명, 주소, 별점 -->
     <div class="detail-store">
 
       <span class="store-name">
@@ -76,7 +70,6 @@
         <span>{{ product.address }}</span>
       </span>
 
-      <!-- 별점 클릭 시 리뷰 목록으로 이동 -->
       <a href="{{ url_for('review_list') }}"
          class="store-rating"
          aria-label="가게 리뷰 보기">
@@ -86,7 +79,6 @@
 
     </div>
 
-    <!-- 가격 정보 -->
     <div class="detail-price">
       <span class="discount-rate">
         {{ product.discount_rate }}%
@@ -101,7 +93,6 @@
       </del>
     </div>
 
-    <!-- 픽업 및 판매 정보 -->
     <div class="pickup-info">
 
       <div class="info-row">
@@ -182,20 +173,40 @@
 
   </div>
 
-  <!-- 상품 설명 제목 -->
   <h2 class="description-title">상품 설명</h2>
 
-  <!-- 상품 설명 내용 -->
   <div class="detail-description">
     <p class="description-text">{{ product.description }}</p>
   </div>
 
-  <!-- 예약하기 버튼 -->
   <div class="detail-reservation">
+    {% if product.status == "판매중" and product.quantity > 0 %}
+    <div class="reserve-qty">
+      <span class="reserve-qty-label" id="reserve-qty-label">수량</span>
+      <div class="qty-stepper" role="group" aria-labelledby="reserve-qty-label">
+        <button type="button" class="qty-step" data-step="-1" aria-label="수량 빼기" disabled>
+          <svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 8h9"/></svg>
+        </button>
+        <output class="qty-value" id="reserve-qty" aria-live="polite">1</output>
+        <button type="button" class="qty-step plus" data-step="1" aria-label="수량 더하기" {% if product.quantity <= 1 %}disabled{% endif %}>
+          <svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M3.5 8h9M8 3.5v9"/></svg>
+        </button>
+      </div>
+      <p class="reserve-total">합계 <strong id="reserve-total">{{ "{:,}".format(product.price) }}원</strong></p>
+    </div>
+    <p class="reserve-qty-help">최대 {{ product.quantity }}개까지 예약할 수 있어요</p>
+    {% endif %}
     <button
       type="button"
       class="btn btn-primary reserve-button"
       data-product-id="{{ product.id }}"
+      data-price="{{ product.price }}"
+      data-max="{{ product.quantity }}"
+      data-done-url="{{ url_for('reserve_done') }}"
+      data-discount="{{ ('마감 할인' if product.discount_type == 'closing' else '이화인 할인') ~ ' ' ~ product.discount_rate ~ '%' }}"
+      data-pickup="{{ product.pickup_time }}"
+      data-store="{{ product.store_name }}"
+      data-address="{{ product.address }}"
       {% if product.status != "판매중" or product.quantity <= 0 %}
         disabled
       {% endif %}

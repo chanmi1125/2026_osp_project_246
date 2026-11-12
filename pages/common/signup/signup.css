@@ -1,12 +1,7 @@
-/* 회원가입 페이지 · common/signup */
-
 .signup {
-  max-width: 430px;
-  margin: 0 auto;
   color: var(--text);
 }
 
-/* 학생 / 사장님 탭 */
 .signup-tabs {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -35,7 +30,6 @@
   font-weight: 700;
 }
 
-/* 폼 */
 .signup-form {
   display: flex;
   flex-direction: column;
@@ -101,7 +95,6 @@
   border-color: #E5533F;
 }
 
-/* 아이디 + 중복확인 */
 .field-row {
   display: flex;
   gap: 8px;
@@ -125,7 +118,6 @@
   cursor: pointer;
 }
 
-/* @ewha.ac.kr 붙는 이메일 */
 .field-suffix {
   position: relative;
 }
@@ -144,7 +136,6 @@
   color: var(--text);
 }
 
-/* 주소 검색 아이콘 */
 .field-wrap {
   position: relative;
 }
@@ -162,7 +153,6 @@
   color: #8A9891;
 }
 
-/* 안내 · 결과 문구 */
 .field-help,
 .field-msg {
   margin: 0;
@@ -180,7 +170,6 @@
   font-weight: 600;
 }
 
-/* 사장님: 가게 정보 */
 .signup-divider {
   margin: 4px 0;
   border: none;
@@ -193,7 +182,6 @@
   gap: 10px;
 }
 
-/* 약관 */
 .signup-terms {
   display: flex;
   justify-content: space-between;
@@ -226,7 +214,6 @@
   color: #E5533F;
 }
 
-/* 가입 버튼 */
 .signup-submit {
   height: 52px;
   border: none;
@@ -258,7 +245,6 @@
   text-decoration: none;
 }
 
-/* 좁은 화면: 가게 이름/전화번호 세로로 */
 @media (max-width: 360px) {
   .field-grid {
     grid-template-columns: 1fr;

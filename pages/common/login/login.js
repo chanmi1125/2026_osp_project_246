@@ -1,6 +1,4 @@
-// 로그인 페이지 · common/login
 document.addEventListener('DOMContentLoaded', () => {
-  // 비밀번호 보기 / 숨기기
   document.querySelectorAll('.pw-toggle').forEach((btn) => {
     btn.addEventListener('click', () => {
       const input = document.getElementById(btn.dataset.target);
@@ -19,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const error = document.getElementById('login-error');
   if (!form || !error) return;
 
-  // 서버의 flash 메시지를 경고창과 본문에 표시
   const messagesNode = document.getElementById('login-messages');
   const messages = messagesNode
     ? JSON.parse(messagesNode.textContent)
@@ -34,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 빈 입력만 차단하고, 나머지는 Flask 서버로 제출
   form.addEventListener('submit', (event) => {
     const idInput = form.elements.namedItem('user_id');
     const pwInput = form.elements.namedItem('password');

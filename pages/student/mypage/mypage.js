@@ -1,6 +1,3 @@
-// 마이페이지 · 담당: 박찬미
-
-/* ---------- 예약 내역 / 내가 쓴 후기 탭 전환 (페이지 이동 없음) ---------- */
 const tabs = document.querySelectorAll('[role="tab"]');
 
 tabs.forEach((tab) =>
@@ -12,3 +9,15 @@ tabs.forEach((tab) =>
     });
   })
 );
+
+document.querySelectorAll("button.more-btn").forEach((button) => {
+  const rows = button.closest(".tab-panel").querySelectorAll(".list-row[hidden]");
+  if (!rows.length) {
+    button.hidden = true;
+    return;
+  }
+  button.addEventListener("click", () => {
+    rows.forEach((row) => (row.hidden = false));
+    button.hidden = true;
+  });
+});

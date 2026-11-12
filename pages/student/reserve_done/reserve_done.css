@@ -1,8 +1,5 @@
-/* 예약 완료 · 담당: 유지우 */
-
 .page { display: flex; flex-direction: column; gap: 14px; }
 
-/* 완료 문구 */
 .done-head { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px 0 6px; text-align: center; }
 .done-icon {
   display: flex; align-items: center; justify-content: center;
@@ -12,7 +9,6 @@
 .done-title { font-size: 20px; font-weight: 700; }
 .done-desc { font-size: 13px; color: var(--sub); }
 
-/* 픽업 코드 */
 .code-card { display: flex; flex-direction: column; align-items: center; gap: 14px; }
 .code-label { font-size: 14px; font-weight: 700; color: var(--label); }
 .code-digits { display: flex; gap: 10px; }
@@ -23,7 +19,6 @@
   font-size: 28px; font-weight: 700; color: var(--text);
 }
 
-/* 안내 박스 */
 .notice { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border-radius: var(--radius); }
 .notice strong { font-size: 14px; font-weight: 700; color: var(--text); }
 .notice p { margin-top: 4px; font-size: 13px; line-height: 1.5; color: var(--label); }
@@ -37,7 +32,6 @@
 .notice-warn { background: #FFEDEA; }
 .notice-warn .notice-icon { background: var(--coral); }
 
-/* 상품 · 예약 정보 */
 .product { display: flex; align-items: center; gap: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--divider); }
 .product-thumb { flex: none; width: 56px; height: 56px; border-radius: 10px; background: #F3E3C8; }
 .product-name { font-size: 15px; }
@@ -49,7 +43,6 @@
 .info-rows dd { font-weight: 700; }
 .info-rows .price { color: var(--primary); }
 
-/* 픽업 장소 */
 .place-label { margin-bottom: 12px; font-size: 14px; font-weight: 700; color: var(--label); }
 .map {
   position: relative; height: 135px; margin-bottom: 14px; overflow: hidden;
@@ -66,5 +59,4 @@
 .store-name { display: block; font-size: 15px; }
 .store-addr { margin-top: 4px; font-size: 12px; color: var(--sub); }
 
-/* 하단 버튼 */
 .actions { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }

@@ -1,4 +1,3 @@
-// 헤더 메뉴 버튼 → 오른쪽 메뉴 열기/닫기 · 담당: 박찬미
 const drawer = document.querySelector(".drawer");
 const dim = document.querySelector(".drawer-dim");
 

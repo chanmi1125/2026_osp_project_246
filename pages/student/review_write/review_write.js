@@ -1,5 +1,3 @@
-// 리뷰 작성 · 담당: 유지우
-
 const form = document.getElementById("review-form");
 const stars = form.querySelectorAll(".star");
 const ratingInput = document.getElementById("rating");
@@ -8,7 +6,6 @@ const photoPreview = document.getElementById("photo-preview");
 const photoEmpty = document.getElementById("photo-empty");
 const errorText = document.getElementById("form-error");
 
-// 별 클릭 → 그 점수까지 채우기
 stars.forEach((star) => {
   star.addEventListener("click", () => {
     const value = Number(star.dataset.value);
@@ -22,7 +19,6 @@ stars.forEach((star) => {
   });
 });
 
-// 사진 고르면 미리보기
 photoInput.addEventListener("change", () => {
   const file = photoInput.files[0];
   photoPreview.hidden = !file;
@@ -33,7 +29,6 @@ photoInput.addEventListener("change", () => {
   }
 });
 
-// 필수 항목 검사 후 리뷰 목록으로 이동
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   let ok = true;
