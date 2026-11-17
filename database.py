@@ -43,6 +43,10 @@ class DBhandler:
         """상품 이름을 키로 조회. 없으면 None."""
         return self.db.child("item").child(name).get().val()
 
+    def insert_review(self, review_info):
+        """review 노드 아래에 push()로 저장하고 자동 생성된 키를 돌려줌"""
+        return self.db.child("review").push(review_info)["name"]
+
     def get_user(self, user_id):
         """user/아이디 정보. 없으면 None"""
         return self.db.child("user").child(user_id).get().val()

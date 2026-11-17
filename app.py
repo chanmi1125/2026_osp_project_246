@@ -2,7 +2,7 @@ import hashlib
 import hmac
 import os
 import secrets
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify, session
 
@@ -310,6 +310,9 @@ def reserve_done():
     return render_template("student/reserve_done/reserve_done.html")
 
 
+REVIEW_PHOTO_EXTS = {".jpg", ".jpeg", ".png"}
+
+
 @app.route("/reviews")
 
 
@@ -324,11 +327,53 @@ def review_detail(review_id):
     return render_template("student/review_detail/review_detail.html", review_id=review_id)
 
 
-@app.route("/reviews/write")
+@app.route("/reviews/write", methods=["GET", "POST"])
 
 
 def review_write():
-    return render_template("student/review_write/review_write.html")
+    if request.method == "GET":
+        product = request.args.get("product", "").strip()
+        locked = bool(product) and DB.get_item(product) is not None
+        return render_template("student/review_write/review_write.html",
+                               product=product, product_locked=locked)
+
+    data = request.form
+    writer = session.get("id") or data.get("writer", "").strip()
+    product = data.get("product", "").strip()
+    title = data.get("title", "").strip()
+    content = data.get("content", "").strip()
+    rating = data.get("rating", "0")
+    photo = request.files.get("photo")
+    ext = Path(photo.filename).suffix.lower() if photo and photo.filename else ""
+
+    error = None
+    if not (writer and product and title and content):
+        error = "필수 항목을 모두 입력해 주세요."
+    elif rating not in {"1", "2", "3", "4", "5"}:
+        error = "평점을 선택해 주세요."
+    elif ext not in REVIEW_PHOTO_EXTS:
+        error = "리뷰 사진(JPG, PNG)을 올려 주세요."
+    elif DB.get_item(product) is None:
+        error = "등록된 상품 이름이 아니에요. 상품 상세에서 리뷰 쓰기를 눌러 주세요."
+    if error:
+        flash(error, "error")
+        return redirect(url_for("review_write", product=product))
+
+    upload_dir = Path(app.static_folder) / "uploads"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    filename = f"{uuid4().hex}{ext}"
+    photo.save(upload_dir / filename)
+
+    DB.insert_review({
+        "writer": writer,
+        "product": product,
+        "title": title,
+        "content": content,
+        "rating": int(rating),
+        "img_path": f"uploads/{filename}",
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+    })
+    return redirect(url_for("review_list"))
 
 
 @app.route("/mypage")

@@ -206,6 +206,11 @@
     <p class="description-text">{{ product.description }}</p>
   </div>
 
+  <a class="btn review-write-button"
+     href="{{ url_for('review_write', product=product.name) }}">
+    Write a review
+  </a>
+
   <div class="detail-reservation">
     {% if product.status == "판매중" and product.quantity > 0 %}
     <div class="reserve-qty">

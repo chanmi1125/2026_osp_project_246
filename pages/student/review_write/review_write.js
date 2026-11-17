@@ -30,7 +30,6 @@ photoInput.addEventListener("change", () => {
 });
 
 form.addEventListener("submit", (e) => {
-  e.preventDefault();
   let ok = true;
 
   form.querySelectorAll("input.input, textarea").forEach((el) => {
@@ -50,5 +49,5 @@ form.addEventListener("submit", (e) => {
   }
 
   errorText.hidden = ok;
-  if (ok) location.href = form.dataset.next;
+  if (!ok) e.preventDefault();
 });
