@@ -4,7 +4,7 @@ import os
 import secrets
 from datetime import datetime, timedelta
 
-from flask import Flask, render_template, redirect, url_for, request, flash, jsonify, session
+from flask import Flask, render_template, redirect, url_for, request, flash, jsonify, session, abort
 
 from database import DBhandler
 from werkzeug.utils import secure_filename
@@ -317,14 +317,73 @@ REVIEW_PHOTO_EXTS = {".jpg", ".jpeg", ".png"}
 
 
 def review_list():
-    return render_template("student/review_list/review_list.html")
+    page = request.args.get("page", 1, type=int)
+    try:
+        stored_reviews = DB.get_reviews()
+    except Exception:
+        app.logger.exception("Firebase review list lookup failed")
+        abort(503, description="리뷰를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.")
+    reviews = [(key, info) for key, info in stored_reviews.items()
+               if isinstance(info, dict)]
+    total_pages = max(1, (len(reviews) + ITEMS_PER_PAGE - 1) // ITEMS_PER_PAGE)
+    page = max(1, min(page, total_pages))
+    start = (page - 1) * ITEMS_PER_PAGE
+    return render_template(
+        "student/review_list/review_list.html",
+        reviews=[review_view(key, info) for key, info in reviews[start:start + ITEMS_PER_PAGE]],
+        page=page, total_pages=total_pages, total_reviews=len(reviews),
+    )
 
 
-@app.route("/reviews/<int:review_id>")
+def review_view(review_id, info):
+    """Adapt existing form names and common stored names for display only."""
+    photo = info.get("img_path") or info.get("photo") or info.get("image")
+    if isinstance(photo, list):
+        photo = next((path for path in photo if isinstance(path, str) and path), None)
+    image_url = None
+    if isinstance(photo, str) and photo.strip():
+        photo = photo.strip().replace("\\", "/")
+        if photo.startswith(("https://", "http://")):
+            image_url = photo
+        else:
+            photo = photo.lstrip("/")
+            if photo.startswith("pages/"):
+                photo = photo[len("pages/"):]
+            if not photo.startswith(("uploads/", "images/")) and "/" not in photo:
+                photo = "images/" + photo
+            image_url = url_for("static", filename=photo)
+    try:
+        rating = int(info.get("rating", 0))
+    except (ValueError, TypeError, OverflowError):
+        rating = 0
+    return {
+        "id": review_id,
+        "title": info.get("title") or "제목 없는 리뷰",
+        "product": info.get("product_name") or info.get("product") or "상품 정보 없음",
+        "body": info.get("body") or info.get("content") or info.get("text") or "",
+        "rating": rating if 1 <= rating <= 5 else None,
+        "image_url": image_url,
+    }
+
+
+@app.route("/reviews/<review_id>")
+@app.route("/view_review_detail/<review_id>", endpoint="view_review_detail")
 
 
 def review_detail(review_id):
-    return render_template("student/review_detail/review_detail.html", review_id=review_id)
+    if (any(char in review_id for char in '.#$[]/')
+            or any(ord(char) < 32 or ord(char) == 127 for char in review_id)
+            or len(review_id.encode("utf-8")) > 768):
+        abort(404)
+    try:
+        info = DB.get_review_by_id(review_id)
+    except Exception:
+        app.logger.exception("Firebase review detail lookup failed")
+        abort(503, description="리뷰를 불러올 수 없습니다. 잠시 후 다시 시도해 주세요.")
+    if not isinstance(info, dict) or not info:
+        return render_template("student/review_detail/review_detail.html", review=None), 404
+    return render_template("student/review_detail/review_detail.html",
+                           review=review_view(review_id, info))
 
 
 @app.route("/reviews/write", methods=["GET", "POST"])
