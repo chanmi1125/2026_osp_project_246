@@ -35,6 +35,14 @@
   object-fit: cover;
 }
 
+/* 할인 배너와 좋아요 버튼 배치 */
+.detail-discount-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 30px;
+}
+
 .detail-discount-badge {
   display: flex;
   align-items: center;
@@ -56,6 +64,44 @@
 
 .detail-discount-badge.ewha {
   background: var(--primary);
+}
+
+/* 상품 좋아요 버튼 */
+.like-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  padding: 6px;
+
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.like-button svg {
+  fill: none;
+  stroke: #579F90;
+  transition: fill 0.2s, stroke 0.2s;
+}
+
+/* 좋아요 선택 상태 */
+.like-button.liked svg {
+  fill: var(--coral);
+  stroke: var(--coral);
+}
+
+.like-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.like-button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
 }
 
 .detail-info {
@@ -312,10 +358,13 @@
   display: flex;
   align-items: center;
   gap: 4px;
+
   height: 44px;
   padding: 6px;
+
   border: 1px solid var(--border);
   border-radius: var(--radius);
+
   background: var(--white);
 }
 
@@ -323,8 +372,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
   width: 32px;
   height: 32px;
+
   border-radius: 8px;
   background: var(--border);
   color: var(--text);
@@ -342,6 +393,7 @@
 
 .qty-value {
   min-width: 3ch;
+
   font-size: 17px;
   font-weight: 700;
   text-align: center;
@@ -417,6 +469,10 @@
 
 @media (max-width: 480px) {
 
+  .detail-discount-row {
+    padding-right: 20px;
+  }
+
   .detail-info {
     padding: 14px 20px 0;
   }
@@ -483,6 +539,10 @@
 }
 
 @media (max-width: 360px) {
+
+  .detail-discount-row {
+    padding-right: 12px;
+  }
 
   .detail-info {
     padding-left: 12px;
