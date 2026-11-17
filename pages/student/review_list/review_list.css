@@ -358,3 +358,15 @@ body.review-sort-open {
   font-size: 13px;
   text-align: center;
 }
+/* Server-rendered review cards share the existing palette and pagination. */
+.review-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; background: transparent; }
+.review-card { min-width: 0; padding: 12px; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); }
+.review-photo { position: relative; display: grid; place-items: center; aspect-ratio: 4/3; overflow: hidden; border-radius: 10px; background: var(--chip); color: var(--sub); }
+.review-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.review-photo img[hidden] { display: none; }
+.review-title { margin: 12px 0 6px; font-size: 16px; overflow-wrap: anywhere; }
+.empty-reviews { grid-column: 1 / -1; }
+.review-pagination { flex-wrap: wrap; }
+.pagination-button[aria-disabled="true"] { opacity: .4; }
+.review-card a:focus-visible, .pagination-button:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (max-width: 360px) { .review-list { gap: 8px; } .review-card { padding: 8px; } .review-title { font-size: 14px; } }

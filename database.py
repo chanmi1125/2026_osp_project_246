@@ -47,6 +47,14 @@ class DBhandler:
         """review 노드 아래에 push()로 저장하고 자동 생성된 키를 돌려줌"""
         return self.db.child("review").push(review_info)["name"]
 
+    def get_reviews(self):
+        """Return reviews keyed by their Firebase push IDs."""
+        return self.db.child("review").get().val() or {}
+
+    def get_review_by_id(self, review_id):
+        """Read one review without changing the stored schema."""
+        return self.db.child("review").child(review_id).get().val()
+
     def get_user(self, user_id):
         """user/아이디 정보. 없으면 None"""
         return self.db.child("user").child(user_id).get().val()
