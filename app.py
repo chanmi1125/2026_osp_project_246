@@ -2,7 +2,7 @@ import hashlib
 import hmac
 import os
 import secrets
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from flask import Flask, render_template, redirect, url_for, request, flash, jsonify, session
 
@@ -232,6 +232,13 @@ def product_detail(product_id=None, name=None):
             "rating": 0,
             "review_count": 0,
         }
+        ratings = [
+            r.get("rating", 0) for r in DB.get_reviews().values()
+            if isinstance(r, dict) and r.get("product") == item_name
+        ]
+        if ratings:
+            product["review_count"] = len(ratings)
+            product["rating"] = round(sum(ratings) / len(ratings), 1)
     return render_template("student/product_detail/product_detail.html", product=product)
 
 
@@ -242,25 +249,134 @@ def reserve_done():
     return render_template("student/reserve_done/reserve_done.html")
 
 
+REVIEWS_PER_PAGE = 4
+REVIEW_PHOTO_EXTS = {".jpg", ".jpeg", ".png"}
+CATEGORY_LABELS = {"bakery": "베이커리", "lunchbox": "도시락", "cafe": "카페", "snack": "분식"}
+
+
+def review_view(review_id, info, item=None):
+    """DB 리뷰 한 개를 화면에서 쓰는 모양으로 정리"""
+    item = item or {}
+    created = info.get("created_at", "")
+    rating = info.get("rating", 0)
+    return {
+        "id": review_id,
+        "title": info.get("title", ""),
+        "product": info.get("product", ""),
+        "text": info.get("content", ""),
+        "rating": rating if isinstance(rating, int) else 0,
+        "user": info.get("writer", ""),
+        "image": info.get("img_path", ""),
+        "date": created[:10].replace("-", "."),
+        "date_iso": created[:10],
+        "category": item.get("category", ""),
+        "category_label": CATEGORY_LABELS.get(item.get("category"), ""),
+    }
+
+
 @app.route("/reviews")
 
 
 def review_list():
-    return render_template("student/review_list/review_list.html")
+    category = request.args.get("category", "all")
+    sort = request.args.get("sort", "recent")
+    page = request.args.get("page", 1, type=int)
+
+    items = DB.get_items()
+    reviews = [
+        review_view(key, info, items.get(info.get("product")))
+        for key, info in DB.get_reviews().items()
+        if isinstance(info, dict)
+    ]
+    if category != "all":
+        reviews = [r for r in reviews if r["category"] == category]
+
+    # push() 키는 시간순이라 키 역순 = 최신순
+    reviews.sort(key=lambda r: r["id"], reverse=True)
+    if sort == "high":
+        reviews.sort(key=lambda r: r["rating"], reverse=True)
+    elif sort == "low":
+        reviews.sort(key=lambda r: r["rating"])
+
+    total_pages = max(1, (len(reviews) + REVIEWS_PER_PAGE - 1) // REVIEWS_PER_PAGE)
+    page = max(1, min(page, total_pages))
+    start = (page - 1) * REVIEWS_PER_PAGE
+
+    return render_template("student/review_list/review_list.html",
+                           reviews=reviews[start:start + REVIEWS_PER_PAGE],
+                           total=len(reviews), page=page, total_pages=total_pages,
+                           category=category, sort=sort, categories=CATEGORY_LABELS)
 
 
-@app.route("/reviews/<int:review_id>")
+@app.route("/reviews/<review_id>")
 
 
 def review_detail(review_id):
-    return render_template("student/review_detail/review_detail.html", review_id=review_id)
+    info = DB.get_review(review_id)
+    review = None
+    if isinstance(info, dict):
+        item_name = info.get("product", "")
+        item = DB.get_item(item_name) if item_name else None
+        review = review_view(review_id, info, item)
+        if item:
+            seller_id = item.get("seller_id", "")
+            seller = (DB.get_user(seller_id) or {}) if seller_id else {}
+            review.update({
+                "product_key": item_name,
+                "product_image": (item.get("img_path") or [None])[0],
+                "store": seller.get("store_name") or seller_id,
+                "address": item.get("address", ""),
+            })
+    return render_template("student/review_detail/review_detail.html", review=review)
 
 
-@app.route("/reviews/write")
+@app.route("/reviews/write", methods=["GET", "POST"])
 
 
 def review_write():
-    return render_template("student/review_write/review_write.html")
+    if request.method == "GET":
+        product = request.args.get("product", "").strip()
+        locked = bool(product) and DB.get_item(product) is not None
+        return render_template("student/review_write/review_write.html",
+                               product=product, product_locked=locked)
+
+    data = request.form
+    writer = session.get("id") or data.get("writer", "").strip()
+    product = data.get("product", "").strip()
+    title = data.get("title", "").strip()
+    content = data.get("content", "").strip()
+    rating = data.get("rating", "0")
+    photo = request.files.get("photo")
+    ext = Path(photo.filename).suffix.lower() if photo and photo.filename else ""
+
+    error = None
+    if not (writer and product and title and content):
+        error = "필수 항목을 모두 입력해 주세요."
+    elif rating not in {"1", "2", "3", "4", "5"}:
+        error = "평점을 선택해 주세요."
+    elif ext not in REVIEW_PHOTO_EXTS:
+        error = "리뷰 사진(JPG, PNG)을 올려 주세요."
+    elif DB.get_item(product) is None:
+        error = "등록된 상품 이름이 아니에요. 상품 상세에서 리뷰 쓰기를 눌러 주세요."
+    if error:
+        flash(error, "error")
+        return redirect(url_for("review_write", product=product))
+
+    upload_dir = Path(app.static_folder) / "uploads"
+    upload_dir.mkdir(parents=True, exist_ok=True)
+    filename = f"{uuid4().hex}{ext}"
+    photo.save(upload_dir / filename)
+
+    review_id = DB.insert_review({
+        "writer": writer,
+        "product": product,
+        "title": title,
+        "content": content,
+        "rating": int(rating),
+        "img_path": f"uploads/{filename}",
+        "created_at": datetime.now().isoformat(timespec="seconds"),
+    })
+    return redirect(url_for("review_detail", review_id=review_id))
 
 
 @app.route("/mypage")

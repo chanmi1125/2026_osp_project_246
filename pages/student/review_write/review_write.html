@@ -11,7 +11,10 @@
 {% endblock %}
 
 {% block content %}
-<form class="review-form" id="review-form" data-next="{{ url_for('review_list') }}" novalidate>
+<form class="review-form" id="review-form" method="post" action="{{ url_for('review_write') }}" enctype="multipart/form-data" novalidate>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}<p class="form-error">{{ messages[0] }}</p>{% endif %}
+  {% endwith %}
   <div class="field">
     <label class="field-label" for="writer">작성자 ID <span class="req">*</span></label>
     <input class="input" id="writer" name="writer" placeholder="작성자 ID를 입력하세요" value="{{ session.get('id', '') }}" {% if session.get('id') %}readonly{% endif %} required>
@@ -19,7 +22,7 @@
 
   <div class="field">
     <label class="field-label" for="product">상품 이름 <span class="req">*</span></label>
-    <input class="input" id="product" name="product" placeholder="상품 이름을 입력하세요" required>
+    <input class="input" id="product" name="product" placeholder="상품 이름을 입력하세요" value="{{ product }}" {% if product_locked %}readonly{% endif %} required>
   </div>
 
   <div class="field">
