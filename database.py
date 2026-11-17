@@ -120,21 +120,15 @@ class DBhandler:
             and len(key.encode("utf-8")) <= 768
         )
 
-    # 상품 좋아요 여부 조회
-    def is_liked(self, user_id, item_name):
-        if not self.valid_key(user_id) or not self.valid_key(item_name):
+    # 상품 좋아요 상태 조회 (누르지 않았으면 False)
+    def get_heart(self, user_id, name):
+        if not self.valid_key(user_id) or not self.valid_key(name):
             raise ValueError("잘못된 좋아요 경로입니다.")
+        return self.db.child("like").child(user_id).child(name).get().val() is True
 
-        return self.db.child("like").child(user_id)\
-            .child(item_name).get().val() is True
-
-    # 상품 좋아요 등록 및 취소
-    def toggle_like(self, user_id, item_name):
-        if self.is_liked(user_id, item_name):
-            self.db.child("like").child(user_id)\
-                .child(item_name).remove()
-            return False
-        else:
-            self.db.child("like").child(user_id)\
-                .child(item_name).set(True)
-            return True
+    # 상품 좋아요 상태 저장 (True: 좋아요, False: 취소)
+    def set_heart(self, user_id, name, liked):
+        if not self.valid_key(user_id) or not self.valid_key(name):
+            raise ValueError("잘못된 좋아요 경로입니다.")
+        self.db.child("like").child(user_id).child(name).set(bool(liked))
+        return bool(liked)

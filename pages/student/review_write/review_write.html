@@ -12,6 +12,7 @@
 
 {% block content %}
 <form class="review-form" id="review-form" method="post" action="{{ url_for('review_write') }}" enctype="multipart/form-data" novalidate>
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
   {% with messages = get_flashed_messages() %}
   {% if messages %}<p class="form-error">{{ messages[0] }}</p>{% endif %}
   {% endwith %}
@@ -21,8 +22,8 @@
   </div>
 
   <div class="field">
-    <label class="field-label" for="product">상품 이름 <span class="req">*</span></label>
-    <input class="input" id="product" name="product" placeholder="상품 이름을 입력하세요" value="{{ product }}" {% if product_locked %}readonly{% endif %} required>
+    <label class="field-label" for="product_name">상품 이름 <span class="req">*</span></label>
+    <input class="input" id="product_name" name="product_name" placeholder="상품 이름을 입력하세요" value="{{ name }}" {% if product_locked %}readonly{% endif %} required>
   </div>
 
   <div class="field">
@@ -41,8 +42,8 @@
   </div>
 
   <div class="field">
-    <label class="field-label" for="content">리뷰 내용 <span class="req">*</span></label>
-    <textarea class="input textarea" id="content" name="content" placeholder="상품 리뷰를 작성해주세요" required></textarea>
+    <label class="field-label" for="review-body">리뷰 내용 <span class="req">*</span></label>
+    <textarea class="input textarea" id="review-body" name="body" placeholder="상품 리뷰를 작성해주세요" required></textarea>
   </div>
 
   <div class="field">

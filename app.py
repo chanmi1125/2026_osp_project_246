@@ -45,16 +45,12 @@ def home_endpoint():
 
 
 @app.context_processor
-
-
 def auth_context():
     auth_role = session.get("user_type") if session.get("id") else None
     return {"auth_role": auth_role, "csrf_token": csrf_token}
 
 
 @app.after_request
-
-
 def prevent_auth_page_cache(response):
     if session.get("id") or request.endpoint in {"login", "login_confirm", "logout"}:
         response.headers["Cache-Control"] = "no-store"
@@ -62,15 +58,11 @@ def prevent_auth_page_cache(response):
 
 
 @app.route("/")
-
-
 def index():
     return redirect(url_for(home_endpoint()))
 
 
 @app.route("/login")
-
-
 def login():
     if session.get("id"):
         return redirect(url_for(home_endpoint()))
@@ -78,8 +70,6 @@ def login():
 
 
 @app.route("/login_confirm", methods=["POST"])
-
-
 def login_confirm():
     if not valid_csrf_token():
         flash("로그인 화면이 만료됐습니다. 다시 시도해 주세요.", "error")
@@ -114,8 +104,6 @@ def login_confirm():
 
 
 @app.route("/logout", methods=["POST"])
-
-
 def logout():
     if not valid_csrf_token():
         return "잘못된 로그아웃 요청입니다. 페이지를 새로고침해 주세요.", 400
@@ -124,15 +112,11 @@ def logout():
 
 
 @app.route("/signup")
-
-
 def signup():
     return render_template("common/signup/signup.html")
 
 
 @app.route("/signup_post", methods=["POST"])
-
-
 def signup_post():
     data = request.form
     pw_hash = hashlib.sha256(data["password"].encode("utf-8")).hexdigest()
@@ -143,8 +127,6 @@ def signup_post():
 
 
 @app.route("/check-id")
-
-
 def check_id():
     """회원가입 화면의 '중복 확인' 버튼이 부르는 주소"""
     user_id = request.args.get("user_id", "").strip()
@@ -155,8 +137,6 @@ ITEMS_PER_PAGE = 4
 
 
 @app.route("/products")
-
-
 def product_list():
     discount = request.args.get("discount", "all")
     category = request.args.get("category", "all")
@@ -201,7 +181,6 @@ def product_list():
 @app.route("/products/<name>")
 def product_detail(product_id=None, name=None):
     product = None
-    is_liked = False
 
     item_name = name if name is not None else str(product_id)
     info = DB.get_item(item_name)
@@ -233,79 +212,72 @@ def product_detail(product_id=None, name=None):
                 "sold_out": "판매완료",
             }.get(info.get("status"), info.get("status", "")),
             "pickup_time": f"{info.get('pickup_start', '')}–{info.get('pickup_end', '')}",
-            "rating": 0,
-            "review_count": 0,
         }
+        product["rating"], product["review_count"] = review_rating(item_name)
 
-        # 로그인한 사용자의 좋아요 상태 확인
-        user_id = session.get("id")
+    return render_template("student/product_detail/product_detail.html", product=product)
 
-        if user_id:
-            is_liked = DB.is_liked(user_id, item_name)
 
-    return render_template(
-        "student/product_detail/product_detail.html",
-        product=product,
-        is_liked=is_liked
-    )
+def review_rating(item_name):
+    """이 상품에 달린 리뷰의 평균 별점(소수 첫째 자리)과 개수."""
+    try:
+        reviews = DB.get_reviews().values()
+    except Exception:
+        app.logger.exception("Firebase review lookup failed")
+        return 0, 0
+    ratings = []
+    for info in reviews:
+        if not isinstance(info, dict):
+            continue
+        if (info.get("product_name") or info.get("product")) != item_name:
+            continue
+        try:
+            rating = int(info.get("rating", 0))
+        except (ValueError, TypeError):
+            continue
+        if 1 <= rating <= 5:
+            ratings.append(rating)
+    if not ratings:
+        return 0, 0
+    return round(sum(ratings) / len(ratings), 1), len(ratings)
 
-# 상품 좋아요 등록 및 취소
-@app.route("/toggle_like", methods=["POST"])
-def toggle_like():
-
-    # 로그인 여부 확인
+# 상품 좋아요: GET은 현재 상태 조회, POST는 {"liked": true/false} 저장
+@app.route("/item_like/<name>", methods=["GET", "POST"])
+def item_like(name):
     user_id = session.get("id")
-
-    if not user_id:
-        return jsonify(error="로그인이 필요합니다."), 401
-
-    # CSRF 토큰 확인
-    saved_token = session.get("_csrf_token")
-    submitted_token = request.headers.get("X-CSRF-Token", "")
-
-    if not isinstance(saved_token, str) or not hmac.compare_digest(
-        saved_token.encode("utf-8"),
-        submitted_token.encode("utf-8")
-    ):
-        return jsonify(error="잘못된 요청입니다."), 403
-
-    # AJAX 요청 데이터 확인
-    data = request.get_json(silent=True)
-
-    if not isinstance(data, dict):
-        return jsonify(error="잘못된 요청입니다."), 400
-
-    item_name = data.get("item_name")
-
-    # 상품 이름 검사
-    if (
-        not isinstance(item_name, str)
-        or not item_name
-        or any(c in item_name for c in ".#$[]/")
-        or any(ord(c) < 32 or ord(c) == 127 for c in item_name)
-        or len(item_name.encode("utf-8")) > 768
-    ):
-        return jsonify(error="잘못된 상품 이름입니다."), 400
+    if user_id is None:
+        return jsonify({"error": "로그인이 필요합니다."}), 401
+    if not DB.valid_key(name):
+        return jsonify({"error": "잘못된 상품 이름입니다."}), 400
 
     try:
-        if DB.get_item(item_name) is None:
-            return jsonify(error="존재하지 않는 상품입니다."), 404
+        if DB.get_item(name) is None:
+            return jsonify({"error": "존재하지 않는 상품입니다."}), 404
 
-        # Firebase 좋아요 상태 변경
-        liked = DB.toggle_like(user_id, item_name)
+        if request.method == "GET":
+            return jsonify({"liked": DB.get_heart(user_id, name)})
 
-        return jsonify(liked=liked)
+        # 다른 사이트에서 보낸 요청을 막기 위한 CSRF 토큰 확인
+        saved_token = session.get("_csrf_token")
+        submitted_token = request.headers.get("X-CSRF-Token", "")
+        if not isinstance(saved_token, str) or not hmac.compare_digest(
+            saved_token.encode("utf-8"), submitted_token.encode("utf-8")
+        ):
+            return jsonify({"error": "잘못된 요청입니다."}), 403
+
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict) or not isinstance(data.get("liked"), bool):
+            return jsonify({"error": "잘못된 요청입니다."}), 400
+
+        saved = DB.set_heart(user_id, name, data["liked"])
+        return jsonify({"liked": saved})
 
     except Exception as error:
-        app.logger.error(
-            "좋아요 처리 실패 (%s)", type(error).__name__
-        )
+        app.logger.error("좋아요 처리 실패 (%s)", type(error).__name__)
+        return jsonify({"error": "좋아요 처리에 실패했습니다."}), 500
 
-        return jsonify(error="좋아요 처리에 실패했습니다."), 500
 
 @app.route("/reserve/done")
-
-
 def reserve_done():
     return render_template("student/reserve_done/reserve_done.html")
 
@@ -314,8 +286,6 @@ REVIEW_PHOTO_EXTS = {".jpg", ".jpeg", ".png"}
 
 
 @app.route("/reviews")
-
-
 def review_list():
     page = request.args.get("page", 1, type=int)
     try:
@@ -368,8 +338,6 @@ def review_view(review_id, info):
 
 @app.route("/reviews/<review_id>")
 @app.route("/view_review_detail/<review_id>", endpoint="view_review_detail")
-
-
 def review_detail(review_id):
     if (any(char in review_id for char in '.#$[]/')
             or any(ord(char) < 32 or ord(char) == 127 for char in review_id)
@@ -387,36 +355,38 @@ def review_detail(review_id):
 
 
 @app.route("/reviews/write", methods=["GET", "POST"])
-
-
 def review_write():
     if request.method == "GET":
-        product = request.args.get("product", "").strip()
-        locked = bool(product) and DB.get_item(product) is not None
+        name = request.args.get("name", "").strip()
+        locked = bool(name) and DB.get_item(name) is not None
         return render_template("student/review_write/review_write.html",
-                               product=product, product_locked=locked)
+                               name=name, product_locked=locked)
+
+    if not valid_csrf_token():
+        flash("리뷰 작성 화면이 만료됐습니다. 다시 시도해 주세요.", "error")
+        return redirect(url_for("review_write", name=request.form.get("product_name", "")))
 
     data = request.form
     writer = session.get("id") or data.get("writer", "").strip()
-    product = data.get("product", "").strip()
+    product_name = data.get("product_name", "").strip()
     title = data.get("title", "").strip()
-    content = data.get("content", "").strip()
+    body = data.get("body", "").strip()
     rating = data.get("rating", "0")
     photo = request.files.get("photo")
     ext = Path(photo.filename).suffix.lower() if photo and photo.filename else ""
 
     error = None
-    if not (writer and product and title and content):
+    if not (writer and product_name and title and body):
         error = "필수 항목을 모두 입력해 주세요."
     elif rating not in {"1", "2", "3", "4", "5"}:
         error = "평점을 선택해 주세요."
     elif ext not in REVIEW_PHOTO_EXTS:
         error = "리뷰 사진(JPG, PNG)을 올려 주세요."
-    elif DB.get_item(product) is None:
+    elif DB.get_item(product_name) is None:
         error = "등록된 상품 이름이 아니에요. 상품 상세에서 리뷰 쓰기를 눌러 주세요."
     if error:
         flash(error, "error")
-        return redirect(url_for("review_write", product=product))
+        return redirect(url_for("review_write", name=product_name))
 
     upload_dir = Path(app.static_folder) / "uploads"
     upload_dir.mkdir(parents=True, exist_ok=True)
@@ -425,9 +395,9 @@ def review_write():
 
     DB.insert_review({
         "writer": writer,
-        "product": product,
+        "product_name": product_name,
         "title": title,
-        "content": content,
+        "body": body,
         "rating": int(rating),
         "img_path": f"uploads/{filename}",
         "created_at": datetime.now().isoformat(timespec="seconds"),
@@ -436,15 +406,11 @@ def review_write():
 
 
 @app.route("/mypage")
-
-
 def student_mypage():
     return render_template("student/mypage/mypage.html")
 
 
 @app.route("/owner/products/new", methods=["GET", "POST"])
-
-
 def product_register():
     if request.method == "POST":
         data = request.form
@@ -474,22 +440,16 @@ def product_register():
 
 
 @app.route("/owner/reservations")
-
-
 def owner_reservations():
     return render_template("owner/reservations/reservations.html")
 
 
 @app.route("/owner/reviews")
-
-
 def owner_reviews():
     return render_template("owner/reviews/reviews.html")
 
 
 @app.route("/owner/mypage")
-
-
 def owner_mypage():
     return render_template("owner/mypage/mypage.html")
 

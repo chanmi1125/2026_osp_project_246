@@ -104,6 +104,18 @@
   outline-offset: 3px;
 }
 
+/* 좋아요를 쓸 수 없을 때 안내 문구 (비어 있으면 숨김) */
+.like-message {
+  margin: 4px 30px 0;
+  color: var(--sub);
+  font-size: 13px;
+  text-align: right;
+}
+
+.like-message:empty {
+  display: none;
+}
+
 .detail-info {
   padding: 14px 30px 0;
 }
@@ -481,6 +493,10 @@
     padding-right: 20px;
   }
 
+  .like-message {
+    margin-right: 20px;
+  }
+
   .detail-info {
     padding: 14px 20px 0;
   }
@@ -555,6 +571,10 @@
 
   .detail-discount-row {
     padding-right: 12px;
+  }
+
+  .like-message {
+    margin-right: 12px;
   }
 
   .detail-info {
