@@ -199,17 +199,19 @@ def product_list():
 
 @app.route("/products/<int:product_id>")
 @app.route("/products/<name>")
-
-
 def product_detail(product_id=None, name=None):
     product = None
+    is_liked = False
+
     item_name = name if name is not None else str(product_id)
     info = DB.get_item(item_name)
+
     if info is not None:
         seller_id = info.get("seller_id", "")
         seller = (DB.get_user(seller_id) or {}) if seller_id else {}
         original_price = info.get("price", 0)
         discount_rate = info.get("discount_rate", 0)
+
         product = {
             **info,
             "id": item_name,
@@ -226,7 +228,9 @@ def product_detail(product_id=None, name=None):
             "quantity": info.get("quantity", 0),
             "description": info.get("description", ""),
             "status": {
-                "on_sale": "판매중", "reserved": "예약중", "sold_out": "판매완료",
+                "on_sale": "판매중",
+                "reserved": "예약중",
+                "sold_out": "판매완료",
             }.get(info.get("status"), info.get("status", "")),
             "pickup_time": f"{info.get('pickup_start', '')}–{info.get('pickup_end', '')}",
             "rating": 0,
@@ -239,8 +243,72 @@ def product_detail(product_id=None, name=None):
         if ratings:
             product["review_count"] = len(ratings)
             product["rating"] = round(sum(ratings) / len(ratings), 1)
-    return render_template("student/product_detail/product_detail.html", product=product)
 
+        # 로그인한 사용자의 좋아요 상태 확인
+        user_id = session.get("id")
+
+        if user_id:
+            is_liked = DB.is_liked(user_id, item_name)
+
+    return render_template(
+        "student/product_detail/product_detail.html",
+        product=product,
+        is_liked=is_liked
+    )
+
+# 상품 좋아요 등록 및 취소
+@app.route("/toggle_like", methods=["POST"])
+def toggle_like():
+
+    # 로그인 여부 확인
+    user_id = session.get("id")
+
+    if not user_id:
+        return jsonify(error="로그인이 필요합니다."), 401
+
+    # CSRF 토큰 확인
+    saved_token = session.get("_csrf_token")
+    submitted_token = request.headers.get("X-CSRF-Token", "")
+
+    if not isinstance(saved_token, str) or not hmac.compare_digest(
+        saved_token.encode("utf-8"),
+        submitted_token.encode("utf-8")
+    ):
+        return jsonify(error="잘못된 요청입니다."), 403
+
+    # AJAX 요청 데이터 확인
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify(error="잘못된 요청입니다."), 400
+
+    item_name = data.get("item_name")
+
+    # 상품 이름 검사
+    if (
+        not isinstance(item_name, str)
+        or not item_name
+        or any(c in item_name for c in ".#$[]/")
+        or any(ord(c) < 32 or ord(c) == 127 for c in item_name)
+        or len(item_name.encode("utf-8")) > 768
+    ):
+        return jsonify(error="잘못된 상품 이름입니다."), 400
+
+    try:
+        if DB.get_item(item_name) is None:
+            return jsonify(error="존재하지 않는 상품입니다."), 404
+
+        # Firebase 좋아요 상태 변경
+        liked = DB.toggle_like(user_id, item_name)
+
+        return jsonify(liked=liked)
+
+    except Exception as error:
+        app.logger.error(
+            "좋아요 처리 실패 (%s)", type(error).__name__
+        )
+
+        return jsonify(error="좋아요 처리에 실패했습니다."), 500
 
 @app.route("/reserve/done")
 

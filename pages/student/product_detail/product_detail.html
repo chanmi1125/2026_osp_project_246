@@ -1,3 +1,4 @@
+
 {% extends "core/base.html" %}
 
 {% block title %}상품 상세{% endblock %}
@@ -36,12 +37,38 @@
     {% endif %}
   </div>
 
-  <div class="detail-discount-badge {{ product.discount_type }}">
-    {% if product.discount_type == "closing" %}
-      마감 할인
-    {% elif product.discount_type == "ewha" %}
-      이화인 할인
-    {% endif %}
+  <!-- 할인 배너 및 좋아요 버튼 -->
+  <div class="detail-discount-row">
+
+    <div class="detail-discount-badge {{ product.discount_type }}">
+      {% if product.discount_type == "closing" %}
+        마감 할인
+      {% elif product.discount_type == "ewha" %}
+        이화인 할인
+      {% endif %}
+    </div>
+
+    <!-- 상품 좋아요 버튼 -->
+    <button
+      type="button"
+      class="like-button {% if is_liked %}liked{% endif %}"
+      id="like-button"
+      data-item-name="{{ product.name }}"
+      data-csrf-token="{{ csrf_token() }}"
+      aria-label="상품 좋아요"
+      aria-pressed="{{ 'true' if is_liked else 'false' }}"
+    >
+      <svg width="28" height="28" viewBox="0 0 24 24"
+           stroke-width="1.8"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           aria-hidden="true">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0
+                 L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78
+                 L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"/>
+      </svg>
+    </button>
+
   </div>
 
   <div class="detail-info">

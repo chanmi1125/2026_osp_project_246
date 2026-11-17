@@ -9,9 +9,11 @@ class DBhandler:
         config_path = Path(__file__).resolve().parent / 'authentication' / 'firebase_auth.json'
         with config_path.open(encoding='utf-8') as f:
             config = json.load(f)
-        firebase = pyrebase.initialize_app(config)
-        self.db = firebase.database()
+        self.firebase = pyrebase.initialize_app(config)
 
+    @property
+    def db(self):
+        return self.firebase.database()
     def insert_item(self, name, data, img_paths):
         item_info = {
             "seller_id": data["seller_id"],
@@ -108,3 +110,33 @@ class DBhandler:
         if user.get('user_type') not in ('student', 'owner'):
             return None
         return {'id': user_id, 'user_type': user['user_type']}
+    
+    # Firebase 경로 유효성 검사
+    @staticmethod
+    def valid_key(key):
+        return (
+            isinstance(key, str)
+            and bool(key)
+            and not any(c in key for c in ".#$[]/")
+            and not any(ord(c) < 32 or ord(c) == 127 for c in key)
+            and len(key.encode("utf-8")) <= 768
+        )
+
+    # 상품 좋아요 여부 조회
+    def is_liked(self, user_id, item_name):
+        if not self.valid_key(user_id) or not self.valid_key(item_name):
+            raise ValueError("잘못된 좋아요 경로입니다.")
+
+        return self.db.child("like").child(user_id)\
+            .child(item_name).get().val() is True
+
+    # 상품 좋아요 등록 및 취소
+    def toggle_like(self, user_id, item_name):
+        if self.is_liked(user_id, item_name):
+            self.db.child("like").child(user_id)\
+                .child(item_name).remove()
+            return False
+        else:
+            self.db.child("like").child(user_id)\
+                .child(item_name).set(True)
+            return True
