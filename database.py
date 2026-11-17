@@ -47,16 +47,6 @@ class DBhandler:
         """review 노드 아래에 push()로 저장하고 자동 생성된 키를 돌려줌"""
         return self.db.child("review").push(review_info)["name"]
 
-    def get_reviews(self):
-        """review 노드 전체 {리뷰키: 리뷰정보}. 없으면 빈 딕셔너리"""
-        return self.db.child("review").get().val() or {}
-
-    def get_review(self, review_id):
-        """리뷰 키로 조회. 없거나 키로 쓸 수 없는 값이면 None"""
-        if not review_id or any(char in review_id for char in '.#$[]/'):
-            return None
-        return self.db.child("review").child(review_id).get().val()
-
     def get_user(self, user_id):
         """user/아이디 정보. 없으면 None"""
         return self.db.child("user").child(user_id).get().val()
